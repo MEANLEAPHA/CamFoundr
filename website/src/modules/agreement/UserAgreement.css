@@ -1,0 +1,472 @@
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@400..800&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Yeseva+One&display=swap');
+:root {
+  --background-color: #ffffff;
+  --primary-color: #fd7648;
+  --secondary-color: rgba(107, 107, 107, 0.2);
+  --font-color: #111111;
+
+  --primary-font: monospace;
+
+  /* page-local tokens */
+  --ua-card: #ffffff;
+  --ua-card-soft: #f9f9f9;
+  --ua-border: rgba(17, 17, 17, 0.08);
+  --ua-muted: rgba(17, 17, 17, 0.829);
+  --ua-text-soft: rgba(17, 17, 17, 0.72);
+  --ua-shadow: 0 20px 50px rgba(0, 0, 0, 0.05);
+  --ua-ring: rgba(253, 118, 72, 0.12);
+  --ua-orange-soft: #fff3ed;
+}
+
+.dark-theme {
+  --background-color: #202020;
+  --font-color: #ffffff;
+
+
+  --ua-card: #2a2a2a;
+  --ua-card-soft: #242424;
+  --ua-border: rgba(255, 255, 255, 0.08);
+  --ua-muted: rgba(255, 255, 255, 0.55);
+  --ua-text-soft: rgba(255, 255, 255, 0.78);
+  --ua-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+  --ua-orange-soft: rgba(253, 118, 72, 0.12);
+}
+
+/* ============================================
+   PAGE SHELL
+   ============================================ */
+.ua-page {
+  width: 100%;
+  min-height: 100vh;
+  color: var(--font-color);
+  padding: 0px;
+  font-family: var(--primary-font);
+  display: flex;
+  justify-content: center;
+}
+
+.ua-shell {
+  width: 100%;
+  max-width: 1400px;
+  display: flex;
+  align-items: flex-start;
+  min-height: 100vh;
+}
+
+/* ============================================
+   SIDEBAR
+   ============================================ */
+.ua-sidebar {
+  width: 300px;
+  flex-shrink: 0;
+  background: var(--ua-card-soft);
+  border: 1px solid  darkgray;
+  display: flex;
+  flex-direction: column;
+  padding: 32px 0;
+  position: sticky;
+  top: 16px;
+  align-self: flex-start;
+  height: calc(100vh - 32px);
+  max-height: calc(100vh - 32px);
+  border-top-left-radius: 40px;
+  border-bottom-left-radius: 40px;
+}
+
+.ua-brand {
+  padding: 0 28px 24px;
+}
+
+.ua-kicker {
+  display: block;
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ua-muted);
+  margin-bottom: 6px;
+}
+
+.ua-brand-title {
+  font-size: 26px;
+
+  letter-spacing: -0.02em;
+  color: var(--font-color);
+  margin: 0;
+    font-family: "Baloo 2", sans-serif;
+    color: var(--primary-color);
+    font-weight: bold;
+}
+
+.ua-nav {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px 18px;
+  overflow-y: auto;
+}
+
+.ua-chip {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 11px 16px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--ua-muted);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease,
+    box-shadow 0.25s ease;
+}
+
+.ua-chip:hover {
+  background: var(--secondary-color);
+  color: var(--font-color);
+}
+
+.ua-chip-num {
+  font-size: 11px;
+  opacity: 0.7;
+  font-variant-numeric: tabular-nums;
+}
+
+.ua-chip.is-active {
+  background: var(--secondary-color);
+  color: var(--primary-color);
+  
+}
+
+.ua-chip.is-active .ua-chip-num {
+  opacity: 0.9;
+}
+
+.ua-side-card {
+  margin: 24px 28px 0;
+  padding: 16px;
+  border-radius: 18px;
+  background: var(--ua-orange-soft);
+  border: 1px solid rgba(253, 118, 72, 0.18);
+  color: var(--primary-color);
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.ua-side-link {
+  font-weight: 700;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+/* ============================================
+   MAIN CONTENT
+   ============================================ */
+.ua-main {
+  flex: 1;
+  min-width: 0;
+  
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.ua-header {
+  padding: 48px 64px 24px;
+  border-bottom: 1px solid darkgray;
+}
+
+.ua-title {
+  font-family: "Times New Roman", Times, serif;
+  font-style: italic;
+  font-weight: 700;
+  font-size:xx-large;
+  line-height: 1;
+  margin: 0 0 14px;
+  letter-spacing: -0.02em;
+  color:var(--font-color);
+}
+
+.ua-effective {
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ua-muted);
+  margin: 0;
+}
+
+.ua-sections {
+  padding: 40px 64px 64px;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+/* SECTION CARD */
+.ua-section {
+  position: relative;
+}
+
+.ua-accent-bar {
+  position: absolute;
+  left: -24px;
+  top: 8px;
+  bottom: 8px;
+  width: 4px;
+  border-radius: 999px;
+  background: var(--primary-color);
+}
+
+.ua-section-card {
+  background: var(--ua-card);
+  border: 1px solid var(--ua-border);
+  border-radius: 28px;
+  padding: 30px 32px;
+  transition: border-color 0.25s ease, background 0.25s ease,
+    box-shadow 0.25s ease, transform 0.25s ease;
+}
+
+.ua-section:hover .ua-section-card {
+  border-color: color-mix(in srgb, var(--font-color) 18%, transparent);
+}
+
+.ua-section.is-active .ua-section-card {
+  background: var(--ua-card-soft);
+  border: 2px solid var(--primary-color);
+
+}
+
+.ua-section-tag {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--ua-muted);
+  margin-bottom: 12px;
+}
+
+.ua-section.is-active .ua-section-tag {
+  color: var(--primary-color);
+}
+
+.ua-section-title {
+  font-size: clamp(1.25rem, 2vw, 1.6rem);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  margin: 0 0 14px;
+}
+
+.ua-section-text {
+  font-size: 14.5px;
+  line-height: 1.85;
+  color: var(--ua-text-soft);
+  margin: 0;
+
+}
+
+
+.ua-section.is-dark .ua-section-tag {
+  color: #ffb38e;
+}
+
+.ua-section.is-dark .ua-section-text {
+  color: var(--font-color);
+}
+
+.ua-cta {
+  display: inline-block;
+  margin-top: 20px;
+  padding: 12px 22px;
+  background: var(--primary-color);
+  color: #fff;
+  font-weight: 700;
+  font-size: 14px;
+  border-radius: 12px; 
+  text-decoration: none;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.ua-cta:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 10px 24px -8px rgba(253, 118, 72, 0.6);
+}
+
+/* Footer */
+.ua-floating-footer {
+  padding: 28px 20px 32px;
+  display: flex;
+  justify-content: center;
+  border-top: 1px solid darkgray;
+  margin-top: 8px;
+}
+
+.ua-floating-footer span {
+  padding: 10px 22px;
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ua-muted);
+  background: color-mix(in srgb, var(--ua-card) 60%, transparent);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid var(--ua-border);
+  border-radius: 999px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+}
+
+/* Contact card — dark variant */
+.ua-section.is-dark .ua-section-card {
+  color: var(--font-color);
+}
+/* ============================================
+   RESPONSIVE — TABLET
+   ============================================ */
+@media (max-width: 992px) {
+  .ua-page {
+    padding: 16px 12px;
+  }
+
+  .ua-shell {
+    flex-direction: column;
+    border-radius: 28px;
+    min-height: unset;
+  }
+
+.ua-sidebar {
+  width: 95%;
+  padding: 20px 0 12px;
+  border-radius: 28px;
+  border-bottom: 1px solid var(--ua-border);
+  position: sticky;
+  top: 10px;
+  z-index: 1000;
+  margin: auto;
+  height:auto;
+  /* Base translucent background (fallback for browsers without blur) */
+  background: rgba(255, 255, 255, 0.15); /* light glass */
+  /* For dark themes, you can swap to rgba(0,0,0,0.25) */
+
+  /* Modern glass effect */
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(18px); /* Safari/WebKit */
+
+  /* Optional subtle border for glass edge */
+  border: 1px solid var(--ua-muted);
+}
+
+  .ua-brand {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    padding: 0 20px 12px;
+  }
+
+  .ua-kicker {
+    margin-bottom: 0;
+  }
+
+  .ua-brand-title {
+    font-size: 20px;
+  }
+ .ua-main{
+  padding-top: 20px;
+ }
+  .ua-nav {
+    flex-direction: row;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 4px 16px 8px;
+    gap: 8px;
+    scrollbar-width: none;
+  }
+
+  .ua-nav::-webkit-scrollbar {
+    display: none;
+  }
+
+  .ua-chip {
+    white-space: nowrap;
+    flex-shrink: 0;
+    width: auto;
+    padding: 10px 16px;
+  }
+
+  .ua-side-card {
+    display: none;
+  }
+
+  .ua-header {
+    position: relative;
+    padding: 32px 28px 20px;
+  }
+
+  .ua-sections {
+    padding: 28px 28px 48px;
+  }
+
+  .ua-accent-bar {
+    left: -12px;
+  }
+  .ua-title{
+    font-size: x-large;
+  }
+}
+
+/* ============================================
+   RESPONSIVE — MOBILE
+   ============================================ */
+@media (max-width: 600px) {
+  .ua-page {
+    padding: 10px 8px;
+  }
+
+  .ua-shell {
+    border-radius: 22px;
+  }
+
+  .ua-header {
+    padding: 24px 18px 16px;
+  }
+
+  .ua-title{
+    font-size: large;
+  }
+
+  .ua-effective {
+    font-size: 10px;
+  }
+ .ua-main{
+  padding-top: 20px;
+ }
+ .ua-header{
+  z-index: -1;
+ }
+  .ua-sections {
+    padding: 20px 14px 36px;
+    gap: 18px;
+  }
+
+  .ua-section-card {
+    padding: 22px 20px;
+    border-radius: 22px;
+  }
+  .ua-section-title {
+    font-size: 1.15rem;
+  }
+  .ua-section-text {
+    font-size: 14px;
+    line-height: 1.8;
+  }
+  .ua-accent-bar {
+    left: -6px;
+    width: 3px;
+  }
+  .ua-cta {
+    width: 100%;
+    text-align: center;
+  }
+}

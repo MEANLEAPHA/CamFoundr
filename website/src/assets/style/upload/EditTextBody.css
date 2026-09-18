@@ -1,0 +1,11 @@
+.edit-textbody-page{
+    width: 90%;
+    margin: auto;
+    padding: 10px 0px;
+}
+@media screen and (max-width:768px){
+    .edit-textbody-page{
+        width: 100%;
+        padding: 5px 15px;
+    }
+}

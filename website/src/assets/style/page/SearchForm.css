@@ -1,0 +1,29 @@
+.see-all-container{
+width: 100%;
+display: flex;
+align-items: center;
+justify-content: center;
+height: auto;
+}
+
+.see-all-btn{
+    margin: auto;
+    background: var(--back-con);
+    color: var(--font-color);
+    padding: 10px 15px;
+    border: none;
+    border-radius: 10px;
+    margin-top: 10px;
+    cursor: pointer
+}
+.search-result{
+
+   width: 90%;
+   margin: auto;
+}
+
+@media screen and (max-width:768px){
+    .search-result{
+        width: 95%;
+    }
+}

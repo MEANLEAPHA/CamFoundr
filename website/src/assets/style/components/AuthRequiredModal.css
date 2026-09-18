@@ -1,0 +1,57 @@
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@400..800&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Yeseva+One&display=swap');
+.auth-required-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.auth-required-modal {
+  background: whitesmoke;
+  padding: 32px;
+  border-radius: 12px;
+  max-width: 500px;
+  width: 90%;
+  text-align: center;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    font-family: "Baloo 2", sans-serif;
+}
+
+.auth-required-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 20px;
+  justify-content: center;
+}
+.auth-required-message{
+  font-family: "Baloo 2", sans-serif;
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+.btn-auth-primary, .btn-auth-secondary {
+  padding: 10px 20px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.btn-auth-primary {
+  background: #fd7648;
+  color: #fff;
+}
+
+.btn-auth-secondary {
+  background: transparent;
+  border: 1px solid #fd7648;
+  color: #fd7648;
+}
+
+.auth-required-icon{
+  width: 200px;
+  
+}

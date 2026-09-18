@@ -1,0 +1,168 @@
+/* =========================================
+MULTIPLE CHOICE
+========================================= */
+.question-type-wrapper{
+  border: 1px dashed var(--secondary-color);
+    padding: 20px;
+    border-radius: 10px;
+    margin-top: 10px;
+}
+.multiple-choice-parent {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* ROW */
+.multiple-choice-row {
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  overflow: hidden;
+  justify-content: center;
+}
+
+.square-div{
+  
+}
+/* INPUT */
+.multiple-choice-input {
+  flex: 1;
+  height: 42px;
+  min-height: 42px;
+  background: none;
+  border: none;
+  padding: 0px;
+  font-size: 15px;
+  border-bottom: 1px solid var(--secondary-color);
+  font-weight: 500;
+  color: var(--font-color);
+  outline: none;
+  transition: 0.25s ease;
+  box-sizing: border-box;
+}
+
+.multiple-choice-input::placeholder {
+  color: gray;
+}
+
+
+/* DELETE */
+.btn-delete-multiple-choice {
+  min-width: 7%;
+  height: auto;
+  border-radius: 14px;
+  border: none;
+  background: none;
+  color: var(--font-color);
+  opacity: 0.8;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.25s ease;
+}
+
+.btn-delete-multiple-choice:hover {
+  color: tomato;
+  opacity: 1;
+  transform: translateY(-2px);
+}
+
+/* ALL ABOVE */
+.all-above-row {
+  position: relative;
+}
+
+.all-above-input {
+  background: none;
+  border: none;
+  border-bottom: 1px solid var(--secondary-color);
+  color: var(--font-color);
+
+  cursor: not-allowed;
+}
+
+/* DIVIDER */
+.multiple-choice-divider {
+  width: 100%;
+  height: 1px;
+  background: var(--secondary-color);
+  margin: 24px 0;
+}
+
+/* ACTIONS */
+.multiple-choice-actions {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+
+/* BUTTON */
+.btn-multiple-choice {
+  height: 42px;
+  padding: 0 20px;
+  border-radius: 14px;
+  border: 1px solid var(--secondary-color);
+  background: none;
+  color: var(--font-color);
+  opacity: 0.8;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.25s ease;
+}
+
+.btn-multiple-choice:hover {
+  transform: translateY(-2px);
+
+  opacity: 1;
+}
+
+.btn-multiple-choice:disabled {
+  opacity: 0.5;
+
+  cursor: not-allowed;
+
+  transform: none;
+}
+
+/* REMOVE */
+.btn-remove-multiple:hover {
+  background: tomato;
+}
+
+/* ADD ALL ABOVE */
+.btn-all-above:hover {
+  background: yellowgreen;
+}
+
+/* REMOVE ALL ABOVE */
+.btn-remove-all-above:hover {
+  background: tomato;
+}
+
+/* =========================================
+RESPONSIVE
+========================================= */
+
+@media (max-width: 768px) {
+  .btn-delete-multiple-choice {
+    width: 10%;
+  }
+
+  .btn-multiple-choice {
+    width: 100%;
+  }
+
+  .btn-remove-multiple,
+  .btn-all-above,
+  .btn-remove-all-above {
+    width: 40%;
+    font-size: small;
+  }
+}

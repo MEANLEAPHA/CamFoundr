@@ -1,0 +1,153 @@
+
+:root {
+  --background-color: #ffffff;
+  --primary-color: #fd7648;
+  --secondary-color: rgba(107, 107, 107, 0.2);
+  --font-color: #111;
+      --back-con:rgb(245, 245, 245);
+  --primary-font: "Inter", sans-serif;
+}
+
+.dark-theme {
+  --background-color: #202020;
+  --font-color: #fff;
+  --back-con: #2a2a2a;
+}
+
+/* MAIN LAYOUT */
+.privacy-container {
+  display: flex;
+  gap: 40px;
+  padding: 30px 40px;
+  flex-wrap: wrap;
+  background: var(--background-color);
+  color: var(--font-color);
+  font-family: var(--primary-font);
+}
+
+/* LEFT NAV */
+.timeline-container {
+  flex: 0 0 260px;
+  position: sticky;
+  top: 60px;
+  height: fit-content;
+}
+
+/* TIMELINE ITEMS */
+.timeline-item {
+  cursor: pointer;
+  font-size: 14px;
+  transition: 0.25s ease;
+}
+
+.timeline-item:hover {
+  color: var(--primary-color);
+  transform: translateX(3px);
+}
+/* ACTIVE TIMELINE */
+.timeline-item.active {
+  color: var(--primary-color);
+  font-weight: 600;
+}
+
+/* SECTION BASE */
+
+/* ACTIVE SECTION */
+.active-section {
+  background: rgba(253, 118, 72, 0.08);
+  border-left: 4px solid var(--primary-color);
+}
+
+
+/* ACTIVE HEADER */
+.active-title {
+  color: var(--primary-color);
+}
+
+/* REVISION BOX */
+.revision-box {
+  margin-top: 20px;
+  padding: 15px;
+  background: var(--back-con);
+  border-radius: 12px;
+}
+
+.revision-box h4 {
+  margin-bottom: 10px;
+  font-size: 14px;
+}
+
+/* CONTENT */
+.content-container {
+  flex: 1;
+  max-width: 800px;
+}
+
+.content-container h1 {
+  font-size: 32px;
+  margin-bottom: 10px;
+}
+
+.effective {
+  margin-bottom: 30px;
+  color: gray;
+  font-size: 14px;
+}
+
+
+
+
+
+/* LOADER */
+.loader-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.loader-img {
+  width: 80px;
+  opacity: 0.7;
+}
+
+/* ========================= */
+/* 📱 MOBILE OPTIMIZATION */
+/* ========================= */
+
+@media (max-width: 900px) {
+  .privacy-container {
+    flex-direction: column;
+    padding: 20px;
+  }
+
+  .timeline-container {
+    position: relative;
+    width: 100%;
+  }
+
+  /* turn timeline into horizontal scroll pills */
+  .timeline-container .ant-timeline {
+    display: flex;
+    overflow-x: auto;
+    gap: 10px;
+  }
+
+  .timeline-item {
+    white-space: nowrap;
+    background: var(--back-con);
+    padding: 8px 12px;
+    border-radius: 20px;
+  }
+
+  .content-container {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 500px) {
+  .content-container h1 {
+    font-size: 24px;
+  }
+
+
+}

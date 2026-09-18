@@ -1,0 +1,290 @@
+@import url('https://fonts.googleapis.com/css2?family=Irish+Grover&family=Schoolbell&display=swap');
+:root{
+    --background-color: rgb(255, 255, 255);
+    --primary-color:#f1ad20;
+    --secondary-color: rgba(107, 107, 107, 0.318);
+    --font-color:rgb(0, 0, 0);
+    --back-con:rgb(245, 245, 245);
+    --primary-font:monospace;
+}
+.dark-theme{
+    --background-color:rgb(32, 32, 32);
+    --primary-color:#f1ad20;
+    --secondary-color: rgba(220, 220, 220, 0.318);
+    --font-color:rgb(255, 255, 255);
+    --back-con:rgb(40, 40, 40);
+}
+
+aside{
+    height: calc(100vh - 50px);
+    margin: 0;
+    padding: 0;
+    position: sticky;
+    top: 51px;
+    border-right: 1px solid var(--secondary-color);
+    padding-top: 5px;
+    z-index: 20;
+}
+
+.max-aside{
+    width: 18%;  
+}
+.min-aside{
+    width: 4.5%;
+}
+
+.max-ul, .min-ul{
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0px;
+    padding-top: 0px;
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: none;
+    scroll-behavior: smooth;
+}
+
+.min-ul{
+    justify-content: start;
+}
+
+ .btn-col{
+    position: absolute;
+    top: 50%;
+    right: -20px;
+    border-radius: 50%;
+    border: 1px solid var(--secondary-color);
+    background: var(--background-color);
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    z-index: 10;
+    
+}
+/* Show in Firefox on hover */
+.max-ul:hover{
+    scrollbar-width: thin;
+    scrollbar-color: var(--secondary-color) var(--background-color);
+}
+
+/* Hide by default */
+.max-ul::-webkit-scrollbar {
+    width: 0px;
+}
+
+/* Show when hover */
+.max-ul:hover::-webkit-scrollbar {
+    width: 1px;
+}
+
+.max-ul:hover::-webkit-scrollbar-track {
+    background: var(--background-color);
+}
+
+.max-ul:hover::-webkit-scrollbar-thumb {
+    background: var(--primary-color);
+    border-radius: 4px;
+}
+.max-li{
+    list-style: none;
+    
+}
+.max-li button{
+    background:none;
+    color: var(--font-color);
+    margin: 0;
+    width: 95%;
+    height: auto;
+    border: none;
+    display: flex;
+    gap: 15px;
+    padding: 8px 22px 8px 22px;
+    align-items: center;
+    font-family: sans-serif;
+    cursor: pointer;
+    border-radius: 10px;
+    transition: color 0.5s ease, 
+                background 0.5s ease, 
+                padding-left 0.5s ease 0.5s, 
+                transform 0.5s ease 0.5s;
+} 
+.max-li .btn-home{
+  margin-top: 5px;
+}
+
+.max-li button label{
+    color: var(--font-color);
+    font-size: 16px;
+    margin: 0;
+    font-weight: 500;
+    transition: color 0.5s ease, 
+}
+
+.max-li button:hover{
+    color: var(--primary-color);
+    padding-left:28px ;
+    background: var(--back-con);
+    transform: scale(0.9);
+}
+.max-li button:hover label{
+    color: var(--primary-color);
+}
+
+.max-li .btn-hall-of-fame{
+   background: linear-gradient(to left, gold, tomato);
+    transform: scale(0.9);
+    color: white;
+    
+}
+.max-li .btn-hall-of-fame label{
+    color: white;
+    font-weight: bold;
+}
+.max-li .btn-hall-of-fame:hover{
+   background: linear-gradient(to right, gold, tomato);
+    transform: scale(0.9);
+  color: white;
+}
+.max-li .btn-hall-of-fame:hover label{
+    color: white;
+}
+.icon-col{
+    color: var(--font-color);
+    font-size: larger;
+}
+.aside-hr{
+    align-items: start;
+    text-align: start;
+    margin-left: 13px; 
+    width: 84%;
+    border: 1px var(--secondary-color) solid;
+    opacity: 0.3;
+}
+.label-li{
+    color: var(--font-color);
+    font-family: 'Roboto', sans-serif;
+    margin-left: 22px;
+    margin-top: 18px;
+    margin-bottom: 5px;
+    opacity: 0.5;
+}
+
+.icon-aside{
+    opacity: 0.9;
+     width: 18px;
+    
+}
+
+.sub-icon{
+    width: 20px;
+    height: 20px;
+    opacity: 0.9;   
+}
+
+.sub-icon-logo{
+    width: 23px;
+    height: 23px;
+}
+#gossip-label{
+    font-family: "Schoolbell", cursive;
+    font-size: 15px;
+    font-weight: bold;
+}
+.chat-aside-badge {
+  position: absolute;
+  top: 12px!important;
+  right: 10px !important;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: #ff4d4f;
+  color: white;
+  font-size: 11px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 5;
+}
+ .nav-item{
+    display:flex;
+    align-items: center;
+    justify-content:center;
+    list-style: none;
+    background: none;
+    position: relative;
+ }
+ .nav-item button{
+    background:none;
+    color: var(--font-color);
+    width: 80%;
+    padding: 15px;
+    border-radius: 10px;
+    border: none;
+    display: flex;
+     position: relative;
+     cursor: pointer;
+    justify-content: center;
+    transition: color 0.5s ease, 
+                background 0.5s ease, 
+                margin-left 0.5s ease 0.5s,
+                transform 0.5s ease 0.5s;
+                
+ }
+ .nav-item:hover button{
+    background-color: var(--back-con);
+    transform: scale(0.9);
+    color: var(--primary-color);
+
+ }
+.label-li{
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+.label-icon-aside{
+width: 20px;
+}
+
+@media screen and (max-width:1200px){
+    .max-aside{
+        width: 30%; 
+        position: fixed; 
+        z-index: 1000;
+        height:calc(100vh - 50px);
+        background-color: var(--background-color);
+        top: 50px;
+        left: 0;
+    }
+    .nav-item{
+        background: none;
+    }
+    .min-aside{
+        width: 6%;
+    }
+    .nav-item:hover button{
+        margin-left: 0px;
+    }
+}
+@media screen and (max-width:1000px){
+    .min-aside{
+        width: 7%;
+    }
+    .nav-item{
+        background: none;
+    }
+    .nav-item:hover button{
+        margin-left: 0px;
+    }
+}
+@media screen and (max-width:768px) {
+    .max-aside{
+        width: 70%; 
+        
+    }
+}

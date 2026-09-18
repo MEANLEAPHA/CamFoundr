@@ -1,0 +1,473 @@
+.spam-dashboard {
+  
+  background: var(--background-color);
+  padding: 10px 30px;
+  width: 95%;
+  margin: auto;
+}
+.spam-h3-label{
+  margin: 0;
+  margin-bottom: 10px;
+  font-family: sans-serif;
+  opacity: 0.8;
+}
+.spam-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.spam-header-right{
+ display:flex;
+ align-items: center;
+ gap: 10px;
+ justify-content: end;
+ width: 70%;
+ height: auto;
+ margin:0;
+ padding: 0;
+
+}
+.spam-right-btn{
+  background: var(--back-con);
+  color: var(--font-color);
+  padding: 8px 20px;
+  border: none;
+  cursor: pointer;
+  opacity: 0.9;
+  border-radius: 30px;
+}
+.spam-right-btn:hover{
+  opacity: 1;
+  transform: scale(0.95);
+}
+
+.spam-badge {
+  background: var(--back-con);
+  color: var(--font-color);
+  padding: 8px 20px;
+  border-radius: 30px;
+  font-weight: 600;
+}
+
+.spam-grid {
+  display: grid;
+  grid-template-columns: 340px 1fr;
+  gap: 20px;
+  align-items: start;
+  justify-content: start;
+}
+
+.send-panel,
+.inbox-panel {
+  background: var(--back-con);
+  border-radius: 18px;
+  padding: 20px;
+  height: auto;
+}
+.inbox-panel{
+  height: auto;
+  min-height: 250px;
+  max-height: 500px;
+  overflow-y: auto;
+   scrollbar-width: thin;
+    scrollbar-color: var(--secondary-color) var(--background-color);
+}
+
+.search-user-container{
+  position: relative;
+}
+.spam-input {
+  width: 100%;
+  height: 40px;
+  border: 1px solid var(--secondary-color);
+  border-radius: 12px;
+  
+  background: var(--background-color);
+  padding: 0 15px;
+  color:var(--font-color);
+  margin-bottom: 12px;
+  outline: none;
+}
+
+.search-dropdown {
+  position: absolute;
+  background: var(--background-color);
+  border: 1px solid var(--secondary-color);
+  border-radius: 6px;
+  margin-top: 0px;
+  width: 300px;
+  max-height: 300px;
+  overflow-y: auto;
+  z-index: 20;
+}
+
+.search-item {
+  display: flex;
+  align-items: center;
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.search-item:hover {
+  background: var(--back-con);
+}
+
+.search-item img.avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.search-item span {
+  font-size: 14px;
+  font-weight: 500;
+  color:var(--font-color);
+}
+
+
+.sent-btn{
+  width: 30%;
+  height: 40px;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  background: yellowgreen;
+  color: var(--font-color);
+  font-weight: 700;
+  margin-top: 15px;
+}
+
+.sent-btn:hover {
+  opacity: .9;
+}
+
+.spam-card {
+  border: 1px solid var(--secondary-color);
+  border-radius: 14px;
+  padding: 16px;
+  margin-bottom: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  transition: .2s;
+}
+
+.spam-card:hover {
+  transform: translateY(-2px);
+}
+
+.spam-card.unread {
+  border-left: 5px solid skyblue;
+}
+
+.spam-card h3 {
+  margin: 0 0 5px;
+  text-transform: capitalize;
+}
+
+.spam-card p {
+  margin: 0;
+  color: #666;
+  font-size: 14px;
+}
+
+.unread-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background:skyblue;
+}
+.inbox-spam-div{
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+.inbox-user-img{
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+  overflow: hidden;
+  border-radius: 50%;
+}
+.inbox-user-h3{
+  margin: 0;
+}
+.inbox-user-p{
+  margin: 0;
+}
+.empty-state {
+  text-align: center;
+  padding: 40px;
+  color: #999;
+}
+
+.inbox-spam-delete{
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}
+.detete-one-spam-btn{
+  background: none;
+  color: var(--font-color);
+  border: none;
+  cursor: pointer;
+  opacity: 0.9;
+}
+.detete-one-spam-btn:hover{
+  color:tomato;
+  transform: scale(0.9);
+}
+.spam-overlay {
+  position: fixed;
+  inset: 0;
+  background: black;
+  z-index: 99999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.spam-overlay img {
+  width: 100%;
+  max-width: 900px;
+  max-height: 100vh;
+  object-fit: contain;
+}
+
+.close-overlay {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 55px;
+  height: 55px;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 24px;
+}
+
+.celebration-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 99998;
+  pointer-events: none;
+  background-image: url("/butterflies.gif");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+}
+.sent-panel{
+  margin-top:20px;
+  background:var(--back-con);
+  border-radius:18px;
+  padding:20px;
+ 
+}
+
+.sent-card{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+
+  padding:14px;
+  margin-bottom:12px;
+
+  border:1px solid var(--secondary-color);
+  border-radius:14px;
+}
+
+.sent-card .spam-h4{
+  margin:0 0 4px;
+  text-transform:capitalize;
+}
+
+.sent-card .spam-p{
+  margin:0;
+  color:#777;
+}
+.sent-data-div{
+  display:flex;
+  gap: 10px;
+}
+.sent-gif-holder{
+  width: 50px;
+  height: auto;
+  min-height: 50px;
+  object-fit: cover;
+ border-radius: 5px;
+  max-height: 70px;
+}
+.viewed-badge{
+
+  color:#1b8f1b;
+
+  padding:8px 12px;
+  border-radius:999px;
+  font-size:13px;
+  font-weight:600;
+}
+
+.pending-badge{
+ 
+  color:#d18d00;
+
+  padding:8px 12px;
+  border-radius:999px;
+  font-size:13px;
+  font-weight:600;
+}
+/* Control (input box) */
+.customsp__control {
+  width: 100% !important;
+  border: 1px solid var(--secondary-color) !important;
+  border-radius: 10px !important;
+  background: var(--background-color) !important;
+  font-family: sans-serif !important;
+  height: auto;
+  font-size: small !important;
+  min-height: 70px !important;
+  max-height: 70px !important;
+  color: var(--font-color) !important;
+  padding:0px !important;
+  padding-left: 10px !important;
+}
+/* Selected value text */
+.customsp__single-value {
+  color: var(--font-color) !important;
+  margin: 0 !important;
+  height: auto !important;
+}
+
+/* Placeholder text */
+.customsp__placeholder {
+  color: grey !important;
+  opacity: 0.7; /* optional */
+  margin: 0 !important;
+  height: auto !important;
+}
+
+/* Input text when typing */
+.customsp__input {
+  color: var(--font-color) !important;
+  margin: 0 !important;
+  padding:0px !important;
+  height: auto !important;
+
+}
+.customsp__control--is-focused {
+  outline: none !important;
+  border: 3px solid var(--secondary-color) !important;
+  box-shadow: none !important; /* optional glow */
+  height: auto !important;
+    
+}
+/* Dropdown menu */
+.customsp__menu {
+     width: 100% !important;
+  background-color: var(--back-con) !important;
+  color: var(--font-color) !important;
+  z-index: 20 !important;
+}
+
+/* Options */
+.customsp__option {
+  padding: 10px !important;
+  font-family: sans-serif !important;
+  height: auto !important;
+  color: var(--font-color) !important;
+  border-radius: 10px !important;
+   background: none !important;
+    transition: color 0.5s ease ,
+                background 0.5s ease, 
+                margin-left 0.5s ease 0.5s ,
+                transform 0.5s ease 0.5s !important;
+                  
+}
+.customsp__option:hover{
+    color: var(--primary-color) !important;
+    transform: scale(0.9);
+border-radius: 10px !important;
+background: var(--background-color) !important;
+}
+.customsp__option--is-selected {
+transform: scale(0.9);
+border-radius: 8px !important;
+  background-color: var(--secondary-color) !important;
+  color: var(--font-color) !important;
+  height: auto !important;
+
+}
+
+.customsp__option--is-focused {
+  outline: none !important;
+  border: none !important;
+}
+
+.sent-header{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.delete-all-spam-btn{
+  background: none;
+  color:var(--font-color);
+  opacity: 0.9;
+  border: none;
+  cursor: pointer;
+}
+.delete-all-spam-btn:hover{
+  color: tomato;
+}
+.view-status{
+ display: flex;
+ gap: 5px;
+ align-items: center;
+}
+@media (max-width: 900px) {
+ 
+  .spam-header{
+    flex-direction: column;
+    justify-content: start;
+    align-items: start;
+  }
+  .spam-header-right{
+     justify-content: start;
+     margin-bottom: 10px;
+     width: 100%;
+  }
+  .spam-dashboard {
+  padding: 0px 20px;
+  width: 100%;
+}
+  .spam-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .spam-overlay img {
+    width: 95%;
+  }
+  .view-status{
+    gap: 3px;
+  }
+  .view-status-label{
+    display: none;
+  }
+  .spam-h4{
+    font-size: 12px;
+  }
+  .spam-p{
+    font-size: small;
+  }
+  .inbox-panel{
+  height: auto;
+  min-height:auto;
+  max-height: auto;
+
+
+}
+}

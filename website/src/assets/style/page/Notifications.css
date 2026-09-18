@@ -1,0 +1,280 @@
+.notification-panel {
+  width: 95%;
+  padding: 16px;
+  height: auto;
+  margin: auto;
+}
+
+/* HEADER */
+
+.notification-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+.head-left{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.mark-div{
+    display: flex;
+    align-items: center;
+    color: grey;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+.notification-header h3 {
+  font-size: 26px;
+  font-weight: 600;
+  color:var(--f0nt-color);
+}
+#unread-badge{
+    width: 15px;
+    height: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    align-items: center;
+    background-color: red;
+    font-weight: 600;
+    color:white;
+    font-size: x-small;
+    border-radius: 50%;
+}
+
+.refresh-btn {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+ color: grey;
+  font-size: 18px;
+}
+.refresh-btn:hover{
+  color: var(--font-color);
+}
+.mark-read-btn {
+  border: none;
+  background: transparent;
+
+  font-size: 15px;
+  font-weight: 500;
+  color: grey;
+  cursor: pointer;
+}
+.noti-header-right{
+    color: grey;
+    display: none;
+}
+.mark-read-btn:hover{
+    color: var(--font-color);
+}
+
+
+/* LIST */
+
+.notification-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* CARD */
+
+.notification-card {
+  border: 1px solid var(--secondary-color);
+  border-radius: 14px;
+  padding: 14px;
+  cursor: pointer;
+    display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.notification-card:hover{
+    border: 2px solid var(--secondary-color);
+}
+
+
+.notification-left {
+  display: flex;
+  width: 90%;
+  align-items: center;
+
+  gap: 12px;
+}
+.avatar-icon-type-noti{
+  width: 32px;
+  height: 32px;
+  object-fit: cover;
+  border-radius: 50%;
+}
+.status-icon-unread{
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: skyblue;
+
+}
+.notification-body{
+     font-size: 15px;
+  width: 90%;
+  font-weight: 500;
+  color: var(--font-color);
+  opacity: 0.9;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.noti-icon-type{
+  font-size: large;
+}
+.followbackBtn{
+  margin-left: 5px;
+  border-radius: 5px;
+  color: white;
+  background: #39c0e0;
+  border: none;
+  padding: 6px;
+}
+.notification-title {
+ 
+}
+.notification-title-time{
+  font-size: small;
+  opacity: 0.7;
+  margin-top: 3px;
+}
+.notification-actions {
+  display: flex;
+  align-items: center;
+  justify-content: end;
+  width: 10%;
+ 
+  gap: 8px;
+}
+
+.icon-btn {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  color: grey;
+  font-size: 14px;
+  width: 20px;
+  height: 20px;
+}
+
+/* ICONS */
+
+.status-icon {
+  width: auto;
+  height: auto;
+  max-width: 20%;
+
+  border-radius: 50%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: white;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.status-icon.info {
+  background: #39c0e0;
+}
+
+.status-icon.success {
+  background: #32c96a;
+}
+
+.status-icon.danger {
+  background: #ef4a4a;
+}
+
+
+
+.okay-btn {
+  border: 1px solid #d8d8d8;
+  background: #ffffff;
+
+  border-radius: 10px;
+
+  height: 36px;
+  padding: 0 18px;
+
+  cursor: pointer;
+
+  font-size: 14px;
+  color: #444;
+}
+
+.okay-btn:hover {
+  background: #f7f7f7;
+}
+
+
+
+.already-following-badge {
+  background: #8c8c8c;
+  color: white;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 500;
+  margin-left: 8px;
+}
+/* MOBILE */
+
+@media (max-width: 768px) {
+  .notification-panel {
+    width: 100%;
+    padding: 0px 20px;
+  }
+.notification-header{
+
+  flex-direction: column;
+    justify-content: start;
+    align-items: start;
+}
+  .notification-header h3 {
+    font-size: 22px;
+  }
+
+  .refresh-btn {
+ 
+  font-size: 15px;
+    }
+    .mark-read-btn {
+
+    font-size: 15px;
+ 
+    }
+
+
+  .notification-title {
+    font-size: 14px;
+  }
+
+  .notification-content p {
+    font-size: 13px;
+  }
+.notification-left {
+  width: 97%;
+}
+  .notification-actions{
+    width: 3%;
+   
+    height: 100%;
+  }
+  .icon-btn{
+    display:none;
+  }
+.noti-header-right{
+
+    display: block;
+}
+}

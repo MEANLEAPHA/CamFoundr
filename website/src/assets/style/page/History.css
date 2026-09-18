@@ -1,0 +1,206 @@
+.history-page{
+    width: 95%;
+    height: auto;
+    padding: 20px 0px;
+    margin: auto;
+}
+
+.history-title{
+    font-size: 1.7rem;
+    margin: 0;
+    
+     color: var(--font-color);
+    opacity: 0.8;
+}
+.history-sub-div{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+.history-subtitle{
+    color:grey;
+}
+.clear-all-history-btn{
+    border: none;
+    cursor: pointer;
+    color: var(--font-color);
+    padding: 10px 15px;
+    opacity: 0.8;
+    background: var(--back-con);
+    border-radius: 10px;
+}
+.clear-all-history-btn:hover{
+    opacity: 1;
+    font-weight: bold;
+}
+.history-body{
+    margin-top: 15px;
+}
+.post-history-cards{
+    width: 100%;
+    height: auto;
+    display: flex;
+    padding: 15px;
+    
+    gap: 20px;
+    position: relative;
+    cursor: pointer;
+    border-bottom: 1px solid rgba(104, 104, 104, 0.129);
+}
+.post-history-cards:last-child{
+     border-bottom: none;
+}
+
+.post-history-cards:hover{
+    background-color: var(--back-con);
+}
+.post-history-card-infos{
+    width: auto;
+    max-width: 100%;
+    min-width: 64%;
+    height: auto;
+    padding: 0;
+    margin: 0;
+}
+#author-infos{
+    margin: 0;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    overflow: hidden;
+    width: 90%;
+    
+}
+#author-pf-divs{
+ width: 40px;
+    height: 40px;
+    position: relative;
+    border-radius: 50%;
+    margin: 0;
+}
+#author-pfs{
+    width: 100%;
+    height: 100%;
+    position: relative;
+    border-radius: 50%;
+    background-color: var(--secondary-color);
+    margin: 0;
+    object-fit: cover;
+}
+#author-names{
+    color: var(--font-color);
+    font-size: medium;
+    opacity: 0.9;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    word-break: break-all;
+    line-height: 1.5;
+    font-weight: 500;
+    margin: 0;
+    font-weight: bold;
+}
+#title-divs{
+    width: 95%;
+}
+#titles{
+    color: var(--font-color);
+    margin: 0;
+    font-size: medium;
+    opacity: 0.8;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    word-break: break-all;
+    line-height: 1.5;
+    margin-top: 5px;
+}
+.media-holders{
+    width: auto;
+    height: auto;
+    max-height: 120px;
+    max-width: 40%;
+    display:flex;
+    position: relative;
+    padding: 0;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border-radius: 8px;
+}
+.media-holders::before{
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: var(--preview-url-history-post) center/cover no-repeat;
+    filter: blur(40px);
+    opacity: 0.6;
+    z-index: 0;
+    padding: 0;
+}
+.media-holders img{
+    width: auto;
+    max-width: 100%;
+    height: auto;
+    margin: auto;
+    max-height: 100%;
+     object-fit: contain;
+    z-index: 1;
+}
+#history-card-deletes{
+    background: none;
+    border: none;
+    position: absolute;
+    top: 5%;
+    color: var(--font-color);
+    right: 20px;
+    opacity: 0.8;
+    cursor: pointer;
+    border-radius: 50%;
+    z-index: 1;
+}
+#history-card-deletes:hover{
+   
+    opacity: 1;
+}
+
+.search-btn-personal{
+    padding: 8px;
+ 
+}
+@media screen  and (max-width:768px){
+    .history-page{
+        width: 95%;
+    }
+    .history-title{
+    font-size: 1.4rem;
+    }
+    .history-subtitle{
+      font-size: small;
+    }
+    .clear-all-history-btn{
+        font-size: x-small;
+    }
+    .media-holders{
+        max-height: 100px;
+        max-width: 30%;
+    }
+    #author-names{
+    font-size: small;
+    }
+
+    #titles{
+        font-size: small;
+    }
+    #author-pf-divs{
+ width: 30px;
+    height: 30px;
+    
+}
+}

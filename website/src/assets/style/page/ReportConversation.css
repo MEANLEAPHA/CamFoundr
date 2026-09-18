@@ -1,0 +1,63 @@
+.report-container {
+  max-width: 600px;
+  margin: 2rem auto;
+  padding: 1.5rem;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.report-container h2 {
+  text-align: center;
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+.report-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.report-form label {
+  display: flex;
+  flex-direction: column;
+  font-weight: 500;
+  color: #444;
+}
+
+.report-form select,
+.report-form textarea,
+.report-form button {
+  padding: 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+}
+
+.report-form textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.report-form button {
+  background: #0078d7;
+  color: #fff;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.report-form button:hover {
+  background: #005fa3;
+}
+
+@media (max-width: 480px) {
+  .report-container {
+    margin: 1rem;
+    padding: 1rem;
+  }
+  .report-form button {
+    font-size: 0.9rem;
+  }
+}

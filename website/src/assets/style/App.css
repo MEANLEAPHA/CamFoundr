@@ -1,0 +1,20 @@
+:root{
+    /* --background-color:white; */
+     --background-color: rgb(255, 255, 255);
+    --primary-color:#f1ad20;
+    /* --secondary-color: gainsboro; */
+     --secondary-color: rgba(107, 107, 107, 0.318);
+    /* --font-color:rgb(65, 65, 65); */
+    --font-color:rgb(0, 0, 0);
+
+    --back-con:rgb(245, 245, 245);
+    --primary-font:monospace;
+}
+.dark-theme{
+    --background-color:rgb(32, 32, 32);
+    --primary-color:#f1ad20;
+    --secondary-color: rgba(220, 220, 220, 0.318);
+    --font-color:rgb(255, 255, 255);
+     --back-con:rgb(40, 40, 40);
+}
+

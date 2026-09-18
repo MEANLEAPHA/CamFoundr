@@ -1,0 +1,195 @@
+.question-type-wrapper{
+  border: 1px dashed var(--secondary-color);
+    padding: 20px;
+    border-radius: 10px;
+    margin-top: 10px;
+}
+.ranking-parent {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* ROW */
+.ranking-row {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0px;
+  min-height: 42px;
+  height: 42px;
+  padding: 0px;
+  background: var(--background-color);
+  border-radius: 16px;
+  transition: 0.25s ease;
+  box-sizing: border-box;
+}
+
+
+/* DRAGGING */
+.ranking-dragging {
+  opacity: 0.9;
+  transform: rotate(1deg);
+  border-color: var(--primary-color);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+}
+
+/* DRAG HANDLE */
+.ranking-drag {
+  width: 25px;
+  height: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  font-size: small;
+  color: var(--font-color);
+  opacity: 0.5;
+  cursor: grab;
+  flex-shrink: 0;
+  margin-right: 5px;
+  transition: 0.2s ease;
+}
+
+.ranking-drag:hover {
+  opacity: 1;
+}
+
+.ranking-drag:active {
+  cursor: grabbing;
+}
+
+/* NUMBER */
+.ranking-number {
+  background: none;
+  color:var(--font-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: small;
+  font-weight: 700;
+  margin-right:3px;
+  flex-shrink: 0;
+}
+
+/* INPUT */
+.ranking-input {
+  flex: 1;
+  height: 42px;
+  border: none;
+  border-bottom:1px solid var(--secondary-color);
+  background: transparent;
+  color: var(--font-color);
+  font-size: 15px;
+  font-weight: 500;
+  outline: none;
+}
+
+.ranking-input::placeholder {
+  color: gray;
+}
+
+/* DELETE */
+.btn-delete-ranking {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  border: none;
+  background: none;
+  color: var(--font-color);
+  opacity: 0.7;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: 0.25s ease;
+}
+
+.btn-delete-ranking:hover {
+  color: tomato;
+  opacity: 1;
+  transform: translateY(-2px);
+}
+
+
+
+/* ACTIONS */
+.ranking-actions {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+
+/* BUTTON */
+.btn-ranking {
+  height: 42px;
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-radius: 14px;
+  border: 1px solid var(--secondary-color);
+  background: none;
+  color: var(--font-color);
+  opacity: 0.8;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.25s ease;
+}
+
+.btn-ranking:hover {
+  transform: translateY(-2px);
+  opacity: 1;
+}
+
+.btn-ranking:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* REMOVE */
+.btn-remove-ranking:hover {
+  background: tomato;
+}
+
+/* =========================================
+RESPONSIVE
+========================================= */
+
+@media (max-width: 768px) {
+  .ranking-row {
+    padding: 10px;
+    gap: 8px;
+  }
+
+  .ranking-number {
+    min-width: 28px;
+    height: 28px;
+
+    font-size: 12px;
+  }
+
+  .ranking-drag {
+    width: 32px;
+    height: 32px;
+  }
+
+  .btn-delete-ranking {
+    width: 38px;
+    height: 38px;
+  }
+
+  .btn-ranking {
+    width: 40%;
+    justify-content: center;
+  }
+
+  .btn-remove-ranking {
+    width: 40%;
+    font-size: small;
+  }
+}

@@ -1,0 +1,146 @@
+#all-friends-container{
+    width: 90%;
+    margin: auto;
+   
+    padding: 20px;
+    margin-top: 15px;
+}
+
+#firend-header{
+    width: 100%;
+    height: auto;
+    padding: 0;
+    margin: 0;
+}
+#f-label{
+    margin: 0;
+    margin-bottom: 20px;
+}
+.radio-button-div-chat{
+    padding: 0;
+    margin-bottom: 10px;
+   width: 100% !important;
+}
+.friend-list-search{
+    width: 100%;
+    padding: 8px;
+    color:var(--font-color);
+    background: none;
+    margin-top: 10px;
+    border-radius: 10px;
+    border: 1px solid var(--secondary-color);
+}
+.friend-list-search:focus{
+     border: 2px solid var(--secondary-color);
+     outline: none;
+}
+#friend-list{
+    margin-top: 15px;
+}
+.friend-list-item{
+    width: 100%;
+    display: flex;
+    justify-content: start;
+    gap: 15px;
+    align-items: center;
+    padding: 10px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+.friend-list-item:hover{
+    background-color: var(--back-con);
+}
+.friend-info{
+    margin: 0;
+    color: var(--font-color);
+}
+.fris-pf{
+    width: 45px;
+    height: 45px;
+    background-color: var(--secondary-color);
+    border-radius: 50%;
+}
+.fris-name{
+margin: 0;
+    color: var(--font-color);
+   
+}
+.fris-profession{
+margin: 0;
+    color: var(--font-color);
+    font-size: small;
+}
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+  text-align: center;
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid #f3f3f3;
+  border-top: 3px solid #fd7648;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 1rem;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.error-container {
+  text-align: center;
+  padding: 3rem;
+  color:var(--font-color)
+}
+
+.error-message {
+  color: #dc3545;
+  margin-bottom: 1rem;
+}
+
+.retry-button {
+  background-color: #fd7648;
+   color:var(--font-color);
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.875rem;
+}
+
+.retry-button:hover {
+  background-color: #e55a2b;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 3rem;
+  color: #6c757d;
+}
+
+.empty-state p {
+  margin: 0.5rem 0;
+   color:grey
+}
+
+.radio-button-chat:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+@media screen and (max-width:768px){
+#all-friends-container{
+    width: 98%;
+    margin-top:5px;
+}
+#f-label{
+    font-size: 1rem;
+}
+}

@@ -1,0 +1,332 @@
+:root{
+     --background-color: rgb(255, 255, 255);
+    --primary-color:#fd7648;
+     --secondary-color: rgba(107, 107, 107, 0.318);
+    --font-color:rgb(0, 0, 0);
+    --back-con:rgb(245, 245, 245);
+    --primary-font:monospace;
+}
+.dark-theme{
+    --background-color:rgb(32, 32, 32);
+    --primary-color:#fd7648;
+    --secondary-color: rgba(220, 220, 220, 0.318);
+    --font-color:rgb(255, 255, 255);
+     --back-con:rgb(40, 40, 40);
+}
+
+.gif-feed-container {
+  padding: 15px 50px 30px 50px;
+}
+
+.gif-header{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding:0px;
+  flex-wrap: wrap;
+  border-radius: 10px;
+  margin-bottom: 15px;
+}
+.gif-header-text{
+  width: auto;
+  display: flex;
+  align-items: center;
+  margin: 0;
+  gap:8px;
+}
+.gif-header-text span{
+  margin: 0;
+  font-size: large;
+}
+
+
+.gif-header p{
+  margin: 0;
+  color: var(--font-color);
+}
+.gif-header-buttons{
+  width: 50%;
+  height: auto;
+  display: flex;
+  align-items: center;
+  padding: 0;
+  gap: 10px;
+  justify-content: end;
+  margin: 0;
+}
+.btn-upload-gif{
+  background: var(--back-con);
+  color: var(--font-color);
+  padding: 8px ;
+  border-radius: 5px;
+  border: 1px solid var(--secondary-color);
+  cursor: pointer;
+  font-size: 15px;
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  height: 30px;
+  opacity: 0.9;
+}
+ .btn-upload-gif:hover{
+  opacity: 1;
+}
+
+/* 🔍 Search */
+.gif-searchs {
+  margin-bottom: 0px;
+  background: none!important;
+  border: none !important;
+  padding: 0 !important;
+ color: var(--font-color) !important;
+}
+
+/* remove Ant padding bloat */
+.gif-searchs .ant-input,
+.gif-searchs .ant-input-affix-wrapper {
+  border-radius: 0px !important;
+  padding:5px !important;
+  color: var(--font-color) !important;
+}
+
+.gif-searchs .ant-input-affix-wrapper{
+
+  border-radius: 8px !important;
+  color: var(--font-color) !important;
+  background-color: rgba(128, 128, 128, 0.355) !important;
+}
+.gif-searchs .ant-input::-webkit-input-placeholder {
+  
+  color: grey !important;
+}
+.gif-searchs .ant-input:focus {
+  box-shadow: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+
+}
+.gif-searchs .ant-input-affix-wrapper:focus {
+  box-shadow: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+.ant-input-clear-icon {
+  color: grey !important;
+  font-size: 16px;
+}
+.ant-input-clear-icon:hover{
+  color: var(--font-color) !important;
+}
+.ant-input-search-btn {
+  background-color: transparent !important;
+  border-color: var(--secondary-color) !important;
+  color: var(--font-color) !important;
+  display:none !important;
+}
+/* 🧱 Masonry layout */
+.masonry {
+  column-count: 4;
+  column-gap: 16px;
+}
+/* 🧩 Card */ 
+.gif-card {
+  position: relative;
+  margin-bottom: 16px;
+  break-inside: avoid;
+  border-radius: 10px;
+  overflow: hidden;
+  background: var(--back-con);
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+.gif-name{
+ visibility: hidden;
+ transition: all 0.2s ease;
+}
+.gif-card:hover {
+  transform: scale(1.02);
+}
+.gif-card:hover .gif-name{
+  visibility: visible;
+}
+
+/* image */
+.gif-card img {
+  width: 100%;
+  display: block;
+  border-radius: 10px;
+}
+
+/* overlay bottom */
+.gif-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 10px;
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.6),
+    transparent
+  );
+  color: white;
+}
+
+/* name */
+.gif-name {
+  font-size: 13px;
+  font-weight: 500;
+  max-width: 70%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* favorite button */
+.gif-fav {
+  font-size: 18px;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.gif-fav:hover {
+  transform: scale(1.2);
+  color: var(--primary-color);
+}
+
+/* loading */
+.center-spin {
+  display: flex;
+  justify-content: center;
+  margin: 40px 0;
+}
+
+/* Base dropdown container */
+.gif-dropdown .ant-dropdown-menu {
+  display: flex !important;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  padding: 0.8rem !important;
+  background-color: var(--background-color) !important;
+  border: 1px solid var(--secondary-color);
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  max-width: 90vw; /* responsive */
+  scrollbar-width: none !important;
+}
+.gif-dropdown .ant-btn:hover{
+  background-color: none !important;
+  outline: none !important;
+  background: none !important;
+  border: 1px solid var(--secondary-color) !important;
+  color: var(--font-color) !important;
+  opacity: 1;
+}
+/* Each item */
+.gif-dropdown .ant-dropdown-menu-item {
+  flex: 0 1 auto;
+  min-width: 80px;
+  padding: 0.5rem 0.8rem;
+  border-radius: 6px;
+  font-family: var(--primary-font);
+  font-size: 0.95rem;
+  color: var(--font-color) !important;
+  text-align: center;
+  background-color: var(--back-con);
+  transition: transform 0.2s ease, background-color 0.2s ease;
+  cursor: pointer;
+}
+
+/* Hover effect */
+.gif-dropdown .ant-dropdown-menu-item:hover {
+  background-color: var(--primary-color) !important;
+  color: #fff;
+  transform: translateY(-3px);
+}
+
+/* Emoji + text alignment */
+.gif-dropdown .ant-dropdown-menu-title-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+}
+
+.empty-gif{
+  width: 100%;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+  color: grey;
+}
+.lucide-gif{
+  width: 18px;
+}
+
+/* responsive */
+@media (max-width: 1200px) {
+  
+  .masonry {
+    column-count: 3;
+  }
+    .gif-header{
+   padding: 0;
+  }
+}
+@media screen and (max-width: 900px) {
+  .btn-upload-gif{
+    font-size: 13px;
+  }
+  
+}
+@media (max-width: 800px) {
+  .gif-feed-container {
+    padding: 10px;
+  }
+
+  .masonry {
+    column-count: 2;
+  }
+
+  .gif-header{
+   padding: 0;
+  }
+
+  .gif-header-text{
+    width: 100%;
+  }
+  .gif-header-buttons{
+    width: 100%;
+    margin-top: 10px;
+    justify-content: space-between;
+  }
+}
+
+@media (max-width: 768px) {
+  .gif-dropdown .ant-dropdown-menu {
+    gap: 0.4rem;
+    padding: 0.6rem;
+    max-height: 75vh !important;
+  }
+  .gif-dropdown .ant-dropdown-menu-item {
+    min-width: 70px !important;
+    font-size: 0.85rem;
+  }
+}
+@media (max-width: 480px) {
+  .masonry {
+    column-count: 2;
+  }
+  .gif-feed-container {
+    padding: 10px 15px 20px 15px;
+
+  }
+}

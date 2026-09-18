@@ -1,0 +1,503 @@
+
+
+:root{
+    /* --background-color:white; */
+     --background-color: rgb(255, 255, 255);
+    --primary-color:#fd7648;
+    /* --secondary-color: gainsboro; */
+     --secondary-color: rgba(107, 107, 107, 0.318);
+    /* --font-color:rgb(65, 65, 65); */
+    --font-color:rgb(0, 0, 0);
+
+    --back-con:rgb(245, 245, 245);
+    --primary-font:monospace;
+}
+.dark-theme{
+    --background-color:rgb(32, 32, 32);
+    --primary-color:#fd7648;
+    --secondary-color: rgba(220, 220, 220, 0.318);
+    --font-color:rgb(255, 255, 255);
+     --back-con:rgb(40, 40, 40);
+}
+/* ========================= */
+/* NAHIDEA PROFILE */
+/* ========================= */
+
+.nahideaProfilePage {
+  min-height: 100vh;
+  background: var(--background-color);
+  color: var(--font-color);
+}
+
+/* ========================= */
+/* BANNER */
+/* ========================= */
+
+.nahideaProfileBanner {
+  position: relative;
+  height: 320px;
+  overflow: hidden;
+}
+
+.nahideaProfileBanner img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.nahideaProfileEditBannerBtn {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+
+  border: none;
+  background: rgba(0,0,0,0.6);
+  color: white;
+
+  padding: 12px 18px;
+  border-radius: 14px;
+
+  cursor: pointer;
+}
+
+/* ========================= */
+/* HEADER */
+/* ========================= */
+
+.nahideaProfileHeader {
+  width: 100%;
+  padding: 0 60px 40px;
+
+  display: flex;
+  justify-content: space-between;
+  gap: 30px;
+}
+
+.nahideaProfileHeaderLeft {
+  display: flex;
+  gap: 28px;
+}
+
+.nahideaProfileAvatarWrap {
+  position: relative;
+  margin-top: -80px;
+}
+
+.nahideaProfileAvatar {
+  width: 170px;
+  height: 170px;
+
+  border-radius: 50%;
+  border: 6px solid
+    var(--background-color);
+
+  background: white;
+}
+
+.nahideaProfileOnlineDot {
+  position: absolute;
+  right: 16px;
+  bottom: 14px;
+
+  width: 20px;
+  height: 20px;
+
+  border-radius: 50%;
+
+
+  border: 3px solid
+  
+}
+
+.nahideaProfileUserInfo {
+  padding-top: 18px;
+}
+
+.nahideaProfileNameRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.nahideaProfileNameRow h1 {
+  margin: 0;
+  font-size: 34px;
+}
+
+.nahideaProfileVerified {
+  color: gold;
+}
+
+.nahideaProfileUsername {
+  margin-top: 4px;
+  color: gray;
+}
+
+.nahideaProfileBio {
+  max-width: 650px;
+  line-height: 1.7;
+  margin-top: 18px;
+}
+
+.nahideaProfileMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+
+  margin-top: 20px;
+}
+
+.nahideaProfileMeta span {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  color: gray;
+}
+
+.nahideaProfileStats {
+  display: flex;
+  gap: 34px;
+  margin-top: 26px;
+}
+
+.nahideaProfileStats div {
+  display: flex;
+  flex-direction: column;
+}
+
+.nahideaProfileStats strong {
+  font-size: 22px;
+}
+
+.nahideaProfileStats span {
+  color: gray;
+}
+
+/* ========================= */
+/* ACTIONS */
+/* ========================= */
+
+.nahideaProfileActions {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  padding-top: 24px;
+}
+
+.nahideaProfileFollowBtn {
+  border: none;
+  background: var(--primary-color);
+  color: white;
+
+  padding: 14px 24px;
+  border-radius: 16px;
+
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.nahideaProfileMessageBtn,
+.nahideaProfileIconBtn {
+  border: none;
+  background: var(--back-con);
+  color: var(--font-color);
+
+  padding: 14px 18px;
+  border-radius: 16px;
+
+  cursor: pointer;
+}
+
+/* ========================= */
+/* BODY */
+/* ========================= */
+
+.nahideaProfileBody {
+  display: grid;
+  grid-template-columns: 280px 1fr 320px;
+
+  gap: 24px;
+
+  padding: 0 60px 60px;
+}
+
+/* ========================= */
+/* SIDEBAR */
+/* ========================= */
+
+.nahideaProfileCard {
+  background: var(--back-con);
+  border-radius: 24px;
+  padding: 24px;
+  margin-bottom: 24px;
+}
+
+.nahideaProfileCard h3 {
+  margin-top: 0;
+}
+
+.nahideaProfileTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.nahideaProfileTags span {
+  background: var(--background-color);
+
+  padding: 10px 14px;
+  border-radius: 999px;
+
+  font-size: 14px;
+}
+
+/* ========================= */
+/* TABS */
+/* ========================= */
+
+.nahideaProfileTabs {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.nahideaProfileTabs button {
+  border: none;
+  background: var(--back-con);
+  color: var(--font-color);
+
+  padding: 14px 20px;
+  border-radius: 14px;
+
+  cursor: pointer;
+}
+
+.nahideaProfileTabs button.active {
+  background: var(--primary-color);
+  color: white;
+}
+
+/* ========================= */
+/* CREATE POST */
+/* ========================= */
+
+.nahideaProfileCreatePost {
+  background: var(--back-con);
+
+  border-radius: 24px;
+  padding: 18px;
+
+  display: flex;
+  align-items: center;
+  gap: 16px;
+
+  margin-bottom: 24px;
+}
+
+.nahideaProfileCreatePost img {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+}
+
+.nahideaProfileCreatePost input {
+  flex: 1;
+
+  border: none;
+  background: transparent;
+
+  font-size: 16px;
+  color: var(--font-color);
+
+  outline: none;
+}
+
+.nahideaProfileCreatePost button {
+  border: none;
+  background: var(--background-color);
+
+  width: 46px;
+  height: 46px;
+
+  border-radius: 14px;
+  cursor: pointer;
+}
+
+/* ========================= */
+/* POST */
+/* ========================= */
+
+.nahideaProfilePostCard {
+  background: var(--back-con);
+
+  border-radius: 24px;
+  padding: 22px;
+
+  margin-bottom: 24px;
+}
+
+.nahideaProfilePostTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.nahideaProfilePostUser {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+}
+
+.nahideaProfilePostUser img {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+}
+
+.nahideaProfilePostUser h4 {
+  margin: 0;
+}
+
+.nahideaProfilePostUser span {
+  color: gray;
+  font-size: 14px;
+}
+
+.nahideaProfilePostTop button {
+  border: none;
+  background: transparent;
+  color: var(--font-color);
+  cursor: pointer;
+}
+
+.nahideaProfilePostContent {
+  line-height: 1.8;
+  margin: 20px 0;
+}
+
+.nahideaProfilePostImage {
+  width: 100%;
+  border-radius: 22px;
+  max-height: 500px;
+  object-fit: cover;
+}
+
+.nahideaProfilePostActions {
+  display: flex;
+  gap: 16px;
+  margin-top: 20px;
+}
+
+.nahideaProfilePostActions button {
+  border: none;
+  background: transparent;
+
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  color: gray;
+  cursor: pointer;
+}
+
+/* ========================= */
+/* SUGGEST USER */
+/* ========================= */
+
+.nahideaProfileSuggestUser {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  margin-top: 18px;
+}
+
+.nahideaProfileSuggestUser > div {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.nahideaProfileSuggestUser img {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+}
+
+.nahideaProfileSuggestUser h4 {
+  margin: 0;
+}
+
+.nahideaProfileSuggestUser span {
+  color: gray;
+  font-size: 14px;
+}
+
+.nahideaProfileSuggestUser button {
+  border: none;
+  background: var(--primary-color);
+  color: white;
+
+  padding: 10px 16px;
+  border-radius: 12px;
+
+  cursor: pointer;
+}
+
+/* ========================= */
+/* RESPONSIVE */
+/* ========================= */
+
+@media (max-width: 1200px) {
+
+  .nahideaProfileBody {
+    grid-template-columns: 1fr;
+  }
+
+  .nahideaProfileRightSidebar,
+  .nahideaProfileLeftSidebar {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+
+  .nahideaProfileHeader {
+    flex-direction: column;
+    padding: 0 20px 30px;
+  }
+
+  .nahideaProfileHeaderLeft {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .nahideaProfileMeta,
+  .nahideaProfileStats {
+    justify-content: center;
+  }
+
+  .nahideaProfileActions {
+    width: 100%;
+  }
+
+  .nahideaProfileFollowBtn,
+  .nahideaProfileMessageBtn {
+    flex: 1;
+  }
+
+  .nahideaProfileBody {
+    padding: 0 20px 40px;
+  }
+
+  .nahideaProfileBanner {
+    height: 220px;
+  }
+
+  .nahideaProfileAvatar {
+    width: 130px;
+    height: 130px;
+  }
+}

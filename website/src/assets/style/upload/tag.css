@@ -1,0 +1,235 @@
+:root{
+    /* --background-color:white; */
+     --background-color: rgb(255, 255, 255);
+    --primary-color:#fd7648;
+    /* --secondary-color: gainsboro; */
+     --secondary-color: rgba(107, 107, 107, 0.318);
+    /* --font-color:rgb(65, 65, 65); */
+    --font-color:rgb(0, 0, 0);
+
+    --back-con:rgb(245, 245, 245);
+    --primary-font:monospace;
+}
+.dark-theme{
+    --background-color:rgb(32, 32, 32);
+    --primary-color:#fd7648;
+    --secondary-color: rgba(220, 220, 220, 0.318);
+    --font-color:rgb(255, 255, 255);
+     --back-con:rgb(40, 40, 40);
+}
+/* Wrapper */
+.tags-input-wrapper {
+  font-family:  sans-serif;
+  width: 99.5%;
+  height: auto;
+ margin-top: 0px;
+ padding-bottom: 5px;
+   background-color:var(--back-con);
+    border: 1px solid var(--secondary-color);
+   border-radius: 10px;
+}
+
+/* Label */
+.tags-label {
+  font-family: sans-serif;
+   width: 95%;
+    color: var(--font-color);
+
+    margin: auto;
+    margin-top: 15px;
+
+}
+#tags-label-header{
+  margin-bottom: 10px;
+  font-weight: bold;
+  font-size: large;
+ 
+}
+/* Input container */
+.tags-input {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: 20px 20px 10px 20px;
+  background:transparent;
+  color: var(--font-color);
+ 
+}
+
+.tag-input:focus-within {
+  border: 3px solid var(--secondary-color);
+  color: var(--font-color);
+  outline: none;
+}
+
+/* Error state */
+.tags-input.has-error {
+  border-color: #e74c3c;
+  background: #fff5f5;
+}
+
+#tag-preview{
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1px;
+
+  margin: auto;
+  
+  padding: 0;
+
+}
+/* Tag style */
+.tag {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  background:var(--secondary-color);
+  color: var(--font-color);
+  font-size: 13px;
+  padding: 6px 12px 6px 16px;
+  margin-left: 0;
+  margin-right: 5px;
+  line-height: 1;
+ box-shadow: 0 1px 2px var(--back-con);
+ border-radius: 5px !important;
+ 
+}
+
+/* hover / active (orange one) */
+.tag:hover .tag-text{
+text-decoration: none;
+cursor: auto;
+}
+
+
+
+
+/* Tag text */
+.tag-text {
+  margin-right: 6px;
+  color: var(--font-color) !important;
+  text-decoration: none;
+}
+
+/* Remove button */
+.tag-remove {
+  border: none;
+ 
+  color: inherit;
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 1;
+  padding: 0;
+  margin: 0;
+  margin-left: 6px;
+  height: 100%;
+  opacity: 0.7;
+}
+
+.tag-remove:hover {
+  opacity: 1;
+  color: tomato;
+}
+
+/* Input field */
+.tag-input {
+  width: 95%;
+  padding: 10px 0px 10px 10px;
+  margin: auto;
+  border-radius: 6px;
+  border: 1px solid var(--secondary-color);
+  background:transparent;
+  color: var(--font-color);
+  
+  transition: all 0.2s ease;
+}
+
+.tag-input::placeholder {
+  color: #aaa;
+}
+
+/* Controls section */
+.tags-controls {
+  display: flex;
+  width: 96%;
+  margin: auto;
+  padding: 0px 0px 10px 00px;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 8px;
+}
+
+/* Clear button */
+.btn-clear {
+   border: none;
+  cursor: pointer;
+  opacity: 0.9;
+  background: none;
+  font-size: 12px;
+  color: var(--font-color);
+ 
+  padding: 8px 12px;
+  border-radius: 4px;
+  border:none;
+   
+}
+
+.btn-clear:hover {
+opacity: 1;
+  background: tomato;
+
+}
+
+/* Count */
+.tags-count {
+font-family: sans-serif;
+    opacity: 0.8;
+    font-size: small;
+    justify-content: end;
+    color: var(--font-color);
+}
+
+/* Error message */
+.tags-error {
+  margin-top: 6px;
+  font-size: 12px;
+  color: #e74c3c;
+}
+
+/* Hint */
+.tags-hint {
+  margin-top: 4px;
+  font-size: 12px;
+  color: #aaa;
+}
+
+
+
+/* question radio */
+label img {
+  width: 80px; 
+  cursor: pointer;
+  border: 2px solid transparent;
+  border-radius: 6px;
+  transition: border 0.2s ease;
+}
+
+label img.selected {
+  border: 2px solid #06ff51; 
+}
+
+
+@media screen and (max-width:768px){
+  .tags-label {
+   width: 93%;
+  }
+  .tag-input{
+    width: 92%;
+  }
+  .tags-controls {
+   width: 94%;
+  }
+}

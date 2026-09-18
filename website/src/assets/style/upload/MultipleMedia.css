@@ -1,0 +1,243 @@
+
+/* image uploader */
+.media-uploader {
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  height: auto;
+  position: relative;
+
+}
+.upload-placeholder {
+  border: 2.22px dashed var(--secondary-color);
+  width: 100%;
+  height: 300px;
+  border-radius: 10px;
+  background-color: var(--back-con);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 10px;
+  text-align: center;
+  cursor: pointer;
+}
+.upload-placeholder:hover{
+  opacity: 0.5;
+}
+#cloud-icon{
+  font-size: 75px;
+  color: var(--font-color);
+  opacity: 0.5;
+  margin: 0 auto 0 auto;
+}
+.file-input {
+  display: none;
+}
+
+.upload-hint {
+  color: var(--font-color);
+}
+
+.media-carousel {
+  max-height: 380px;
+padding: 0;
+  height: auto;   /* match slide */
+ overflow: hidden;
+width: 100%;
+}
+
+
+
+.carousel-slide {
+  height: 380px;
+  display: flex;
+  align-items: center;
+  border-radius: 25px;
+  padding: 0;
+  margin: 0;
+  position: relative;
+
+  overflow: hidden;
+  justify-content: center;
+}
+
+.preview-wrapper {
+  position: relative;
+  width: 100%;
+   height: auto;
+  max-height: 380px;
+  padding: 0;
+  display: flex;
+    border-radius: 25px;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+
+/* blurred background behind image */
+.preview-wrapper::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 25px;
+  background: var(--preview-url) center/cover no-repeat;
+  filter: blur(40px);
+  transform: scale(1.1);
+  opacity: 0.6;
+  z-index: 0;
+  padding: 0;
+}
+
+.remove-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: var(--back-con);
+  opacity: 0.5;
+  color: var(--font-color);
+  border: none;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 28px;
+  z-index: 5 !important;
+}
+.remove-btn:hover{
+  color: tomato;
+  opacity: 1;
+}
+.video-placeholder {
+  font-size: 14px;
+  color: var(--font-color);
+}
+
+.add-file-label {
+  cursor: pointer;
+  display: block;
+  
+  height: 100%;
+}
+
+.add-file-text {
+  font-size: 14px;
+  color: #eee;
+  
+}
+
+
+
+.add-more-text {
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+  opacity: 0.9;
+  background: var(--back-con);
+  font-size: 12px;
+  color: var(--font-color);
+  padding: 8px 12px;
+  border-radius: 4px;
+  box-shadow: 0 0px 3px  var(--font-color);
+}
+.add-more-text:hover{
+  opacity: 1;
+}
+
+.uploader-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 10px 0 5px;
+  height: auto;
+  padding: 5px;
+ 
+}
+.uploader-footer-right{
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  justify-content: space-between;
+  height: auto;
+}
+.remove-all-btn{
+  cursor: pointer;
+  opacity: 0.9;
+  background: var(--back-con);
+  font-size: 12px;
+  color: var(--font-color);
+  padding: 6px 12px;
+  margin-right: 2px;
+  border-radius: 4px;
+  border: 1px solid var(--secondary-color);
+}
+.remove-all-btn:hover{
+  opacity: 1;
+  background: tomato;
+}
+
+.remove-all-btn:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+.media-count {
+ font-family: sans-serif;
+    opacity: 0.8;
+    font-size: small;
+    justify-content: end;
+  color: var(--font-color);
+}
+/* lock track to container */
+.slick-track {
+     /* default from ant width is around 3500px */
+  width: 100% !important;
+  max-width: 100% !important;
+  display: flex !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+
+
+.slick-arrow{
+    color: white !important;
+    background: rgba(0, 0, 0, 0.158) !important;
+    padding: 0px !important;
+    margin: 0 !important;
+    width: 40px !important;
+    border: none !important;
+    height:40px !important;
+    border-radius: 50%;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    font-size: 15px !important;
+    font-weight: bold !important;
+    font-size: large !important;
+    text-align: center !important;
+}
+
+.media-carousel .slick-arrow::before,
+.media-carousel .slick-arrow::after {
+  content: none !important;   /* remove default chevrons */
+  display: none !important;
+}
+/* make sure the list hides overflow */
+.media-carousel .slick-list {
+  overflow: hidden !important;
+}
+
+/* ensure each slide fills the viewport */
+
+.slick-slide {
+  flex: 0 0 100% !important;
+  max-width: 100% !important;
+  width: 100% !important;   /* override inline width */
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+   box-sizing: border-box !important;
+
+}

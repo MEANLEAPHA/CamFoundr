@@ -1,0 +1,414 @@
+.answer-page {
+  width: 100%;
+  height: auto;
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+}
+.answer-author-div{
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  height: auto;
+  margin-top:10px
+}
+.anonymous-toggle-div{
+  display: flex;
+  gap: 5px;
+  font-size: small;
+  align-items: center;
+}
+.annoy-icon{
+  font-size: large;
+  color:grey
+}
+.answer-card {
+  width: 100%;
+  max-width: 850px;
+  border: none;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+#h3-label{
+  opacity: 0.8;
+  margin: 0;
+  font-size: larger;
+  color:var(--font-color)
+}
+#tutorial-label{
+  opacity: 0.8;
+  margin: 0;
+  font-size: smaller;
+  color:var(--font-color)
+}
+.answer-header {
+  border-top: 2px dashed var(--secondary-color);
+  padding-top: 20px;
+}
+#header-top{
+  display: flex;
+  align-items: center;
+  justify-content: start;
+  gap: 5px;
+}
+.dots{
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+
+  background-color: var(--font-color);
+  display: block;
+  opacity: 0.5;
+}
+.answer-type {
+  display: inline-flex;
+
+  padding: 6px 12px;
+  align-items: center;
+  border-radius: 999px;
+  border: 1px solid ;
+  color: var(--font-color);
+  gap: 5px;
+  font-size: 12px;
+  opacity: 0.8;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+.answer-title {
+  margin-top: 15px;
+  margin-bottom: 0;
+  font-size: 24px;
+  font-weight: 700;
+ 
+  color: var(--font-color);
+}
+
+.answer-related {
+  color: gray;
+  line-height: 1.5;
+}
+
+.answer-body {
+  
+  border-radius: 16px;
+  margin: 0;
+}
+
+/* OPEN END */
+
+.answer-textarea {
+  width: 100%;
+  min-height: 180px;
+
+  resize: vertical;
+
+  border: 1px solid var(--secondary-color);
+
+  border-radius: 14px;
+
+  padding: 15px;
+
+  background: none;
+
+  color: var(--font-color);
+
+  font-size: 15px;
+}
+
+/* CHOICE */
+
+.answer-choice-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.answer-choice-card {
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+  gap: 14px;
+
+  border: 1px solid var(--secondary-color);
+
+  border-radius: 14px;
+  color: var(--font-color);
+  padding: 14px;
+
+  cursor: pointer;
+
+  transition: .25s ease;
+}
+
+.answer-choice-card:hover {
+  background: var(--back-con);
+}
+
+.answer-choice-active {
+  border-color: var(--primary-color);
+
+  background: rgba(253, 118, 72, .08);
+}
+
+.answer-radio,
+.answer-checkbox {
+  width: 20px;
+  height: 20px;
+
+  border: 2px solid var(--secondary-color);
+
+  flex-shrink: 0;
+}
+
+.answer-radio {
+  border-radius: 50%;
+}
+
+.answer-checkbox {
+  border-radius: 6px;
+}
+
+.answer-choice-active .answer-radio,
+.answer-choice-active .answer-checkbox {
+  border-color: var(--primary-color);
+  background: var(--primary-color);
+}
+
+/* YES NO */
+
+.answer-yesno {
+  display: flex;
+  gap: 5px;
+}
+
+.answer-yes,
+.answer-no {
+  width: 50%;
+
+  padding: 14px;
+
+  text-align: center;
+
+  cursor: pointer;
+   background-color: var(--back-con);
+  border: 1px solid var(--secondary-color);
+  transition: .25s ease;
+}
+
+.answer-yes {
+
+  border-top-left-radius: 14px;
+  border-bottom-left-radius: 14px;
+}
+
+.answer-no {
+
+  border-top-right-radius: 14px;
+  border-bottom-right-radius: 14px;
+}
+
+.answer-yes-active {
+  outline: 3px solid green;
+   background: rgba(153,205,50,.4);
+}
+
+.answer-no-active {
+  outline: 3px solid red;
+  background: rgba(255,0,0,.4);
+}
+
+/* RANGE */
+
+.answer-range{
+  display:flex;
+  align-items:center;
+  gap:15px;
+}
+
+.answer-slider{
+  flex:1;
+  cursor:pointer;
+}
+
+.answer-slider::-webkit-slider-runnable-track{
+  height:8px;
+  border-radius:999px;
+  background:#d9dee7;
+}
+
+.answer-slider::-webkit-slider-thumb{
+  appearance:none;
+  -webkit-appearance:none;
+
+  width:22px;
+  height:22px;
+
+  border-radius:50%;
+
+
+  margin-top:-5px;
+
+  cursor:pointer;
+}
+
+.answer-current-value{
+  min-width:55px;
+
+ padding:5px 2px;
+  border-radius:8px;
+
+  background:var(--primary-color);
+
+  color:white;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  font-weight:700;
+}
+
+/* RATING */
+
+.answer-rating {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.answer-rating-icon {
+  width: 55px;
+  height: 55px;
+
+  border: 1px solid var(--secondary-color);
+
+  border-radius: 16px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  cursor: pointer;
+
+  font-size: 24px;
+
+  transition: .25s ease;
+}
+
+.answer-rating-icon:hover {
+  transform: translateY(-2px);
+}
+
+.answer-rating-active {
+  border-color: var(--primary-color);
+
+  color: var(--primary-color);
+
+  background: rgba(253,118,72,.08);
+}
+
+/* RANKING */
+
+.answer-ranking{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+
+.answer-ranking-row{
+  display:flex;
+  align-items:center;
+  gap:15px;
+
+  padding:15px;
+
+  border:1px solid var(--secondary-color);
+
+  border-radius:14px;
+
+  background:var(--background-color);
+
+  transition:.25s ease;
+}
+
+.answer-ranking-row:hover{
+  background:var(--back-con);
+}
+
+.answer-ranking-row.dragging{
+  border-color:var(--primary-color);
+
+  transform:rotate(1deg);
+
+  box-shadow:0 10px 20px rgba(0,0,0,.1);
+}
+
+.answer-ranking-number{
+  color:var(--font-color);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:700;
+  flex-shrink:0;
+}
+
+.answer-ranking-text{
+  flex:1;
+
+  color:var(--font-color);
+
+  font-weight:500;
+}
+
+.answer-ranking-drag{
+  opacity:.5;
+
+  cursor:grab;
+
+  font-size:18px;
+
+  user-select:none;
+}
+
+.answer-ranking-drag:hover{
+  opacity:1;
+}
+/* SUBMIT */
+
+.answer-submit {
+  border: none;
+  border-radius: 8px;
+  background: yellowgreen;
+  padding:10px 15px;
+  color:var(--font-color);
+  font-weight: 700;
+  cursor: pointer;
+  opacity: .9;
+  margin-top: 10px;
+}
+
+.answer-submit:hover {
+  opacity: 1;
+}
+
+@media (max-width:768px){
+
+  .answer-page{
+    padding:15px;
+  }
+
+  .answer-title{
+    font-size:20px;
+  }
+
+  .answer-rating-icon{
+    width:48px;
+    height:48px;
+  }
+
+}

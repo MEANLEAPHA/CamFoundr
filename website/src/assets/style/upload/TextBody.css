@@ -1,0 +1,260 @@
+
+/* text-body */
+.text-body-container{
+    width: 100%;
+    height: auto;
+    background: var(--back-con);
+    border: 1px solid var(--secondary-color);
+    border-radius: 10px;
+    padding: 0px;
+    overflow: hidden;
+    
+}
+.toolbar-text-body{
+    width: 95%;
+    height: auto;
+    padding: 10px 0px 12px 0px;
+    display: flex;
+    flex-wrap: wrap;
+    margin: auto;
+    overflow: hidden;
+    gap: 5px; 
+}
+.toolbar-text-body button{
+    border: none;
+    background: none;
+    color: var(--font-color);
+    opacity: 1;
+}
+.toolbar-text-body button {
+  background: transparent;
+  border: none;
+  padding: 6px 8px;
+  border-radius: 6px;
+  color: var(--font-color);
+  opacity: 0.7;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+.icon-format{
+    color: var(--font-color);
+}
+.toolbar-text-body button:hover {
+  background: var(--primary-color);
+  color: white;
+  opacity: 1;
+}
+.toolbar-text-body button:hover .icon-format{
+    color: white;
+}
+.active-btn {
+
+   box-shadow: 0 0 0 2px var(--primary-color);
+}
+.ProseMirror {
+  outline: none;
+  color:var(--font-color);
+  caret-color: var(--font-color); 
+  background-color: var(--back-con);
+ width: 95%;
+ margin: auto;
+ height: 350px; 
+ max-width: auto;
+padding: 0;
+ padding-top: 10px;
+ overflow-x: hidden;
+ scrollbar-width: none;
+  line-height: 1.6;
+  font-size: 15px;
+  border-top: 1px solid var(--secondary-color);
+
+}
+
+.ProseMirror p {
+  margin: 0;
+    word-break: break-word;
+    color: var(--font-color);
+  overflow-wrap: anywhere;
+
+}
+
+.ProseMirror h1,
+.ProseMirror h2,
+.ProseMirror h3 {
+  margin: 0;
+  border: none;
+  font-weight: normal;
+  line-height: 1.2;
+  font-family: sans-serif;
+  padding: 0;
+}
+
+/* Headings */
+.ProseMirror h1 {
+  font-size: 28px;
+  font-weight: 700;
+  margin-top: 16px;
+}
+.ProseMirror h2 {
+  font-size: 22px;
+  font-weight: 600;
+  margin-top: 14px;
+}
+.ProseMirror h3 {
+  font-size: 18px;
+  font-weight: 600;
+  margin-top: 12px;
+}
+
+
+
+/* Paragraph */
+.ProseMirror p + p {
+  margin-top: 8px;
+}
+
+/* Lists */
+.ProseMirror ul {
+  padding-left: 20px;
+}
+
+.ProseMirror ol {
+  padding-left: 20px;
+}
+
+/* Code */
+.ProseMirror pre {
+ background: var(--secondary-color);
+  padding: 12px;
+  border-radius: 5px;
+  overflow-x: auto;
+}
+.ProseMirror code {
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: monospace;
+  color: var(--font-color);
+}
+
+
+
+/* Quote */
+.ProseMirror blockquote {
+  border-left: 3px solid #fd7648;
+  padding-left: 12px;
+  color: #aaa;
+  font-style: italic;
+}
+
+
+/* Link */
+.ProseMirror a{
+  color: #4da6ff;
+  text-decoration: underline;
+}
+
+.ProseMirror p.is-empty::before {
+  content: '';
+  color: var(--font-color);
+  opacity: 0.5;
+  width: 100%;
+  pointer-events: none;
+  float: left;
+  height: 0;
+}
+.ProseMirror p.is-editor-empty::before{
+    content: attr(data-placeholder);
+    color: var(--font-color);
+    opacity: 0.5;
+    width: 100%;
+    pointer-events: none;
+    float: left;
+    height: 0;
+}
+
+.link-modal{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: var(--background-color);
+    border: 1px solid var(--primary-color);
+    border-radius: 10px;
+    padding: 40px 10px 50px 10px;
+    min-width: 330px;
+    width: 400px;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    height: auto;
+}
+#link-label{
+  color: var(--font-color);
+  font-size: large;
+  margin: 0;
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+.link-modal input{
+  width: 90%;
+  background: none;
+  padding: 10px;
+  border: 1px solid var(--secondary-color);
+  border-radius: 10px;
+  color: var(--font-color);
+}
+.link-modal input:focus{
+  outline: none;
+  border: 2px solid var(--secondary-color);
+}
+.link-model-action{
+  width: 90%;
+  margin: auto;
+  justify-content: center;
+  gap: 10px;
+  height: auto;
+  display: flex;
+}
+.link-modal button{
+  width: 48%;
+   border: none;
+  color: var(--font-color);
+  opacity: 0.8;
+  cursor: pointer;
+  font-weight: bold;
+  border-radius: 5px;
+  padding: 8px;
+}
+
+.link-modal #btn-apply-link{
+  background: rgb(76, 76, 222);
+}
+.link-modal #btn-cancel-link{
+    background: tomato;
+}
+
+.link-modal button:hover{
+  opacity: 1;
+  transform: scale(0.9)
+}
+
+@media screen and (max-width:768px){
+    .toolbar-text-body{
+      gap: 6px; 
+    }
+  
+}
+
+@media screen and (max-width:500px){
+    .toolbar-text-body{
+      gap: 11px; 
+    }
+    .toolbar-text-body button {
+      padding: 5px;
+     font-size: 11px;
+    }
+    
+  
+}

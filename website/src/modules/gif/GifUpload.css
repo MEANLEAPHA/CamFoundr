@@ -1,0 +1,223 @@
+@import url('https://fonts.googleapis.com/css2?family=Irish+Grover&display=swap');
+
+:root {
+  --background-color: rgb(255, 255, 255);
+  --primary-color: #fd7648;
+  --secondary-color: rgba(107, 107, 107, 0.318);
+  --font-color: rgb(0, 0, 0);
+  --back-con: rgb(245, 245, 245);
+  --primary-font: monospace;
+}
+
+.dark-theme {
+  --background-color: rgb(32, 32, 32);
+  --primary-color: #fd7648;
+  --secondary-color: rgba(220, 220, 220, 0.318);
+  --font-color: rgb(255, 255, 255);
+  --back-con: rgb(40, 40, 40);
+}
+
+/* Container */
+.gif-upload-container {
+  width: 100%;
+  max-width: 900px;
+  padding: 2rem;
+  margin: auto;
+  font-family: var(--primary-font);
+  color: var(--font-color);
+  background: var(--background-color);
+  border-radius: 16px;
+}
+
+/* Header */
+.gif-upload-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.gif-upload-header .p-head {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: var(--font-color);
+  margin-bottom: 0.5rem;
+  font-family: "Irish Grover", system-ui;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.gif-upload-header p {
+  color: var(--font-color);
+  font-size: 1rem;
+  opacity: 0.8;
+}
+
+/* Provider grid (if used) */
+.gif-provider-grid {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  flex-wrap: wrap;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+}
+
+.gif-provider-grid img {
+  height: 60px;
+  object-fit: contain;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  padding: 0;
+}
+
+.gif-provider-grid img:hover {
+  transform: scale(1.1);
+}
+
+/* Form */
+.gif-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Two-column grid for all form rows */
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+/* Ensure direct children fill their grid cell */
+.form-row > * {
+  width: 100%;
+}
+
+/* Common styles for inputs, selects */
+.form-row input,
+.form-row select,
+.url-input input {
+  box-sizing: border-box;
+  height: 48px;
+  padding: 0.6rem 0.8rem;
+  border: 1px solid var(--secondary-color);
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-family: var(--primary-font);
+  background: var(--back-con);
+  color: var(--font-color);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-row input:focus,
+.form-row select:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(253, 118, 72, 0.25);
+  outline: none;
+}
+
+/* URL input with paste button */
+.url-input {
+  display: flex;
+  width: 100%;
+}
+
+.url-input input {
+  flex: 1;
+  border-radius: 8px 0 0 8px;
+  min-width: 0; /* prevent overflow */
+}
+
+.url-input button {
+  width: 80px;
+  background: var(--back-con);
+  color: var(--font-color);
+  border: none;
+  padding: 0 1rem;
+  border-radius: 0 8px 8px 0;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  white-space: nowrap;
+}
+
+.url-input button:hover {
+  background: #e65f30;
+}
+
+/* GIF preview */
+.gif-preview {
+  text-align: center;
+  margin: 1.5rem 0;
+}
+
+.gif-preview img {
+  max-width: 100%;
+  border-radius: 12px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+}
+
+/* Submit button */
+.submit-btn {
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 600;
+  height: 48px;
+  cursor: pointer;
+  background: var(--primary-color);
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.submit-btn:hover {
+  background: #e65f30;
+  transform: translateY(-2px);
+}
+
+.submit-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 700px) {
+  .gif-upload-container {
+    padding: 10px 20px;
+  }
+
+  .gif-upload-header .p-head {
+    font-size: 1.8rem;
+  }
+
+  /* Stack form rows vertically on small screens */
+  .form-row {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  /* Make URL input button full width? optional but keeps alignment */
+  .url-input button {
+    width: 70px;
+  }
+}
+
+@media (max-width: 480px) {
+  .gif-upload-container {
+    padding: 1rem;
+  }
+
+  .gif-upload-header .p-head {
+    font-size: 1.5rem;
+  }
+
+  .url-input button {
+    width: 60px;
+    font-size: 0.85rem;
+    padding: 0 0.5rem;
+  }
+
+  .submit-btn {
+    height: 44px;
+    font-size: 0.9rem;
+  }
+}

@@ -1,0 +1,390 @@
+
+.report-page {
+  --danger-color: #e5484d;
+  --radius-sm: 8px;
+  --radius-md: 14px;
+
+  display: flex;
+  justify-content: center;
+  align-items: start;
+  color: var(--font-color);
+  font-family: var(--primary-font);
+    z-index: 1;
+  padding: 10px 50px ;
+}
+
+.report-card {
+  width: 100%;
+  z-index: 1;
+  padding: 20px;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Header ------------------------------------------------------------- */
+
+.report-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.report-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--font-color);
+  font-weight: 700;
+}
+
+.report-close-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid var(--secondary-color);
+  background: transparent;
+  color: var(--font-color);
+  cursor: pointer;
+  transition: background-color 0.15s ease, transform 0.1s ease;
+}
+
+.report-close-btn:hover {
+  background-color: var(--secondary-color);
+}
+
+.report-close-btn:active {
+  transform: scale(0.94);
+}
+
+.report-title {
+  margin: 4px 0 4px;
+  font-size: clamp(19px, 3.2vw, 23px) !important;
+  line-height: 1.3;
+  color: var(--font-color) !important;
+  font-weight: 700;
+}
+
+.report-context {
+  margin: 0 0 20px;
+  font-size: 13px;
+  color: var(--font-color);
+  opacity: 0.72;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.report-context-label {
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  opacity: 0.8;
+  color: var(--font-color);
+}
+
+.report-context-quote {
+  font-style: italic;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+/* Reason groups -------------------------------------------------------- */
+
+.report-fieldset {
+  border: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.report-group-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  opacity: 0.7;
+  margin-bottom: 8px;
+    color: var(--font-color);
+}
+
+.report-group-label.danger {
+  color: var(--danger-color);
+  opacity: 1;
+}
+
+.report-options-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 8px;
+}
+
+.report-option {
+  position: relative;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--secondary-color);
+  background-color: var(--background-color);
+  cursor: pointer;
+  transition: border-color 0.15s ease, background-color 0.15s ease, transform 0.1s ease;
+}
+
+.report-option input {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+}
+
+.report-option:hover {
+  border-color: var(--primary-color);
+}
+
+.report-option:active {
+  transform: scale(0.98);
+}
+
+.report-option.danger {
+  border-left: 3px solid color-mix(in srgb, var(--danger-color) 55%, transparent);
+}
+
+.report-option.selected {
+  border-color: var(--primary-color);
+  background-color: color-mix(in srgb, var(--primary-color) 12%, var(--background-color));
+}
+
+.report-option.danger.selected {
+  border-left-color: var(--danger-color);
+}
+
+.report-option-code {
+  font-size: 11px;
+  opacity: 0.55;
+    color: var(--font-color);
+  flex-shrink: 0;
+}
+
+.report-option-label {
+  font-size: 14px;
+    color: var(--font-color);
+  font-weight: 500;
+}
+
+.report-option input:focus-visible ~ .report-option-code,
+.report-option:has(input:focus-visible) {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
+}
+
+/* Reason textarea -------------------------------------------------------- */
+
+.report-reason-block {
+  margin-top: 22px;
+}
+
+.report-reason-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 6px;
+  font-size: 12px;
+}
+
+.report-reason-header label {
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--font-color);
+  font-size: 11px;
+}
+
+.report-reason-required {
+  color: var(--danger-color);
+  text-transform: none;
+  letter-spacing: normal;
+  font-weight: 400;
+}
+
+.report-char-count {
+  opacity: 0.55;
+  font-variant-numeric: tabular-nums;
+}
+
+.report-char-count.error {
+  color: var(--danger-color);
+  opacity: 1;
+}
+
+.report-textarea {
+  width: 100%;
+  min-height: 110px;
+  resize: vertical;
+  box-sizing: border-box;
+  padding: 12px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--secondary-color);
+  background-color: var(--background-color);
+  color: var(--font-color);
+  font-family: inherit;
+  font-size: 14px;
+  line-height: 1.5;
+  transition: border-color 0.15s ease;
+}
+
+.report-textarea:focus-visible {
+  outline: none;
+  border-color: var(--primary-color);
+}
+
+.report-textarea.error {
+  border-color: var(--danger-color);
+}
+
+.report-field-error {
+  margin-top: 6px;
+  font-size: 12px;
+  color: var(--danger-color);
+}
+
+/* Actions -------------------------------------------------------------- */
+
+.report-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 24px;
+}
+
+.report-cancel-btn,
+.report-submit-btn {
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 10px 18px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: opacity 0.15s ease, transform 0.1s ease;
+}
+
+.report-cancel-btn {
+  background: transparent;
+  border: 1px solid var(--secondary-color);
+  color: var(--font-color);
+   font-family: sans-serif;
+}
+
+.report-cancel-btn:hover {
+  background-color: var(--secondary-color);
+}
+
+.report-submit-btn {
+  background-color: var(--primary-color);
+  border: 1px solid var(--primary-color);
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: sans-serif;
+  min-width: 128px;
+  justify-content: center;
+}
+
+.report-submit-btn:hover:not(:disabled) {
+  opacity: 0.92;
+}
+
+.report-submit-btn:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+.report-submit-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.report-cancel-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Already-reported state ------------------------------------------------ */
+
+.report-done {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: flex-start;
+  font-size: 14px;
+  opacity: 0.85;
+  color: var(--font-color);
+  
+}
+
+/* Responsive ------------------------------------------------------------- */
+
+@media screen and (max-width: 768px) {
+    .report-page {
+
+padding: 0px !important;
+}
+
+.report-card {
+
+  padding:10px 20px !important;
+}
+
+}
+
+@media (min-width: 520px) {
+  .report-options-grid {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  }
+}
+
+
+@media (max-width: 380px) {
+  .report-actions {
+    flex-direction: column-reverse;
+  }
+  .report-cancel-btn,
+  .report-submit-btn {
+    width: 100%;
+  }
+}
+
+/* Motion & accessibility ------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .report-option,
+  .report-close-btn,
+  .report-submit-btn,
+  .report-cancel-btn {
+    transition: none;
+  }
+}

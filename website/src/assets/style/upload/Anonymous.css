@@ -1,0 +1,182 @@
+
+
+ /* .toggle-switch {
+            display: flex;
+            margin: 0;
+            padding: 0;
+            align-items: center;
+            gap: 10px;
+        }
+        #token-reminder-p{
+          font-size: medium;
+          font-family: sans-serif;
+          color: var(--font-color);
+          opacity: 0.7;
+          margin: 0;
+          margin-bottom: 5px;
+        }
+        .toggle-switch input {
+            display: none;
+        }
+        .toggle-switch label {
+            width: 45px;
+            height: 22px;
+            background: #ccc;
+            border-radius: 50px;
+            position: relative;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .toggle-switch input:checked + label {
+            background:#007bff;
+        }
+        #toggle-text-preview{
+          font-size: small;
+          font-family: sans-serif;
+          color: var(--font-color);
+          opacity: 0.7;
+          margin: 0;
+          
+        }
+        .toggle-switch label::before {
+            content: "";
+            position: absolute;
+            width: 15px;
+            height: 15px;
+            background: white;
+            border-radius: 50%;
+            top: 50%;
+            left: 5px;
+            transform: translateY(-50%);
+            transition: 0.3s;
+        }
+        .toggle-switch input:checked + label::before {
+            left: 25px;
+        }
+
+        .radio {
+  display: none; 
+} */
+
+
+.anonymous-card {
+  background: var(--back-con);
+  border-radius: 16px;
+  padding: 16px;
+  border: 1px solid var(--secondary-color);
+  transition: 0.3s;
+  position: relative;
+  overflow: hidden;
+  color: var(--font-color);
+}
+
+
+#anonymous-icon {
+  font-size: 55px;
+  position: absolute;
+  bottom: -5px;
+  right: 4px;
+  color: var(--font-color);
+  opacity: 0;
+  transition: opacity 1s ease;
+}
+
+/* visible state */
+#anonymous-icon.show {
+  opacity: 0.3;
+}
+
+/* hidden state (still in DOM, but transparent) */
+#anonymous-icon.hide {
+  opacity: 0;
+}
+
+.anonymous-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: var(--font-color);
+}
+
+.anonymous-title {
+  font-size: large;
+  font-weight: 600;
+  font-family: sans-serif;
+  color: var(--font-color);
+}
+
+.status-badge {
+  font-size: 12px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-weight: bold;
+  color: var(--font-color);
+  font-family: sans-serif;
+}
+
+.status-badge.on {
+  background: #fd7648;
+  color: white;
+}
+
+.status-badge.off {
+  background: var(--background-color);
+  color: var(--font-color);
+  opacity: 0.8;
+}
+
+.token-text {
+  font-size: 14px;
+  color: var(--font-color);
+  margin: 10px 0;
+  font-family: sans-serif;
+  opacity: 0.8;
+}
+
+.token-text span {
+  color: #fd7648;
+  font-weight: bold;
+}
+
+.no-token {
+  color: red;
+}
+
+/* Toggle */
+.toggle-container {
+  display: flex;
+  justify-content: flex-start;
+  cursor: pointer;
+}
+
+.toggle-track {
+  width: 50px;
+  height: 26px;
+  background: var(--background-color);
+  border-radius: 50px;
+  position: relative;
+  transition: 0.3s;
+  border: 1px solid var(--secondary-color);
+}
+
+.toggle-thumb {
+  width: 20px;
+  height: 20px;
+  background: var(--font-color);
+  border-radius: 50%;
+  position: absolute;
+  top: 3px;
+  opacity: 0.7;
+  left: 4px;
+  transition: 0.3s;
+}
+
+/* ACTIVE STATE */
+.toggle-container.active .toggle-track {
+  background: #fd7648;
+}
+
+.toggle-container.active .toggle-thumb {
+  left: 26px;
+}
+

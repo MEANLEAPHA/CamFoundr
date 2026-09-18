@@ -1,0 +1,410 @@
+:root {
+  --background-color: rgb(255, 255, 255);
+  --primary-color: #fd7648;
+  --secondary-color: rgba(107, 107, 107, 0.2);
+  --font-color: rgb(0, 0, 0);
+  --back-con: rgb(245, 245, 245);
+
+  --card-shadow:
+    0 10px 25px -5px rgba(0,0,0,0.08),
+    0 8px 10px -6px rgba(0,0,0,0.02);
+}
+
+.dark-theme {
+  --background-color: rgb(32, 32, 32);
+  --primary-color: #fd7648;
+  --secondary-color: rgba(220,220,220,0.18);
+  --font-color: rgb(255,255,255);
+  --back-con: rgb(40,40,40);
+
+  --card-shadow:
+    0 10px 25px -5px rgba(0,0,0,0.4);
+}
+
+.daily-container {
+  width: 90%;
+  margin: auto;
+  background: var(--background-color);
+  border-bottom: 2px solid var(--secondary-color);
+}
+
+.daily-header {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center;
+  gap: 1rem ! important;
+  margin-bottom: 1rem;
+}
+
+.daily-header h2 {
+  margin: 0;
+  color: var(--font-color);
+}
+
+.header-sub {
+  margin-top: 0.3rem;
+  opacity: 1;
+  color: var(--font-color);
+  font-size: 0.82rem;
+  font-style: italic;
+}
+
+.refresh-button {
+  border: 1px solid var(--secondary-color);
+  background: transparent;
+  color: var(--font-color);
+  padding: 0.7rem 1.1rem;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.refresh-button:hover {
+  transform: translateY(-2px);
+}
+
+/* =========================
+   CARD SYSTEM
+========================= */
+
+.flip-card {
+  width: 320px !important;
+height: 190px ! important;
+  perspective: 1000px ! important;
+  flex-shrink: 0;
+}
+
+.flip-card-inner {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  -webkit-transform-style: preserve-3d; 
+  transform-style: preserve-3d;
+   -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  will-change: transform;
+  transition:
+    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.flip-card.flipped .flip-card-inner {
+  transform: rotateY(180deg);
+}
+
+.flip-card-front,
+.flip-card-back {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 24px;
+
+  overflow: visible; /* allow child scroll areas to work */
+ 
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+
+
+
+  border: 1px solid var(--secondary-color);
+ 
+  background: var(--back-con);
+}
+.flip-card-front{
+ overflow: hidden;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ text-align: center;
+ padding:10px
+}
+.flip-card-back {
+  transform: rotateY(180deg);
+  background: var(--back-con);
+   background-image: none !important; /* prevent any background bleeding */
+  display: flex;
+  flex-direction: column;
+}
+.top-card-daily{
+ position: absolute;
+  top: 1rem;
+  left: 0.8rem;
+  z-index: 100;
+  opacity: 0.8;
+  color:var(--font-color);
+}
+.card-scroll-content {
+  flex: 1;
+  overflow-y: auto;
+  scrollbar-width: none;
+  padding: 1rem;
+}
+/* When flipped, fully hide the front card's content */
+.flip-card.flipped .flip-card-front {
+  visibility: hidden; /* Safari workaround */
+}
+
+/* But ensure the back is visible */
+.flip-card.flipped .flip-card-back {
+  visibility: visible;
+}
+
+/* Hide overlays when flipped (Safari) */
+.flip-card.flipped .card-overlay,
+.flip-card.flipped .wiki-overlay {
+  display: none;
+}
+/* =========================
+   BACKGROUND
+========================= */
+
+.card-with-bg,
+.wiki-front {
+  position: relative;
+  background-size: cover;
+  background-position: center;
+}
+
+.card-overlay,
+.wiki-overlay,
+.wiki-bg {
+  position: absolute;
+  inset: 0;
+}
+
+.card-overlay,
+.wiki-overlay {
+  z-index: 1;
+  opacity: 0.9;
+
+}
+.card-overlay{
+  background-position: center;
+  background-size: cover;
+  object-fit: cover;
+}
+
+.wiki-bg {
+  background-size:contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  z-index: 100;
+}
+.wiki-overlay{
+  width: 100%;
+  height: auto;
+  opacity: 0.1;
+}
+.wiki-overlay::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: scale(1.1);
+  background: var(--preview) center/cover no-repeat; /* use the variable */
+  filter: blur(10px); /* blur strength */
+  z-index: -1; /* behind content */
+
+}
+
+/* =========================
+   FRONT CONTENT
+========================= */
+
+.card-icons{
+
+  color: var(--font-color);
+  font-size: 1.3rem;
+}
+
+.flip-hint {
+  position: absolute;
+  bottom: 1rem;
+  left: 1rem;
+
+  z-index: 3;
+
+  color: rgba(255,255,255,0.75);
+
+  font-size: 0.75rem;
+}
+.front-senten{
+  color: black;
+  z-index: 3;
+ 
+}
+/* =========================
+   QUESTION
+========================= */
+
+.question-text {
+  position: relative;
+  z-index: 3;
+
+  padding: 0 1rem;
+
+  line-height: 1.5;
+  font-size: 0.92rem;
+}
+
+.options-list {
+  position: relative;
+  z-index: 3;
+
+  padding: 1rem;
+}
+
+.option-item {
+  margin-bottom: 0.5rem;
+
+  background: rgba(255,255,255,0.14);
+
+  border-radius: 12px;
+
+  padding: 0.45rem 0.7rem;
+
+  font-size: 0.8rem;
+}
+
+/* =========================
+   JOKE
+========================= */
+
+.joke-setup {
+  position: relative;
+  z-index: 3;
+
+  padding: 0 1rem;
+
+  color: white;
+
+  line-height: 1.5;
+}
+
+/* =========================
+   WIKI
+========================= */
+
+.wiki-text-content {
+  position: relative;
+  z-index: 3;
+
+  display: flex;
+  flex-direction: column;
+ 
+
+  height: 100%;
+
+  padding: 0rem; 
+  font-size: small;
+  overflow: hidden;
+
+  color: white;
+}
+
+.wiki-title {
+  font-weight: 700;
+  
+  line-height: 1.4;
+}
+
+/* =========================
+   BACK
+========================= */
+
+.card-content,
+.wiki-summary-content {
+  width: 100%;
+  height: 100%;
+
+  scroll-behavior: smooth;
+  position: relative;
+  z-index: 2;
+ 
+  color: var(--font-color);
+  line-height: 1.6;
+  font-size: small;
+
+   overflow-y: auto;       /* only vertical scroll */
+  -webkit-overflow-scrolling: touch; /* smooth scrolling on mobile */
+      scrollbar-width: thin;
+    scrollbar-color: var(--primary-color) var(--background-color);
+  
+}
+
+/* =========================
+   SCROLL AREA
+========================= */
+
+.story-cards-wrapper {
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-behavior: smooth !important;
+  scrollbar-width: none;
+  padding-bottom: 0.5rem;
+}
+
+.story-cards {
+  display: flex;
+  gap: 18px;
+
+  width: max-content;
+
+  padding: 0.5rem;
+}
+
+/* =========================
+   ERROR
+========================= */
+
+.error-message {
+  background: #fee2e2;
+  color: #b91c1c;
+
+  padding: 0.75rem 1rem;
+
+  border-radius: 999px;
+
+  margin-bottom: 1rem;
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 768px) {
+  .daily-container {
+    width: 100%;
+    padding: 10px;
+  }
+  .daily-header h2 {
+  font-size: 17px;
+}
+
+.header-sub {
+
+  font-size: 0.75rem;
+  
+}
+
+.refresh-button {
+  padding: 0.5rem 0.7rem;
+}
+
+}
+@media (max-width: 640px) {
+
+  .flip-card {
+    width: 300px;
+    height: 170px;
+  }
+
+  .question-text,
+  .card-content,
+  .wiki-summary-content {
+    font-size: 0.82rem;
+  }
+
+}

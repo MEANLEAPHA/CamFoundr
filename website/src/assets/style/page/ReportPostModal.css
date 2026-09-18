@@ -1,0 +1,130 @@
+:root{
+    /* --background-color:white; */
+     --background-color: rgb(255, 255, 255);
+    --primary-color:#fd7648;
+    /* --secondary-color: gainsboro; */
+     --secondary-color: rgba(107, 107, 107, 0.318);
+    /* --font-color:rgb(65, 65, 65); */
+    --font-color:rgb(0, 0, 0);
+
+    --back-con:rgb(245, 245, 245);
+    --primary-font:monospace;
+}
+.dark-theme{
+    --background-color:rgb(32, 32, 32);
+    --primary-color:#fd7648;
+    --secondary-color: rgba(220, 220, 220, 0.318);
+    --font-color:rgb(255, 255, 255);
+     --back-con:rgb(40, 40, 40);
+}
+
+/* report-post.css */
+
+.report-modal .ant-modal-content{
+    background: var(--background-color);
+    border-radius: 18px;
+    padding: 24px;
+}
+
+.report-header{
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    margin-bottom: 24px;
+}
+
+.report-icon{
+    font-size: 26px;
+    color: #ff4d4f;
+    margin-top: 2px;
+}
+
+.report-header h2{
+    margin: 0;
+    color: var(--font-color);
+    font-size: 22px;
+    font-weight: 700;
+}
+
+.report-header p{
+    margin-top: 6px;
+    color: gray;
+    line-height: 1.5;
+    font-size: 14px;
+}
+
+.report-body{
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.report-radio-group{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.report-radio{
+    padding: 14px;
+    border-radius: 12px;
+    background: var(--back-con);
+    transition: 0.2s ease;
+    color: var(--font-color);
+}
+
+.report-radio:hover{
+    border-color: var(--primary-color);
+}
+
+.report-textarea{
+    resize: none;
+}
+
+.report-textarea textarea{
+    background: var(--back-con) !important;
+    color: var(--font-color) !important;
+    border-radius: 12px !important;
+    border: 1px solid transparent !important;
+}
+
+.report-textarea textarea:focus{
+    border-color: var(--primary-color) !important;
+    box-shadow: none !important;
+}
+
+.report-footer{
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 10px;
+}
+
+.report-submit-btn{
+    background: var(--primary-color) !important;
+    border: none !important;
+    font-weight: 600;
+}
+
+@media(max-width:768px){
+
+    .report-modal .ant-modal-content{
+        padding: 18px;
+    }
+
+    .report-header h2{
+        font-size: 18px;
+    }
+
+    .report-radio{
+        padding: 12px;
+    }
+
+    .report-footer{
+        flex-direction: column-reverse;
+    }
+
+    .report-footer button{
+        width: 100%;
+    }
+}

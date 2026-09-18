@@ -1,0 +1,498 @@
+:root{
+    --background-color: rgb(255, 255, 255);
+    --primary-color:#fd7648;
+    --secondary-color: rgba(107, 107, 107, 0.318);
+    --font-color:rgb(0, 0, 0);
+    --back-con:rgb(245, 245, 245);
+    --primary-font:monospace;
+}
+.dark-theme{
+    --background-color:rgb(32, 32, 32);
+    --primary-color:#fd7648;
+    --secondary-color: rgba(220, 220, 220, 0.318);
+    --font-color:rgb(255, 255, 255);
+     --back-con:rgb(40, 40, 40);
+}
+
+.accounts-page {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  height: auto;
+}
+.accounts-header{
+    width: 100%;
+    height: 300px;
+    position: relative;
+}
+#acc-banner{
+    width: 100%;
+    height: 72%;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+#acc-banner::before{
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: var(--preview-url-banner) center/cover no-repeat;
+
+    filter: blur(8px);
+    transform: scale(1.1);
+    opacity: 0.6;
+  
+    padding: 0;
+}
+#img-banner{
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    z-index: 2;
+}
+
+#btn-edit-pf{
+    border: none;
+    width: 90px;
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    opacity: 0.8;
+    padding: 10px;
+    z-index: 10;
+    cursor: pointer;
+    border-radius: 8px;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+
+}
+#btn-edit-pf-span{
+    font-size: x-small;
+    cursor: pointer;
+    font-weight: 500;
+}
+.follow-status-info{
+    color: var(--font-color);
+    opacity: 0.9;
+    margin: 0;
+    font-family: monospace;
+    align-items: center;
+}
+#acc-pf-info{
+    width: 100%;
+    height:auto;
+    position: absolute;
+    bottom: 0;
+    z-index: 5;
+    padding: 0 20px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    /* background-color: antiquewhite; */
+}
+#acc-pf-div{
+    height: 115px;
+    width: 115px;
+    border-radius: 50%;
+    position: relative;
+}
+#acc-pf{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    position: relative;
+    background-color:var(--secondary-color);
+      
+}
+
+.acc-pf-info-child {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    
+}
+#user-pf-iden{
+    padding: 0;
+    margin-top: 25px;
+  
+}
+#username-pf{
+    margin: 5px;
+    color: var(--font-color);
+    font-weight: bold;
+}
+#user-profession-pf{
+      margin: 5px;
+      color: var(--font-color);
+      opacity: 0.8;
+}
+
+.acc-pf-info-child-right{
+     gap: 8px;
+     align-items: center;
+}
+.pf-act-btn{
+    cursor: pointer;
+    margin-top: 30px;
+    padding: 8px 15px;
+    height: 35px !important;
+    height: auto;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    border: none;
+    background: var(--back-con);
+    color: var(--font-color);
+    border-radius: 8px; 
+}
+.pf-act-btns{
+    cursor: pointer;
+  
+    padding: 0px;
+    height: auto;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    border: none;
+    background: none;
+    color: var(--font-color);
+    border-radius: 8px; 
+}
+.menu-btn{
+    background: none;
+    font-size: large;
+}
+.accounts-body{
+    width: 95%;
+    height: auto;
+    margin: auto;
+    display: flex;
+    margin-top: 20px;
+   
+}
+
+#data-outlet{
+    width: 65%;
+    order: 1;
+    height: auto;
+    border-top: 2px dashed rgba(128, 128, 128, 0.145);
+}
+#outlet-link-dev{
+    width: 95%;
+    display: flex;
+    
+    margin: auto;
+    gap: 10px;
+    margin-top: 15px;
+    margin-bottom: 20px;
+}
+.btn-outlet-link{
+    border: none;
+    background: none;
+    color: var(--font-color);
+    font-weight: 400;
+    cursor: pointer;
+}
+.sub-icon-logo{
+    width: 22px;
+    height: 22px;
+    margin: 0;
+}
+
+#data-full-info{
+   
+    border-radius: 10px;
+    width: 35%;
+    max-height: calc(100vh - 80px);
+    position: sticky;
+    top: 65px;
+    order: 2;
+    height: auto;
+    padding: 10px;
+    color:var(--font-color);
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--secondary-color) var(--background-color);
+}
+#data-full-info p {
+    color: var(--font-color);
+    margin: 0;
+}
+
+
+
+
+
+/* stats-data */
+#stats-data{
+    width:100%;
+    display:flex;
+    height: auto;
+    gap: 20px;
+    margin-top: 10px;
+}
+.stats-data-items{
+    display: flex;
+    flex-direction: column;
+  align-items: start;
+}
+.label-render-stats{
+    font-size: large;
+    opacity: 0.7;
+}
+.data-render-stats{
+      font-size: large;
+}
+
+
+
+#user-bio{
+    width: 100%;
+    padding:0px;
+    height: auto;
+    margin:10px 0px;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+.q-bio{
+    color: var(--primary-color);
+}
+#bio{
+    color: var(--font-color);
+    opacity: 0.9;
+    margin-top: 20px;
+}
+
+#join-at{
+    opacity: 0.9;
+    color: var(--font-color);
+}
+
+
+/* friend-list */
+.friend-list{
+    width: 100%;
+    height: auto;
+    background: var(--back-con);
+    padding: 10px 10px 0px 10px;
+    border-radius: 8px;
+    margin-top: 20px;
+}
+.friend-list-header{
+    display: flex;
+    padding: 0;
+    align-items: center;
+    margin: 0;
+    margin-bottom: 10px;
+    justify-content: space-between;
+}
+.fri-list-label{
+    margin: 0;
+    font-size: 1rem;
+}
+#view-allfri-btn{
+    border: none;
+    background: none;
+     margin: 0;
+    color: var(--font-color);
+    opacity: 0.8;
+    cursor: pointer;
+}
+#view-allfri-btn span{
+    margin: 0;
+}
+#view-allfri-btn:hover{
+    opacity: 1;
+}
+.friend-list-body{
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: start;
+    gap: 5px;
+    flex-direction: row;
+}
+.friend-list-items{
+      width: calc(100%/3.3);
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 5px;
+  
+    align-items: center;
+}
+.fri-img{
+  width: 100%;
+  object-fit: cover;
+  height: 110px;
+
+  object-fit: cover;
+  border-radius: 5px;
+}
+.fri-name{
+    font-size: small;
+    opacity: 0.8;
+    padding: 3px;
+    font-weight: 600;
+    width: 100%;
+    overflow: hidden;
+    -webkit-line-clamp: 1;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    text-overflow: ellipsis;
+    margin: 0;
+    text-align: center;
+    color: var(--font-color);
+
+
+}
+
+
+/* animation */
+.butterfly-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: url("https://media.tenor.com/f0wBEby1q3gAAAAi/borboletas-butterflies.gif") center/cover;
+  width: 100%;
+  height: 100vh;
+  z-index: 1000;
+  pointer-events: none; /* don’t block clicks */
+  overflow: hidden;
+}
+
+@media screen and (max-width: 1200px){
+.friend-list-items{
+      width: calc(100%/2.2);
+  
+}
+.fri-img{
+
+  height: 130px;
+ 
+ 
+}
+}
+@media screen and (max-width: 1100px){
+.friend-list-items{
+      width: calc(100%/2.2);
+  
+}
+.fri-img{
+
+  height: 120px;
+ 
+ 
+}
+}
+
+@media screen and (max-width: 900px){
+.accounts-header{
+    height: 280px;
+}
+    #acc-banner{
+        height: 60%;  
+    }
+    #acc-pf-info{
+        flex-direction: column;
+        align-items: start;
+        justify-content: center;
+        gap:0px;
+    }
+    .label-brand{
+        display: none;
+    }
+    #acc-pf-div{
+    height: 75px;
+    width: 75px;
+    }
+    .status-pf-online{
+        right: 15px;
+    }
+    #user-pf-iden{
+        margin-top: 15px;
+    }   
+    .acc-pf-info-child-right{
+        width: 100%;
+        justify-content: space-between;
+    }
+    .pf-act-btn{
+        margin-top: 15px; 
+    }#username-pf{
+    font-size: 14px;
+    }
+    #user-profession-pf{
+           font-size: 12px;
+    }
+
+    .accounts-body{
+    width: 98%;
+    height: auto;
+    margin: auto;
+    flex-direction: column;
+}
+
+    #data-outlet{
+        width: 100%;
+        height: auto;
+
+        order: 2;
+    }
+
+    #data-full-info{
+    background: none;
+    border-radius: 0px;
+    width: 100%;
+    max-height: auto;
+    position: relative;
+    top:0px;
+    order: 1;
+    margin-top: 5px;
+    height: auto;
+}
+.friend-list{
+    width: 100%;
+    height: auto;
+    background: none;
+    padding: 0px ;
+    border-radius: 8px;
+    margin-top: 20px;
+}
+.friend-list-items{
+      width: calc(100%/6.5);
+  
+}
+.fri-img{
+
+  height: 110px;
+ 
+ 
+}
+.label-render-stats{
+    font-size: medium;
+
+}
+.data-render-stats{
+         font-size: medium;
+}
+}
+@media screen and (max-width: 600px){
+    .friend-list-items{
+      width: calc(100%/3.1);
+}
+.label-render-stats{
+    font-size: 17px;
+
+}
+.data-render-stats{
+         font-size: 17px;
+}
+.friend-list-items{
+      width: calc(100%/4.2);
+  
+}
+
+}

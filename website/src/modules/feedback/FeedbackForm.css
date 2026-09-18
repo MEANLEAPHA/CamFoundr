@@ -1,0 +1,298 @@
+/* FeedbackForm.css */
+:root {
+    --background-color: rgb(255, 255, 255);
+    --primary-color: #fd7648;
+    --secondary-color: rgba(107, 107, 107, 0.318);
+    --font-color: rgb(0, 0, 0);
+    --back-con: rgb(245, 245, 245);
+    --primary-font: monospace;
+}
+
+.dark-theme {
+    --background-color: rgb(32, 32, 32);
+    --primary-color: #fd7648;
+    --secondary-color: rgba(220, 220, 220, 0.318);
+    --font-color: rgb(255, 255, 255);
+    --back-con: rgb(40, 40, 40);
+}
+
+/* -------------------------------
+   Main Container & Card
+-------------------------------- */
+.feedback-root {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  
+}
+
+.feedback-card {
+    
+    width: 95%;
+    
+    border-radius: 24px;
+    padding: 15px 20px;
+  
+    transition: all 0.2s ease;
+}
+
+/* -------------------------------
+   Typography
+-------------------------------- */
+.feedback-title {
+    font-size: 1.75rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--font-color);
+    font-family:'Times New Roman', Times, serif;
+}
+
+.feedback-subtitle {
+    color: var(--font-color);
+    opacity: 0.7;
+    margin-bottom: 2rem;
+    line-height: 1.5;
+}
+
+
+/* -------------------------------
+   Type Selector Buttons
+-------------------------------- */
+.feedback-type-selector {
+    display: flex;
+    flex-direction: column;
+    gap: 0rem;
+}
+
+.feedback-type-btn {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 5px;
+    background:none;
+    border:none;
+    border-top: 1px solid var(--secondary-color);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: left;
+    color: var(--font-color);
+}
+
+.feedback-type-btn:hover {
+  background: var(--back-con);
+}
+
+.type-icon {
+    font-size: 2rem;
+    opacity: 0.8;
+}
+
+.type-name {
+    font-weight: 600;
+    font-size: 1.1rem;
+    flex: 1;
+}
+
+.type-desc {
+    font-size: 0.85rem;
+    opacity: 0.6;
+    flex: 2;
+}
+@media screen  and (max-width:768px){
+    .feedback-card {
+    
+    width: 95%;
+    
+    padding: 25px 0.5rem;
+    margin: auto;
+
+}
+    .feedback-title {
+    font-size: 1.5rem;
+}
+
+.feedback-subtitle {
+    font-size: 0.9rem;
+}   
+.type-icon {
+    font-size: 1.5rem;
+
+}
+
+.type-name {
+    font-weight: 500;
+    font-size: medium;
+ 
+}
+
+.type-desc {
+    font-size:small;
+   
+}
+    
+}
+/* -------------------------------
+   Rating Scale
+-------------------------------- */
+.feedback-scale {
+    margin: 2rem 0;
+}
+
+.scale-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.75rem;
+    font-size: 0.8rem;
+    opacity: 0.7;
+}
+
+.scale-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: center;
+}
+
+.scale-btn {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: 1px solid var(--secondary-color);
+    background: var(--background-color);
+    color: var(--font-color);
+    font-size: 1.2rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.scale-btn:hover {
+    border-color: var(--primary-color);
+    transform: scale(1.05);
+}
+
+.scale-btn.active {
+    background: var(--primary-color);
+    border-color: var(--primary-color);
+    color: white;
+}
+
+/* -------------------------------
+   Follow-up Form Elements
+-------------------------------- */
+.feedback-back-btn {
+    background: none;
+    border: none;
+    color: var(--font-color);
+    cursor: pointer;
+    font-size: 0.9rem;
+    padding: 10px;
+    background: var(--back-con);
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.feedback-back-btn:hover {
+    text-decoration: underline;
+}
+
+.feedback-score-preview {
+    background: var(--secondary-color);
+    padding: 0.75rem;
+    border-radius: 12px;
+    margin: 1rem 0;
+    text-align: center;
+    font-size: 0.9rem;
+}
+
+.feedback-category {
+    margin-bottom: 1.5rem;
+}
+
+.feedback-category label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: var(--font-color);
+}
+
+.feedback-category select {
+    width: 100%;
+    padding: 0.75rem;
+    border-radius: 12px;
+    border: 1px solid var(--secondary-color);
+    background: var(--background-color);
+    color: var(--font-color);
+    font-family: inherit;
+}
+
+.feedback-textarea {
+    width: 100%;
+    padding: 1rem;
+    border-radius: 16px;
+    border: 1px solid var(--secondary-color);
+    background: var(--background-color);
+    color: var(--font-color);
+    font-family: inherit;
+    resize: vertical;
+    margin: 1rem 0;
+    font-size: 0.95rem;
+}
+
+.feedback-textarea:focus {
+    outline: none;
+    border-color: var(--primary-color);
+}
+
+/* -------------------------------
+   Actions & Status
+-------------------------------- */
+.feedback-actions {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.feedback-submit-btn {
+    background: greenyellow;
+    color: black;
+    border: none;
+    padding: 0.85rem 2rem;
+    border-radius: 40px;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: opacity 0.2s;
+    width: 100%;
+}
+
+.feedback-submit-btn:hover:not(:disabled) {
+    opacity: 0.9;
+}
+
+.feedback-submit-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.feedback-success,
+.feedback-error {
+    margin-top: 1rem;
+    padding: 0.75rem;
+    border-radius: 12px;
+    text-align: center;
+    font-size: 0.9rem;
+}
+
+.feedback-success {
+    background: rgba(76, 175, 80, 0.1);
+    color: #4caf50;
+}
+
+.feedback-error {
+    background: rgba(244, 67, 54, 0.1);
+    color: #f44336;
+}
+

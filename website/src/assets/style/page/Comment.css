@@ -1,0 +1,147 @@
+.comment-page{
+    padding: 0px 20px;
+}
+.comments-header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    height: auto;
+}
+.submit-comm-btn{
+    background: var(--primary-color);
+    border: none;
+    color: white;
+    border-radius: 10px;
+    width: 90px;
+    height: 30px;
+    cursor: pointer;
+    opacity: 0.8;
+}
+.submit-comm-btn:hover{
+    opacity: 1;
+}
+
+.comments-nav{
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+    gap: 10px;
+    padding: 0;
+    width: 100%;
+    position: relative;
+    height: auto;
+    margin-top: 10px;
+}
+
+
+.comms-avatar-div{
+    width: 35px;
+    height: 35px;
+    background: grey;
+    border-radius: 50%;
+    overflow: hidden;
+    display: flex;
+    object-fit: cover;
+    justify-content: center;
+    align-items: center;
+    padding: 0 !important;
+}
+.comms-avatar{
+    width: 100% !important;
+    height: 100% !important;
+     object-fit: cover;
+
+}
+
+
+.comms-body{
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    width: 100%;
+    height: auto;
+     position: relative;
+     overflow: hidden;
+}
+
+.author-name-com{
+    color:var(--font-color);
+    font-weight: 600;
+}
+.comm-textarea{
+    background: none;
+    padding: 10px;
+    border: 1px solid var(--secondary-color);
+    border-radius: 10px;
+    color:var(--font-color)
+}
+.comm-textarea:focus{
+     border: 2px solid var(--secondary-color);
+     outline: none;
+}
+.comms-footer{
+    display: flex;
+    justify-content: end;
+    gap: 10px;
+    width: 100%;
+    height: auto;
+    margin-top: 8px;
+}
+
+
+.replyto-holder{
+    border: 1px dashed grey;
+    border-radius: 15px;
+    padding: 10px;
+    margin-top: 10px;
+}
+.holder-header{
+    display: flex;
+    justify-content: start;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 10px;
+}
+.pf-holder{
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+.author-name-holder{
+    color: var(--font-color);
+    margin: 0;
+}
+.holder-body{
+    display: flex;
+    justify-content: start;
+    gap: 10px;
+    height: auto;
+    align-items: start;
+}
+.media-holder{
+    max-width: 40%;
+    min-width: 25%;
+    object-fit: contain;
+    background-color: grey;
+}   
+.content-holder{
+    margin: 0;
+    color: var(--font-color);
+    opacity: 0.8;
+}
+
+.comments-nav-header{
+    display: flex;
+    gap: 8px;
+    justify-content: start;
+    align-items: start;
+}
+
+@media screen and (max-width:1000px) {
+    .comment-page{
+        padding: 15px 10px;
+    }
+  
+}
