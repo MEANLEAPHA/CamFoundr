@@ -1,4 +1,4 @@
-import "./Accessibility.css";
+import "./accessibility.css";
 
 function Card({ className = "", delay = 0, children }) {
   return (

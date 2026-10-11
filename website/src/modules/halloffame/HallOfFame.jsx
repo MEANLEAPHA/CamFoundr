@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import api from "../../assets/api/axiosInstance";
+import api from "../../api/axiosInstance";
 import toast from "react-hot-toast";
-import "./HallOfFame.css";
+import "./hallOfFame.css";
 
 import nahideaIcon from '../../assets/img/nahideaIcon.png';
 import { Coffee } from "lucide-react";

@@ -1,14 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
-import "./Rule.css";
-
+import "./rule.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faShieldHalved,
-  faScaleBalanced,
-} from "@fortawesome/free-solid-svg-icons";
-
 import { faCalendarDays } from "@fortawesome/free-regular-svg-icons";
-
 const rules = [
   {
     id: "respect",
