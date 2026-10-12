@@ -1,9 +1,9 @@
 import {BrowserRouter, Routes, Route} from 'react-router-dom';
 
 // Style
-import './assets/style/app.css';
-import './assets/style/main.css';
-import './assets/style/section.css';
+import './assets/style/App.css';
+import './assets/style/Main.css';
+import './assets/style/Section.css';
 
 // Component & Page
 import Home from './page/home/home';
@@ -16,13 +16,13 @@ import { VerifyEmailForgetPassword } from './modules/authentication/verifyEmailF
 import { NewPassword } from './modules/authentication/newPassword';
 import OAuthCallback from './modules/authentication/oAuthCallback';
 import Agreement from './modules/agreement/agreement';
-import Accessibility from './modules/accessibility/accessibility';
+import Accessibility from './modules/accessibility/Accessibility';
 import PrivacyPolicy from './modules/policy/privatePolicy';
-import Rule from './modules/rule/rule';
-import Question from './modules/upload/Question';
+import Rule from './modules/rule/Rule';
+import Question from './modules/upload/question';
 import Confession from './modules/upload/confession';
 import Content from './modules/upload/content';
-import EditContentBody from './modules/upload/EditContentBody';
+import EditContentBody from './modules/upload/editContentBody';
 import UploadGif from './modules/gif/upload';
 import Account from './modules/user/account';
 import History from './modules/user/history';
@@ -42,7 +42,7 @@ import ReportUser from './modules/report/reportUser';
 import ReportComment from './modules/report/reportComment';
 import ReportHistory from './modules/report/reportHistory';
 import ReportConversation from './modules/report/reportConversation';
-import HallOfFame from './modules/halloffame/hallOfFame';
+import HallOfFame from './modules/halloffame/HallOfFame';
 import GifFeed from './modules/gif/gif';
 import FavoritesGif from './modules/gif/favorite';
 import SearchForm from './page/explore/searchForm';
@@ -50,9 +50,9 @@ import Search from './util/search';
 import Notification from './modules/notification/notification';
 import Chat from './modules/chat/chat';
 import Ping from './modules/ping/ping';
-import Feed from './modules/feed/feed';
-import Blog from './modules/blog/blog';
-import { BlogDetail } from './modules/blog/blog';
+import Feed from './modules/feed/Feed';
+import Blog from './modules/blog/Blog';
+import { BlogDetail } from './modules/blog/Blog';
 import Team from './modules/team/team';
 import Startup, { StartupDetail } from './modules/startup/startup';
 import Founder, { FounderDetail } from './modules/founder/founder';
@@ -157,8 +157,6 @@ export default function App () {
         </BrowserRouter>
     )
 };
-
-
 
 
 
