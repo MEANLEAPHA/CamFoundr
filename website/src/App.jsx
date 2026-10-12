@@ -7,7 +7,7 @@ import './assets/style/section.css';
 
 // Component & Page
 import Home from './page/home/home';
-import Login  from './modules/authentication/Login';
+import Login  from './modules/authentication/login';
 import Register from './modules/authentication/register';
 import SetupAccount from './modules/authentication/setupAccount';
 import { VerifyEmail } from './modules/authentication/verifyEmail';
@@ -158,7 +158,6 @@ export default function App () {
     )
 };
 
- 
 
 
 

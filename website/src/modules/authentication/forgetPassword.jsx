@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 
 import "react-toastify/dist/ReactToastify.css";
+import {ArrowLeft} from "lucide-react";
 
 const API_URL = import.meta.env.VITE_SERVER_URL; 
 
@@ -68,24 +69,23 @@ export const ForgetPassword = () => {
         <div className='toast-feedback'>
         <ToastContainer position="top-right" autoClose={2000} />
         </div>
-          <div className="p-page-div">
-          <p className="p-page">nahidea</p>
-          <p className="p2-page">
-           Share content, questions and connect with others 
-          </p>
-          <p className="p2-page">
-            on Nahidea's community
-          </p>
-      </div>
 
+        <form onSubmit={(e) => { e.preventDefault();  handleSubmit(); }} > 
 
-        <form onSubmit={(e) => { e.preventDefault();  handleSubmit(); }} >        
+          
+        
           <div className="form-center">
-           <p className="p-page" style={{fontSize:"x-large", fontWeight:"bold"}}>
-                Reset Password
+            <div style={{width: '100%', display:'flex', justifyContent: 'start'}}><button type="button" onClick={()=> navigate('/login')}><ArrowLeft /></button></div>
+            
+             <div className="top-title-div">
+              <p className="top-title">CDL</p>
+              <p className="sub-title">
+                Be part of the movement building a better ss
               </p>
-              <br />
+          </div>
+          
           <div className='container-input'>
+            <label className='label-required'>Email <span style={{color:'red'}}>*</span></label>
             <div className="div-input">
               <input
               type="email"

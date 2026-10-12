@@ -8,7 +8,7 @@ import "./signPage.css";
 
 import { useAuth } from "../../context/authContext";
 import { GoogleLogin } from "@react-oauth/google";
-import { faFacebookF, faGithub, faLinkedinIn } from "@fortawesome/free-brands-svg-icons";
+import { faFacebookF, faGithub, faGoogle, faLinkedinIn, faMicrosoft } from "@fortawesome/free-brands-svg-icons";
 
 const API_URL = import.meta.env.VITE_SERVER_URL;
 
@@ -186,28 +186,18 @@ const Login = () => {
       <div className="toast-feedback">
         <ToastContainer position="top-right" autoClose={2000} />
       </div>
-      {/* <div className="p-page-div">
-          <p className="p-page">CamFoundr</p>
-          <p className="p2-page">
-           Be part of the movement building a better Cambodian
-          </p>
-          <p className="p2-page">
-             startup ecosystem
-          </p>
-      </div> */}
       <form onSubmit={(e) => { e.preventDefault(); SubmitLogin(); }}>
         <div className="form-center">
           <div className="container-input">
-            <div className="p-page-div">
-          <p className="p-page">CamFoundr</p>
-          <p className="p2-page">
-           Be part of the movement building a better Cambodian
-          </p>
-          <p className="p2-page">
-             startup ecosystem
-          </p>
-      </div>
-      
+
+            <div className="top-title-div">
+              <p className="top-title">CDL</p>
+              <p className="sub-title">
+                Be part of the movement building a better ss
+              </p>
+            </div>
+
+            <label className='label-required'>Email <span style={{color:'red'}}>*</span></label>
             <div className="div-input">
               <input
                 type="email"
@@ -220,7 +210,8 @@ const Login = () => {
                 title="Enter your email account"
               />
             </div>
-          
+
+            <label className='label-required'>Password <span style={{color:'red'}}>*</span></label>
             <div className="div-input">
               <input
                 type={viewPassword}
@@ -260,48 +251,81 @@ const Login = () => {
               </span>
             </div>
         
-            <div className="div-input div-oauth" style={{ display: "flex", flexDirection: "column", gap: "10px", marginTop: "10px" }}>
               <div className='div-or'>
                 <div className='or-line'></div>
                 <span className='or-text'>Or continue with</span>
                 <div className='or-line'></div>
               </div>
-
-              <button
+              
+            <div className="div-oauth">
+            <button
               type="button"
               onClick={handleFacebookLogin}
               disabled={loading}
               style={{
-                background: "#007BB5",
                 cursor: loading ? "not-allowed" : "pointer",
               }}
-              title="Login with Facebook"
+              title="Sign in with Linkedin"
               className='oauth-button'
             >
-             <FontAwesomeIcon icon={faLinkedinIn} className='auth-icon'/> Sign in with Linkedin
+  
+             <img src='https://cdn-icons-png.flaticon.com/512/2496/2496097.png' className='auth-icon'/>
             </button> 
      
-            <GoogleLogin
+             <button
+              type="button"
+              onClick={handleFacebookLogin}
+              disabled={loading}
+              style={{
+                cursor: loading ? "not-allowed" : "pointer",
+              }}
+              title="Sign in with Google"
+              className='oauth-button'
+            >
+             <img className='auth-icon' src='https://thumb.wikimedia.org/wikipedia/commons/thumb/3/3c/Google_Favicon_2025.svg/960px-Google_Favicon_2025.svg.png?utm_source=commons.wikimedia.org&utm_campaign=index&utm_content=thumbnail'/>
+            </button> 
+
+            {/* <GoogleLogin
               onSuccess={handleGoogleSuccess}
               onError={() => toast.error("Google login failed")}
                 width="280"  
               className='oauth-button'
-            />
+            /> */}
 
             <button
               type="button"
               onClick={handleFacebookLogin}
               disabled={loading}
               style={{
-                background: "#1877F2",
                 cursor: loading ? "not-allowed" : "pointer",
               }}
-              title="Login with Facebook"
+              title="Sign in with Facebook"
               className='oauth-button'
             >
-             <FontAwesomeIcon icon={faFacebookF} className='auth-icon'/> Sign in with Facebook
+             <img className='auth-icon' src='https://cdn-icons-png.flaticon.com/256/124/124010.png'/>
             </button> 
-            <button className='oauth-button' 
+            
+             <button className='oauth-button' 
+              type="button"
+              disabled={loading}
+              style={{
+                cursor: loading ? "not-allowed" : "pointer",
+              }}
+              title="Login with GitHub"
+            >
+              <a href={`${API_URL}/api/auth/github`}
+                style={{
+                  display: "block",
+                  color: "white",
+                  textDecoration: "none",
+                }}
+                title="Sign in with Microdoft"
+                
+              >
+                <img  className='auth-icon' src='https://thumb.wikimedia.org/wikipedia/commons/thumb/2/25/Microsoft_icon.svg/1280px-Microsoft_icon.svg.png?utm_source=commons.wikimedia.org&utm_campaign=index&utm_content=thumbnail&_=20220610071042'/>
+              </a>
+            </button>
+            {/* <button className='oauth-button' 
               type="button"
               disabled={loading}
               style={{
@@ -319,19 +343,34 @@ const Login = () => {
                 title="Login with GitHub"
                 
               >
-                <FontAwesomeIcon icon={faGithub} className='auth-icon'/> Sign in with GitHub
+                <FontAwesomeIcon icon={faGithub} className='auth-icon'/> 
               </a>
-            </button>
+            </button> */}
 
-          </div>
-          </div>
-          <p className="warm-welcome-p" style={{margin: 0}}>
+              <p className="warm-welcome-p" style={{marginTop: '15px'}}>
             Don't have an account?{" "}
             <span onClick={() => navigate("/register")} style={{ color: "green", cursor: "pointer" }} title="Click to create an account">
               Create one
             </span>
           </p>
+
+          </div>
+          </div>
+          <div className='footer-form-detail'>
+            <p>About</p>
+            <p>.</p>
+            <p>User Agreement</p>
+            <p>.</p>
+            <p>Private Policy</p>
+            <p>.</p>
+            <p>Accessibility</p>
+            <p>.</p>
+            <p>Term & condition</p>
+          </div>
+        
         </div>
+
+       
       </form>
     </div>
   );
