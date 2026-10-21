@@ -130,6 +130,7 @@ async function generateQuestion(req, res) {
     console.error("[generateQuestion] Gemini request failed.", {
       status: error.response?.status,
       code: error.code,
+      message: error.response?.data?.error?.message || error.message,
     });
     return res.status(502).json({
       message: "AI generation is temporarily unavailable. Please try again.",
