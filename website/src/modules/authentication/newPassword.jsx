@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEyeSlash, faEye } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
@@ -45,11 +45,11 @@ export const NewPassword = () => {
     const [isLength, setIsLength] = useState("grey");
 
     
-    useEffect(() => {
-      if (!email) navigate("/verifyemailforgetpassword", { replace: true });
-    }, [email, navigate]); 
+    // useEffect(() => {
+    //   if (!email) navigate("/verifyemailforgetpassword", { replace: true });
+    // }, [email, navigate]); 
 
-    if (!email) return null;
+    // if (!email) return null;
 
     const calculateStrength = (value) => {
     let score = 0;
