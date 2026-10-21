@@ -164,6 +164,15 @@ const reportLimiter = rateLimiter({
   message: { message: "Too many reports submitted, please try again later." }
 });
 
+const aiGenerationLimiter = rateLimiter({
+  windowMs: 10 * 60 * 1000,
+  max: 10,
+  keyGenerator: keyByUserOrIp,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { message: "Too many AI generations. Please wait before trying again." }
+});
+
 module.exports = {
   registerLimiter,
   loginIpLimiter,
@@ -180,4 +189,5 @@ module.exports = {
   writeLimiter,
   likeLimiter,
   reportLimiter,
+  aiGenerationLimiter,
 };

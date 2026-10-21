@@ -668,6 +668,16 @@ try {
   console.error(err.stack);
 }
 
+// AI question generation
+try {
+  const questionGenerationRoutes = require("./src/routes/ai/questionGenerationRoute");
+  app.use("/api", questionGenerationRoutes);
+  console.log("✅ questionGenerationRoutes mounted successfully");
+} catch (err) {
+  console.error("❌ Error loading questionGenerationRoutes:", err.message);
+  console.error(err.stack);
+}
+
 app.get("/", (req, res) => {
   res.send("API Server Running");
 });
@@ -697,4 +707,3 @@ async function startServer() {
 }
 
 startServer();
-

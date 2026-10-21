@@ -122,6 +122,28 @@
     color: var(--font-color);
 }
 
+.question-generate-button {
+    display: block;
+    margin: 8px 0 0 auto;
+    padding: 7px 16px;
+    border: 1px solid var(--primary-color);
+    border-radius: 18px;
+    background: transparent;
+    color: var(--font-color);
+    cursor: pointer;
+    font: inherit;
+}
+
+.question-generate-button:hover:not(:disabled) {
+    background: var(--primary-color);
+    color: #fff;
+}
+
+.question-generate-button:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
 
 
 /* Control (input box) */

@@ -57,7 +57,8 @@ export default function Questiion(){
 
 
   // question type state
-  const [questionType, setQuestionType] = useState('openend');
+  const [questionType, setQuestionType] = useState(null);
+  const [generatingQuestion, setGeneratingQuestion] = useState(false);
 
 
     // Range state
@@ -107,6 +108,54 @@ export default function Questiion(){
   const handlePostType = () => {
     (resetMap[questionType?.value] || []).forEach(fn => fn());
   };
+
+  const handleGenerateQuestion = async () => {
+    if (!selectType || !questionType || generatingQuestion) return;
+
+    const type = questionType.value;
+    const choiceCount = {
+      singlechoice: singleChoices.length,
+      multiplechoice: multipleChoices.length,
+      rankingorder: rankingChoices.length,
+    }[type];
+
+    setGeneratingQuestion(true);
+    try {
+      const { data } = await api.post("/api/ai/generate-question", {
+        topic: selectType.label,
+        questionType: type,
+        ...(choiceCount ? { choiceCount } : {}),
+      });
+
+      if (typeof data?.question !== "string" || !data.question.trim()) {
+        throw new Error("The AI did not return a question. Please try again.");
+      }
+
+      if (choiceCount && (
+        !Array.isArray(data.choices) ||
+        data.choices.length !== choiceCount ||
+        data.choices.some((choice) => typeof choice !== "string" || !choice.trim())
+      )) {
+        throw new Error("The AI returned invalid choices. Please try again.");
+      }
+
+      setTitle(data.question.trim());
+      if (type === "singlechoice") setSingleChoices(data.choices);
+      if (type === "multiplechoice") setMultipleChoices(data.choices);
+      if (type === "rankingorder") setRankingChoices(data.choices);
+      toast.success("Question generated");
+    } catch (error) {
+      console.error("Question generation failed:", error);
+      toast.error(
+        error?.response?.data?.message ||
+        error.message ||
+        "Could not generate a question. Please try again."
+      );
+    } finally {
+      setGeneratingQuestion(false);
+    }
+  };
+
   const hasGapInMiddle = (arr) => {
     let seenEmpty = false;
     for (const item of arr) {
@@ -341,6 +390,17 @@ export default function Questiion(){
             <div className="char-counter">
               {title.length}/300
             </div>
+            <button
+              type="button"
+              className="question-generate-button"
+              onClick={handleGenerateQuestion}
+              disabled={!selectType || !questionType || generatingQuestion}
+              aria-label="Generate a question using the selected topic and question type"
+            >
+              {generatingQuestion
+                ? <><LoadingOutlined spin /> Generating</>
+                : "Generate"}
+            </button>
           </div>
 {/* 
           <Select
