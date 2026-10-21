@@ -24,6 +24,7 @@ import RecentHistory from "../../util/recentHistory";
 import parseJSON from '../../util/parseJson';
 import DotDropDown from "../../util/dotDropDown";
 import { useUserRanking } from "../../util/useUserRanking";
+import RankBadge from "../../components/rankBadge";
 
 // style
 import "./feed.css";
