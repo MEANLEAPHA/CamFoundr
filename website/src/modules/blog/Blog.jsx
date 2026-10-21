@@ -8,7 +8,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
-import "./blog.css";
+import "./Blog.css";
 
 const stories = [
   {
@@ -362,4 +362,3 @@ function StoryMeta({ story }) {
     </div>
   );
 }
-

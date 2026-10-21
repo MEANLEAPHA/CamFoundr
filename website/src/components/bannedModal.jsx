@@ -1,5 +1,5 @@
 import React from "react";
-import "../assets/style/component/bannedModal.css";
+import "../assets/style/components/bannedModal.css";
 import { ExclamationCircleFilled } from "@ant-design/icons";
 
 export default function BannedModal({ reason, bannedAt }) {

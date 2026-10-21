@@ -38,7 +38,7 @@ import { Newspaper,
         } from 'lucide-react';
 
 import { useAuth } from "../context/authContext";
-import "../assets/style/aside.css";
+import "../assets/style/Aside.css";
 import api from "../api/axiosInstance";
 
 const Aside = (props) => {

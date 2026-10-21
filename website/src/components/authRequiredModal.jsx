@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import "../assets/style/components/authRequiredModal.css";
+import "../assets/style/components/AuthRequiredModal.css";
 import nahideaIcon from '../assets/img/nahideaIcon.png';
 export default function AuthRequiredModal() {
   const navigate = useNavigate();

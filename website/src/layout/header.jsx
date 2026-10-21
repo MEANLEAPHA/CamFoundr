@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import {useNavigate} from "react-router-dom";
 import { Dropdown, Space } from 'antd';
 import { useNotifications } from "../context/notificationContext";
-import "../assets/style/header.css";
+import "../assets/style/Header.css";
 import { useAuth } from '../context/authContext';
 import { SearchBar } from "../components/searchBar";
 import { Ad, Bell, Brain,

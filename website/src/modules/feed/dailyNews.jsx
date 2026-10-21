@@ -14,10 +14,10 @@ import {
   faSeedling
 } from "@fortawesome/free-solid-svg-icons";
 
-import jokebanner from "../img/jokebanner.png";
-import didyouknnowbanner from "../img/didyouknnowbanner.png";
-import advicebanner from "../img/advicebanner.png";
-import questionbanner from "../img/questionbanner.png";
+import jokebanner from "../../assets/img/jokebanner.png";
+import didyouknnowbanner from "../../assets/img/didyouknnowbanner.png";
+import advicebanner from "../../assets/img/advicebanner.png";
+import questionbanner from "../../assets/img/questionbanner.png";
 
 /* =========================
    GENERIC CARD
