@@ -658,6 +658,16 @@ catch(err){
   console.error(err.stack);
 } 
 
+// blog
+try {
+  const blogRoutes = require("./src/routes/blog/blogRoute");
+  app.use("/api", blogRoutes);
+  console.log("✅ blogRoutes mounted successfully");
+} catch (err) {
+  console.error("❌ Error loading blogRoutes:", err.message);
+  console.error(err.stack);
+}
+
 app.get("/", (req, res) => {
   res.send("API Server Running");
 });
