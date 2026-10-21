@@ -21,7 +21,7 @@ import {  LayoutOutlined, LoadingOutlined } from '@ant-design/icons';
 // style import
 import "./tag.css";
 import "./content.css";
-import "./postpreview.css";
+import "./postPreview.css";
 
 
 // get token
@@ -201,4 +201,3 @@ export default function Content() {
     
   );
 }
-

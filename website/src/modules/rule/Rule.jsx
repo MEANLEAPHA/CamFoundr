@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import "./rule.css";
+import "./Rule.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCalendarDays } from "@fortawesome/free-regular-svg-icons";
 const rules = [

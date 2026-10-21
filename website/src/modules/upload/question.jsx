@@ -36,7 +36,7 @@ import { LayoutOutlined,
 
 // style 
 import "./tag.css";
-import "./postpreview.css";
+import "./postPreview.css";
 import "./content.css";
 
 const AnonymousPf = memo(AnonymousProfile);

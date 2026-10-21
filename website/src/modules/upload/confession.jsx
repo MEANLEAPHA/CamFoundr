@@ -21,7 +21,7 @@ import { LayoutOutlined, LoadingOutlined } from '@ant-design/icons';
 // style
 import "./tag.css";
 import "./content.css";
-import "./postpreview.css";
+import "./postPreview.css";
 
 
 
