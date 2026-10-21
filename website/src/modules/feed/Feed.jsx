@@ -892,3 +892,10 @@ const handleFavorite = async (postId) => {
     </div>
   );
 };
+function PostAuthorBadge({ userId, isAnonymous }) {
+  const { badgeTier, loadings } = useUserRanking(isAnonymous ? null : userId);
+
+  if (isAnonymous || loadings || !badgeTier) return null;
+
+  return <RankBadge rank={badgeTier} size="sm" />;
+}
