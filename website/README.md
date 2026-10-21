@@ -17,4 +17,4 @@ app, while real files and directories continue to be served normally.
 Set `GEMINI_API` in the server's environment (or its local `server/.env` file)
 to a Google Gemini API key. Keep this key on the server; it is never required
 in the website's Vite environment. The authenticated question-generation API
-uses Gemini 2.5 Flash and is rate limited per user.
+uses Gemini 3.8 Flash and is rate limited per user.
