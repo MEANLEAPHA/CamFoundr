@@ -16,9 +16,10 @@ app, while real files and directories continue to be served normally.
 
 Set `NVIDIA_API` to an NVIDIA NIM API key in the server's environment (or its
 local `server/.env` file). `NVIDIA_MODEL` is optional; it defaults to
-`meta/llama-3.1-8b-instruct`. To use another available model, set
+`deepseek-ai/deepseek-v4-flash`. This model ID is listed in NVIDIA's current
+LLM API catalog. To use another available model, set
 `NVIDIA_MODEL` to its exact NVIDIA Build model ID, such as
-`deepseek-ai/deepseek-v4-flash`. The key is kept on the server; it is never
+`deepseek-ai/deepseek-v4-flash-0731`. The key is kept on the server; it is never
 required in the website's Vite environment. The authenticated
 question-generation API uses NVIDIA's OpenAI-compatible chat completions
 endpoint and is rate limited per user.

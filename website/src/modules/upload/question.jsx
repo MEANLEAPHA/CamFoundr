@@ -174,11 +174,21 @@ export default function Questiion(){
       if (type === "matching") setMatchingPairs(data.matchingPairs);
       toast.success("Question generated");
     } catch (error) {
-      console.error("Question generation failed:", error);
+      const requestId = error?.response?.data?.requestId
+        || error?.response?.headers?.["x-request-id"];
+      const errorMessage = error?.response?.data?.message
+        || error.message
+        || "Could not generate a question. Please try again.";
+      console.error("Question generation failed:", {
+        status: error?.response?.status || null,
+        code: error?.code || null,
+        requestId: requestId || null,
+        url: error?.config?.url || "/api/ai/generate-question",
+        message: errorMessage,
+        hasHttpResponse: Boolean(error?.response),
+      });
       toast.error(
-        error?.response?.data?.message ||
-        error.message ||
-        "Could not generate a question. Please try again."
+        requestId ? `${errorMessage} (Reference: ${requestId})` : errorMessage
       );
     } finally {
       setGeneratingQuestion(false);
