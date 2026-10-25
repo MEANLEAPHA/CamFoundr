@@ -1,6 +1,6 @@
 .matching-flow {
   width: 100%;
-  overflow-x: auto;
+  min-width: 0;
   color: var(--font-color);
   font-family: inherit;
 }
@@ -15,6 +15,75 @@
   font-size: 12px;
   font-weight: 700;
   opacity: 0.65;
+}
+
+.matching-flow-preview .matching-flow-headings {
+  width: auto;
+  grid-template-columns: minmax(0, 1fr) 28px minmax(0, 1fr);
+  gap: 8px;
+  padding: 0 0 8px;
+}
+
+.matching-flow-edit .matching-flow-headings,
+.matching-flow-answer .matching-flow-headings {
+  width: auto;
+  grid-template-columns: minmax(0, 1fr) 28px minmax(0, 1fr);
+  gap: 8px;
+  padding: 0 0 8px;
+}
+
+.matching-flow-answer .matching-flow-headings span:first-child {
+  grid-column: 1;
+}
+
+.matching-flow-answer .matching-flow-headings span:last-child {
+  grid-column: 3;
+}
+
+.matching-preview-list {
+  display: grid;
+  gap: 8px;
+}
+
+.matching-preview-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 28px minmax(0, 1fr);
+  align-items: center;
+  gap: 8px;
+}
+
+.matching-preview-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  min-height: 42px;
+  padding: 6px 9px;
+  border: 1px solid var(--secondary-color);
+  border-radius: 9px;
+  background: var(--background-color);
+  color: var(--font-color);
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+
+.matching-preview-item .matching-node-index {
+  flex-basis: 24px;
+  width: 24px;
+  height: 24px;
+}
+
+.matching-preview-connector {
+  color: var(--primary-color);
+  font-size: 18px;
+  text-align: center;
+}
+
+.matching-preview-more {
+  margin: 6px 0 0;
+  color: var(--font-color);
+  font-size: 12px;
+  opacity: 0.7;
 }
 
 .matching-flow-canvas {
@@ -110,10 +179,8 @@
 }
 
 .matching-flow-edit .matching-flow-headings {
-  width: auto;
   grid-template-columns: minmax(0, 1fr) 36px minmax(0, 1fr);
   gap: 12px;
-  padding: 0 0 8px;
 }
 
 .matching-editor-list {
@@ -164,6 +231,42 @@
   color: var(--primary-color);
   font-size: 20px;
   text-align: center;
+}
+
+@media (max-width: 600px) {
+  .matching-flow-preview .matching-flow-headings,
+  .matching-flow-preview .matching-preview-row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .matching-flow-preview .matching-flow-headings span:nth-child(2) {
+    display: none;
+  }
+
+  .matching-flow-preview .matching-preview-connector {
+    display: none;
+  }
+
+  .matching-flow-edit .matching-flow-headings {
+    display: none;
+  }
+
+  .matching-editor-row {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 6px;
+  }
+
+  .matching-editor-connector {
+    display: none;
+  }
+
+  .matching-flow-answer .matching-flow-headings {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+
+  .matching-flow-answer .matching-flow-headings span:last-child {
+    grid-column: 2;
+  }
 }
 
 .matching-node .react-flow__handle {

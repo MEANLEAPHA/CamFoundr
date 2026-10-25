@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   applyEdgeChanges,
   Background,
@@ -15,6 +15,7 @@ import "./matching.css";
 const COLUMN_WIDTH = 260;
 const ROW_HEIGHT = 78;
 const CANVAS_WIDTH = 690;
+const MATCH_COLORS = ["#e87923", "#2563eb", "#16a34a", "#9333ea", "#db2777"];
 
 function MatchingNode({ data }) {
   const isRight = data.side === "right";
@@ -57,6 +58,8 @@ function MatchingNode({ data }) {
 const nodeTypes = { matchingItem: MatchingNode };
 
 function makeEdge(sourceIndex, targetIndex, selectable = false) {
+  const color = MATCH_COLORS[sourceIndex % MATCH_COLORS.length];
+
   return {
     id: `match-${sourceIndex}-${targetIndex}`,
     source: `left-${sourceIndex}`,
@@ -65,7 +68,7 @@ function makeEdge(sourceIndex, targetIndex, selectable = false) {
     targetHandle: "match-target",
     type: "smoothstep",
     markerEnd: { type: MarkerType.ArrowClosed },
-    style: { stroke: "var(--primary-color)", strokeWidth: 2 },
+    style: { stroke: color, strokeWidth: 2 },
     selectable,
   };
 }
@@ -87,12 +90,17 @@ export default function MatchingFlow({
     return order;
   });
   const [answerEdges, setAnswerEdges] = useState([]);
+  const canvasRef = useRef(null);
+  const [canvasWidth, setCanvasWidth] = useState(CANVAS_WIDTH);
+  const flowWidth = Math.max(canvasWidth, 320);
+  const nodeWidth = Math.min(COLUMN_WIDTH, (flowWidth - 48) / 2);
 
   const nodes = useMemo(() => {
     const leftNodes = pairs.map((pair, index) => ({
       id: `left-${index}`,
       type: "matchingItem",
       position: { x: 10, y: 30 + index * ROW_HEIGHT },
+      style: { width: nodeWidth },
       data: {
         index,
         side: "left",
@@ -114,7 +122,8 @@ export default function MatchingFlow({
         return {
           id: `right-${pairIndex}`,
           type: "matchingItem",
-          position: { x: CANVAS_WIDTH - COLUMN_WIDTH - 10, y: 30 + rowIndex * ROW_HEIGHT },
+          position: { x: flowWidth - nodeWidth - 10, y: 30 + rowIndex * ROW_HEIGHT },
+          style: { width: nodeWidth },
           data: {
             index: pairIndex,
             side: "right",
@@ -133,7 +142,7 @@ export default function MatchingFlow({
       });
 
     return [...leftNodes, ...rightNodes];
-  }, [mode, onPairsChange, pairs, rightOrder]);
+  }, [flowWidth, mode, nodeWidth, onPairsChange, pairs, rightOrder]);
 
   const displayEdges = useMemo(() => {
     if (mode === "answer") return answerEdges;
@@ -152,6 +161,17 @@ export default function MatchingFlow({
     });
     onMappingChange?.(mapping);
   }, [answerEdges, mode, onMappingChange, pairs.length]);
+
+  useEffect(() => {
+    if (mode !== "answer" || !canvasRef.current) return undefined;
+
+    const observer = new ResizeObserver(([entry]) => {
+      setCanvasWidth(entry.contentRect.width);
+    });
+    observer.observe(canvasRef.current);
+
+    return () => observer.disconnect();
+  }, [mode]);
 
   const handleConnect = (connection) => {
     const sourceIndex = Number(connection.source?.slice("left-".length));
@@ -176,6 +196,7 @@ export default function MatchingFlow({
       <div className="matching-flow matching-flow-edit">
         <div className="matching-flow-headings" aria-hidden="true">
           <span>Left items</span>
+          <span />
           <span>Right items</span>
         </div>
         <p className="matching-flow-edit-help">
@@ -228,17 +249,52 @@ export default function MatchingFlow({
     );
   }
 
+  if (mode === "preview") {
+    const visiblePairs = pairs.slice(0, 3);
+
+    return (
+      <div className="matching-flow matching-flow-preview">
+        <div className="matching-flow-headings" aria-hidden="true">
+          <span>Left items</span>
+          <span aria-hidden="true" />
+          <span>Right items</span>
+        </div>
+        <div className="matching-preview-list">
+          {visiblePairs.map((pair, index) => (
+            <div className="matching-preview-row" key={pair.pair_index ?? index}>
+              <div className="matching-preview-item">
+                <span className="matching-node-index">{index + 1}</span>
+                <span>{pair.left ?? pair.left_text ?? ""}</span>
+              </div>
+              <span className="matching-preview-connector" aria-hidden="true">→</span>
+              <div className="matching-preview-item">
+                <span className="matching-node-index">{index + 1}</span>
+                <span>{pair.right ?? pair.right_text ?? ""}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+        {pairs.length > visiblePairs.length && (
+          <p className="matching-preview-more">
+            +{pairs.length - visiblePairs.length} more matching {pairs.length - visiblePairs.length === 1 ? "pair" : "pairs"}
+          </p>
+        )}
+      </div>
+    );
+  }
+
   return (
     <div className={`matching-flow matching-flow-${mode}`}>
       <div className="matching-flow-headings" aria-hidden="true">
         <span>Left items</span>
+        <span />
         <span>Right items</span>
       </div>
       <div
+        ref={canvasRef}
         className="matching-flow-canvas"
         style={{
           height: `${Math.max(30 + (pairs.length - 1) * ROW_HEIGHT + 80, 276)}px`,
-          minWidth: `${CANVAS_WIDTH}px`,
         }}
       >
         <ReactFlow
