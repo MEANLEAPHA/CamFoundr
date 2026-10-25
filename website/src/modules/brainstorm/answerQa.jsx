@@ -62,7 +62,17 @@ const AnswerQa = () => {
         const QaStoreRaw = sessionStorage.getItem("QaStore");
         const cached = QaStoreRaw ? JSON.parse(QaStoreRaw) : null;
 
-        if (cached && String(cached.question_id) === String(questionId)) {
+        const cachedMatchingPairs = Array.isArray(cached?.matching_items)
+          ? cached.matching_items
+          : [];
+        const hasUsableMatchingCache = questionType !== "matching"
+          || (cachedMatchingPairs.length >= 3 && cachedMatchingPairs.length <= 5);
+
+        if (
+          cached &&
+          String(cached.question_id) === String(questionId) &&
+          hasUsableMatchingCache
+        ) {
           setQaData(cached);
         } else {
           await handleFetchQa();

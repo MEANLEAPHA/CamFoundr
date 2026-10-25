@@ -220,6 +220,14 @@ export default function MatchingFlow({
     );
   }
 
+  if (mode === "answer" && pairs.length === 0) {
+    return (
+      <p className="matching-flow-empty" role="alert">
+        Matching items could not be loaded. Please refresh the page or contact the post owner.
+      </p>
+    );
+  }
+
   return (
     <div className={`matching-flow matching-flow-${mode}`}>
       <div className="matching-flow-headings" aria-hidden="true">
@@ -229,7 +237,8 @@ export default function MatchingFlow({
       <div
         className="matching-flow-canvas"
         style={{
-          height: Math.max(30 + (pairs.length - 1) * ROW_HEIGHT + 80, 276),
+          height: `${Math.max(30 + (pairs.length - 1) * ROW_HEIGHT + 80, 276)}px`,
+          minWidth: `${CANVAS_WIDTH}px`,
         }}
       >
         <ReactFlow
@@ -241,15 +250,15 @@ export default function MatchingFlow({
             setAnswerEdges((currentEdges) => applyEdgeChanges(changes, currentEdges));
           } : undefined}
           connectionLineType={ConnectionLineType.SmoothStep}
-          fitView
-          fitViewOptions={{ padding: 0.08 }}
-          minZoom={0.5}
+          fitView={false}
+          defaultViewport={{ x: 0, y: 0, zoom: 1 }}
+          minZoom={1}
           maxZoom={1}
           nodesDraggable={false}
           nodesConnectable={mode === "answer"}
           elementsSelectable={mode === "answer"}
-          panOnDrag={mode === "answer"}
-          panOnScroll
+          panOnDrag={false}
+          panOnScroll={false}
           zoomOnScroll={false}
           zoomOnDoubleClick={false}
           deleteKeyCode={mode === "answer" ? ["Backspace", "Delete"] : null}

@@ -101,6 +101,14 @@
   opacity: 0.75;
 }
 
+.matching-flow-empty {
+  margin: 0;
+  padding: 14px;
+  border: 1px solid var(--secondary-color);
+  border-radius: 10px;
+  color: var(--font-color);
+}
+
 .matching-flow-edit .matching-flow-headings {
   width: auto;
   grid-template-columns: minmax(0, 1fr) 36px minmax(0, 1fr);

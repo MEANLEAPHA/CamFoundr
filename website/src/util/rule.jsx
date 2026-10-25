@@ -10,7 +10,7 @@ import {
 } from "@ant-design/icons";
 import {  BadgeAlert} from 'lucide-react';
 
-export default function Rule({ setRule }) {
+export default function Rule({ setRule = "question" }) {
   const [current, setCurrent] = useState("1");
 
   const onClick = (e) => {
