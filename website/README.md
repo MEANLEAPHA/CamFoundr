@@ -14,10 +14,11 @@ app, while real files and directories continue to be served normally.
 
 ## AI question generation
 
-Set `GEMINI_API` in the server's environment (or its local `server/.env` file)
-to a Google Gemini API key. Keep this key on the server; it is never required
-in the website's Vite environment. The authenticated question-generation API
-uses Gemini 3.8 Flash and is rate limited per user.
+Set `NVIDIA_API` to an NVIDIA NIM API key and `NVIDIA_MODEL` to the model ID
+you want to use in the server's environment (or its local `server/.env` file).
+The key is kept on the server; it is never required in the website's Vite
+environment. The authenticated question-generation API uses NVIDIA's
+OpenAI-compatible chat completions endpoint and is rate limited per user.
 
 ## Matching question database setup
 
