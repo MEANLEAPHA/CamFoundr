@@ -116,7 +116,7 @@ async function generateQuestion(req, res) {
       },
       {
         headers: { "x-goog-api-key": apiKey },
-        timeout: 30000,
+        timeout: 90000,
       }
     );
 
