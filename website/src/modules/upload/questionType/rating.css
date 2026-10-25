@@ -1,8 +1,5 @@
-/* =========================================
-RATING
-========================================= */
 .question-type-wrapper{
-  border: 1px dashed var(--secondary-color);
+  border: 2px dashed var(--secondary-color);
     padding: 20px;
     border-radius: 10px;
     margin-top: 10px;

@@ -4,7 +4,7 @@ const ALREADY_ANSWERED_MESSAGE = "You have already answered this question";
 
 const QUESTION_TYPES = [
   "openend", "closedend", "rating", "range",
-  "singlechoice", "multiplechoice", "rankingorder",
+  "singlechoice", "multiplechoice", "rankingorder", "matching",
 ];
 
 const REQUIRED_FIELDS = {
@@ -15,6 +15,7 @@ const REQUIRED_FIELDS = {
   singlechoice: ["optionId", "optionText"],
   multiplechoice: ["optionIds", "optionTexts"],
   rankingorder: ["rankingIds", "rankingTexts"],
+  matching: ["matchingPositions"],
 };
 
 const generateAnonymousName = () => {
@@ -55,6 +56,19 @@ const validateAnswerPayload = (questionType, body) => {
 
   if (questionType === "closedend" && !["yes", "no"].includes(body.answerYesNo)) {
     return "answerYesNo must be 'yes' or 'no'";
+  }
+
+  if (questionType === "matching") {
+    const positions = body.matchingPositions;
+    if (
+      !Array.isArray(positions) ||
+      positions.length < 3 ||
+      positions.length > 5 ||
+      positions.some((position) => !Number.isInteger(position) || position < 0 || position >= positions.length) ||
+      new Set(positions).size !== positions.length
+    ) {
+      return "matchingPositions must be a complete one-to-one mapping of 3 to 5 items";
+    }
   }
 
   return null;
@@ -136,6 +150,7 @@ const answerQA = async (req, res) => {
     const {
       is_anonymous, answerText, answerYesNo, ratingValue, optionId, optionText,
       optionIds, optionTexts, rankingIds, rankingTexts, rangeValue,
+      matchingPositions,
     } = req.body;
 
     const isAnon = Number(is_anonymous) === 1 ? 1 : 0;
@@ -195,6 +210,30 @@ const answerQA = async (req, res) => {
           `INSERT INTO answers (question_id, post_id, user_id, question_type, ranking_positions, ranking_position_value, is_anonymous, anonymous_name, anonymous_bg_color)
            VALUES ($1, $2, $3, 'rankingorder', $4, $5, $6, $7, $8) RETURNING id`,
           [questionId, postId, userId, JSON.stringify(rankingIds), JSON.stringify(rankingTexts), isAnon, anonymousName, anonymousBgColor]
+        );
+        answerId = r.rows[0].id;
+        break;
+      }
+      case "matching": {
+        const matchingItemsResult = await client.query(
+          `SELECT pair_index FROM matching_item WHERE question_id = $1 ORDER BY pair_index`,
+          [questionId]
+        );
+        const pairCount = matchingItemsResult.rows.length;
+        if (
+          pairCount < 3 ||
+          pairCount > 5 ||
+          matchingPositions.length !== pairCount ||
+          matchingPositions.some((position) => position >= pairCount)
+        ) {
+          await client.query("ROLLBACK");
+          return res.status(400).json({ success: false, message: "The matching pairs are invalid." });
+        }
+
+        const r = await client.query(
+          `INSERT INTO answers (question_id, post_id, user_id, question_type, matching_positions, is_anonymous, anonymous_name, anonymous_bg_color)
+           VALUES ($1, $2, $3, 'matching', $4, $5, $6, $7) RETURNING id`,
+          [questionId, postId, userId, JSON.stringify(matchingPositions), isAnon, anonymousName, anonymousBgColor]
         );
         answerId = r.rows[0].id;
         break;
@@ -373,6 +412,17 @@ const getQuestionById = async (req, res) => {
         data = { ...data, items: rowsResult.rows };
         break;
       }
+      case "matching": {
+        const rowsResult = await db.query(
+          `SELECT pair_index, left_text, right_text
+           FROM matching_item
+           WHERE question_id = $1
+           ORDER BY pair_index`,
+          [questionId]
+        );
+        data = { ...data, matching_items: rowsResult.rows };
+        break;
+      }
       // case "rankingorder": {
       //   const rowsResult = await db.query(
       //     `SELECT ri.*, ro.question_id
@@ -454,6 +504,7 @@ const getAllAnswersByQuestionId = async (req, res) => {
         a.multiplechoice_option_value,
         a.ranking_positions,
         a.ranking_position_value,
+        a.matching_positions,
         a.range_value,
         a.upvotes,
         a.downvotes,
@@ -1159,6 +1210,7 @@ const getAnswerById = async (req, res) => {
         a.multiplechoice_option_value,
         a.ranking_positions,
         a.ranking_position_value,
+        a.matching_positions,
         a.range_value,
         a.upvotes,
         a.downvotes,

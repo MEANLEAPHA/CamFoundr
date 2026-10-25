@@ -1,9 +1,14 @@
 .question-type-wrapper{
-  border: 1px dashed var(--secondary-color);
-    padding: 20px;
-    border-radius: 10px;
-    margin-top: 10px;
+  border: 2px var(--secondary-color) dashed;
+  padding: 20px;
+  border-radius: 10px;
+  margin-top: 10px;
 }
+
+.question-type-wrapper:focus-within{
+  border: 3px var(--font-color) dashed;
+}
+
 .multiple-choice-parent {
   width: 100%;
   display: flex;
@@ -21,9 +26,6 @@
   justify-content: center;
 }
 
-.square-div{
-  
-}
 /* INPUT */
 .multiple-choice-input {
   flex: 1;
@@ -44,7 +46,6 @@
 .multiple-choice-input::placeholder {
   color: gray;
 }
-
 
 /* DELETE */
 .btn-delete-multiple-choice {
@@ -77,7 +78,6 @@
   border: none;
   border-bottom: 1px solid var(--secondary-color);
   color: var(--font-color);
-
   cursor: not-allowed;
 }
 
@@ -95,71 +95,51 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  margin-top: 20px;
+  margin-top: 25px;
+  justify-content: end;
   flex-wrap: wrap;
 }
 
 /* BUTTON */
 .btn-multiple-choice {
-  height: 42px;
-  padding: 0 20px;
-  border-radius: 14px;
-  border: 1px solid var(--secondary-color);
+  height:auto;
+  padding: 0px;
+  border-radius: 11px;
+  border: none;
   background: none;
   color: var(--font-color);
   opacity: 0.8;
-  font-size: 14px;
-  font-weight: 600;
+  font-size: 13px;
+  font-weight: 400;
   cursor: pointer;
   transition: 0.25s ease;
 }
 
 .btn-multiple-choice:hover {
   transform: translateY(-2px);
-
   opacity: 1;
 }
 
 .btn-multiple-choice:disabled {
   opacity: 0.5;
-
   cursor: not-allowed;
-
   transform: none;
 }
 
-/* REMOVE */
-.btn-remove-multiple:hover {
-  background: tomato;
-}
-
-/* ADD ALL ABOVE */
-.btn-all-above:hover {
-  background: yellowgreen;
-}
-
-/* REMOVE ALL ABOVE */
-.btn-remove-all-above:hover {
-  background: tomato;
-}
-
-/* =========================================
-RESPONSIVE
-========================================= */
 
 @media (max-width: 768px) {
+
   .btn-delete-multiple-choice {
     width: 10%;
   }
-
   .btn-multiple-choice {
     width: 100%;
   }
-
   .btn-remove-multiple,
   .btn-all-above,
   .btn-remove-all-above {
     width: 40%;
     font-size: small;
   }
+
 }

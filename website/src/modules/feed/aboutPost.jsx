@@ -7,6 +7,7 @@ import toast from "react-hot-toast";
 
 // style
 import "./aboutpost.css";
+import MatchingFlow from "../upload/questionType/MatchingFlow";
 import "../../page/home/home.css";
 import "../upload/postPreview.css";
 import "../upload/multipleMedia.css";
@@ -365,7 +366,7 @@ const AverageAnswerDisplay = ({ averageData, questionType, ratingIcon }) => {
   );
 };
 
-const AnswerCard = memo(({ answer, onUpvote, onDownvote, isVoting, highlightedAnswerId, ratingIcon }) => {
+const AnswerCard = memo(({ answer, onUpvote, onDownvote, isVoting, highlightedAnswerId, ratingIcon, matchingItems = [] }) => {
   const navigate = useNavigate();
   const renderAnswerContent = () => {
     switch (answer.question_type) {
@@ -436,6 +437,28 @@ const AnswerCard = memo(({ answer, onUpvote, onDownvote, isVoting, highlightedAn
           </div>
           </div>
         );
+      case 'matching': {
+        const positions = parseJSON(answer.matching_positions) || [];
+        return (
+          <div className="answer-matching">
+            <EnterOutlined style={{ transform: 'scaleX(-1)', fontSize: "15px" }} />
+            <div className="answer-matching-list">
+              {positions.map((rightIndex, leftIndex) => {
+                const leftItem = matchingItems.find((item) => Number(item.pair_index) === leftIndex);
+                const rightItem = matchingItems.find((item) => Number(item.pair_index) === Number(rightIndex));
+                if (!leftItem || !rightItem) return null;
+                return (
+                  <div className="answer-matching-pair" key={`${leftIndex}-${rightIndex}`}>
+                    <span>{leftItem.left_text}</span>
+                    <span aria-hidden="true">→</span>
+                    <span>{rightItem.right_text}</span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        );
+      }
       default:
         return null;
     }
@@ -1313,6 +1336,9 @@ const AboutPost = () => {
                       )
                         
                         )}
+                        {data.question_type === "matching" && data.matching_items?.length > 0 && (
+                          <MatchingFlow pairs={data.matching_items} mode="preview" />
+                        )}
                   </ul>
                 )}
                 {data.question_type === "rating" && (
@@ -1684,6 +1710,7 @@ const AboutPost = () => {
                           key={answer.id}
                           ratingIcon = {post?.data?.question_type === "rating" ? post?.data?.rating_icon_id : null}
                           answer={answer}
+                          matchingItems={post?.data?.matching_items || []}
                           onUpvote={() => handleUpvoteAnswer(answer.id)}
                           onDownvote={() => handleDownvoteAnswer(answer.id)}
                           isVoting={votingAnswerId === answer.id}

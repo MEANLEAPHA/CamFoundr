@@ -1,9 +1,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Bona+Nova:ital,wght@0,400;0,700;1,400&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Josefin+Sans:ital,wght@0,100..700;1,100..700&family=Libertinus+Keyboard&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Orbitron:wght@400..900&family=Roboto:ital,wght@0,100..900;1,100..900&family=Space+Grotesk:wght@300..700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Allerta+Stencil&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Bona+Nova:ital,wght@0,400;0,700;1,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Blinker:wght@100;200;300;400;600;700;800;900&display=swap');
 :root{
     /* Primary */
-    --background-color: #F8F9FA;
+    --background-color:#F3F3EC;
 
     --primary-color:#f1ad20;
     --secondary-color: rgba(107, 107, 107, 0.318);
@@ -42,19 +43,28 @@ header{
     z-index: 100;
     overflow: hidden;
 }
+.logo-div{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    justify-content: start;
+    flex-direction: row;
+}
 .logo-font-main{
-    font-family: "Inter", sans-serif;
+    font-family: "Blinker", sans-serif;
     color: red;
-    font-weight: 900;
-    font-style: normal;
+    font-weight: 550;
     cursor: pointer;
-    font-size:30px;
+    font-size:40px;
+
 }
 .logo-moto{
     color: var(--font-color);
     font-family: "Roboto", sans-serif;
-    font-size: 14px;
-    opacity: 0.6;
+    font-size: 12px;
+    opacity: 0.7;
+    margin-top: 4px;
+  
 }
 .logo-mobile{
     width: 45px;
@@ -69,10 +79,12 @@ header{
 .header-left{
     width: 30%;
     display: flex;
-    gap:18px;
+    gap:10px;
     justify-content:start;
-    height: 100%;
-    align-items: center;
+    height: auto;
+    align-items:end;
+    text-align:start;
+    padding: 0;
     padding-left: 13px;
 }
 

@@ -22,6 +22,33 @@
   list-style: none;
   color:var(--font-color);
 }
+
+.answer-matching {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.answer-matching-list {
+  display: grid;
+  gap: 6px;
+}
+
+.answer-matching-pair {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: var(--back-con);
+  font-size: 13px;
+}
+
+.answer-matching-pair span:last-child {
+  color: var(--primary-color);
+}
+
 .tool-answer-icon{
   font-size: small;
   opacity: 0.8;

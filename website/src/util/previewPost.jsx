@@ -24,6 +24,7 @@ import { iconOptions } from "../data/post_type_data";
 //auth
 
 import { useAuth } from '../context/authContext';
+import MatchingFlow from "../modules/upload/questionType/MatchingFlow";
 
 
 // memo on annoymous prevnet re-render
@@ -53,7 +54,8 @@ export default function PreviewPost ({
 
     ratingIconId, 
 
-    rankingChoices
+    rankingChoices,
+    matchingPairs = []
 
 }){
     const {user} = useAuth();
@@ -178,6 +180,8 @@ export default function PreviewPost ({
                         </li>
                         )}
                     </ul>;
+        case "matching":
+            return <MatchingFlow pairs={matchingPairs} mode="preview" />;
     default:
         return null;
     }

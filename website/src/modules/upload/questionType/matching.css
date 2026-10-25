@@ -1,0 +1,210 @@
+.matching-flow {
+  width: 100%;
+  overflow-x: auto;
+  color: var(--font-color);
+  font-family: inherit;
+}
+
+.matching-flow-headings {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 145px;
+  width: 690px;
+  padding: 0 12px 8px;
+  color: var(--font-color);
+  font-size: 12px;
+  font-weight: 700;
+  opacity: 0.65;
+}
+
+.matching-flow-canvas {
+  width: 100%;
+  border: 1px solid var(--secondary-color);
+  border-radius: 14px;
+  background: var(--background-color);
+}
+
+.matching-flow .react-flow__node {
+  width: 260px;
+  border: 0;
+  background: transparent;
+}
+
+.matching-flow .react-flow__node-default {
+  padding: 0;
+}
+
+.matching-node {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 48px;
+  padding: 8px 12px;
+  border: 1px solid var(--secondary-color);
+  border-radius: 12px;
+  background: var(--background-color);
+  color: var(--font-color);
+  box-shadow: 0 3px 12px rgb(0 0 0 / 7%);
+}
+
+.matching-node-index {
+  display: grid;
+  flex: 0 0 26px;
+  width: 26px;
+  height: 26px;
+  place-items: center;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--primary-color) 15%, transparent);
+  color: var(--primary-color);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.matching-node-text {
+  overflow-wrap: anywhere;
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+.matching-node-input {
+  box-sizing: border-box;
+  flex: 1;
+  width: 100%;
+  min-width: 0;
+  min-height: 36px;
+  padding: 7px 9px;
+  border: 1px solid var(--secondary-color);
+  border-radius: 7px;
+  outline: 0;
+  background: var(--background-color);
+  color: var(--font-color);
+  font: inherit;
+  font-size: 13px;
+  cursor: text;
+  transition: border-color 120ms ease, box-shadow 120ms ease;
+}
+
+.matching-node-input:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--primary-color) 18%, transparent);
+}
+
+.matching-node-input::placeholder {
+  color: var(--font-color);
+  opacity: 0.7;
+}
+
+.matching-flow-edit-help {
+  margin: 0 0 8px;
+  color: var(--font-color);
+  font-size: 12px;
+  opacity: 0.75;
+}
+
+.matching-flow-edit .matching-flow-headings {
+  width: auto;
+  grid-template-columns: minmax(0, 1fr) 36px minmax(0, 1fr);
+  gap: 12px;
+  padding: 0 0 8px;
+}
+
+.matching-editor-list {
+  display: grid;
+  gap: 12px;
+}
+
+.matching-editor-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 36px minmax(0, 1fr);
+  align-items: center;
+  gap: 12px;
+}
+
+.matching-editor-field {
+  display: grid;
+  min-width: 0;
+  gap: 5px;
+  color: var(--font-color);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.matching-editor-field input {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  min-height: 44px;
+  padding: 9px 11px;
+  border: 1px solid var(--secondary-color);
+  border-radius: 9px;
+  outline: 0;
+  background: var(--background-color);
+  color: var(--font-color);
+  font: inherit;
+  font-size: 14px;
+  cursor: text;
+}
+
+.matching-editor-field input:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--primary-color) 18%, transparent);
+}
+
+.matching-editor-connector {
+  align-self: end;
+  padding-bottom: 13px;
+  color: var(--primary-color);
+  font-size: 20px;
+  text-align: center;
+}
+
+.matching-node .react-flow__handle {
+  width: 11px;
+  height: 11px;
+  border: 2px solid var(--background-color);
+  background: var(--primary-color);
+}
+
+.matching-flow .react-flow__edge-path {
+  stroke: var(--primary-color);
+  stroke-width: 2;
+}
+
+.matching-flow-answer .matching-flow-canvas {
+  cursor: crosshair;
+}
+
+.matching-flow-help {
+  margin: 8px 2px 0;
+  color: var(--font-color);
+  font-size: 12px;
+  opacity: 0.65;
+}
+
+.matching-editor-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.matching-editor-actions button {
+  padding: 7px 12px;
+  border: 1px solid var(--secondary-color);
+  border-radius: 18px;
+  background: transparent;
+  color: var(--font-color);
+  cursor: pointer;
+}
+
+.matching-editor-actions button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.matching-editor-actions span {
+  color: var(--font-color);
+  font-size: 12px;
+  opacity: 0.65;
+}

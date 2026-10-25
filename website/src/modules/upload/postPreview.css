@@ -1,6 +1,6 @@
 :root{
     /* --background-color:white; */
-     --background-color: #F5F5F5;
+     --background-color:#F3F3EC;
     --primary-color:#fd7648;
     /* --secondary-color: gainsboro; */
      --secondary-color: rgba(107, 107, 107, 0.318);
@@ -19,7 +19,6 @@
      --back-con:rgb(40, 40, 40);
      --link-color:#1a73e8;
 }
-
 
 /* POST UI DESIGN */
 .posts{

@@ -1,5 +1,5 @@
-import React,{ useState, useEffect, useRef, memo } from 'react';
-import { CloseOutlined,ClearOutlined,TagOutlined  } from '@ant-design/icons';
+import React,{ useState } from 'react';
+import { CloseOutlined } from '@ant-design/icons';
 export  function TagInput({ value = [], onChange, maxTags = 5 }) {
   const [input, setInput] = useState("");
   const [error, setError] = useState("");
@@ -56,21 +56,27 @@ export  function TagInput({ value = [], onChange, maxTags = 5 }) {
   return (
     <div className="tags-input-wrapper">
       <div className="tags-label">
-       <div id="tags-label-header">Tags </div> <div style={{opacity: '0.8'}}>Press Enter or comma to add tags</div>
+       <div style={{opacity: '0.8'}}>Press Enter or Comma to add Hashtags</div>
+        {
+          value.length > 0 &&  <button type="button" className="btn-clear" onClick={clearAll} disabled={!value.length}>
+            Remove all
+          </button>
+        }
+       
       </div>
       
-          <div className={`tags-input ${error ? "has-error" : ""}`}>
-      <div id='tag-preview'>
-        {value.map((t, i) => (
-          <span className="tag" key={t + i}>
-            <span className="tag-text">{t}</span>
-            <CloseOutlined className="tag-remove"
-              onClick={() => removeTag(i)}
-              aria-label={`Remove ${t}`}/>
-          </span>
-        ))}
+      <div className={`tags-input ${error ? "has-error" : ""}`}>
+        <div id='tag-preview'>
+          {value.map((t, i) => (
+            <span className="tag" key={t + i}>
+              <span className="tag-text"># {t}</span>
+              <CloseOutlined className="tag-remove"
+                onClick={() => removeTag(i)}
+                aria-label={`Remove ${t}`}/>
+            </span>
+          ))}
 
-      </div>
+        </div>
       </div>
     
       <input
@@ -89,9 +95,6 @@ export  function TagInput({ value = [], onChange, maxTags = 5 }) {
         />
 
       <div className="tags-controls">
-        <button type="button" className="btn-clear" onClick={clearAll} disabled={!value.length}>
-    Remove all
-        </button>
         <div id="tags-help" className="tags-count">
           {value.length} / {maxTags}
         </div>
@@ -107,9 +110,8 @@ export  function TagInput({ value = [], onChange, maxTags = 5 }) {
 export const TagsPreview = ({ tagsValue}) => {
   return (
     <>
-      {/* {tagsValue.length !== 0 && <TagOutlined id='tag-icon'/>} */}
       {tagsValue.map((t, i) => (
-          <span className="tag-text">#{t}</span> // will use as link later
+          <span className="tag-text">#{t}</span> 
       ))}
     </>
   );

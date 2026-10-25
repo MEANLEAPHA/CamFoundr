@@ -5,6 +5,10 @@
   display: flex;
   justify-content: center;
 }
+
+.matching-flow-answer {
+  margin: 12px 0;
+}
 .answer-author-div{
   display: flex;
   justify-content: start;
@@ -97,6 +101,7 @@
   border-radius: 16px;
   margin: 0;
 }
+
 
 /* OPEN END */
 

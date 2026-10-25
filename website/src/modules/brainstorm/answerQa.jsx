@@ -9,6 +9,7 @@ import { faUpDown, faArrowDown, faArrowUp, faUserSecret } from "@fortawesome/fre
 import { iconOptions } from "../../data/post_type_data.jsx";
 import { CloseOutlined } from "@ant-design/icons";
 import "./answerQa.css";
+import MatchingFlow from "../upload/questionType/MatchingFlow";
 
 import { AnonymousName, AnonymousProfile } from "../../util/anonymousTokens.jsx";
 import api from "../../api/axiosInstance.js";
@@ -31,6 +32,7 @@ const AnswerQa = () => {
   const [multipleChoice, setMultipleChoice] = useState([]);
   const [rankingOrderInput, setRankingOrderInput] = useState([]);
   const [rankingOrderValue, setRankingOrderValue] = useState([]);
+  const [matchingPositions, setMatchingPositions] = useState([]);
 
   const [pageLoading, setPageLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
@@ -273,6 +275,15 @@ const AnswerQa = () => {
           </DragDropContext>
         );
 
+      case "matching":
+        return (
+          <MatchingFlow
+            mode="answer"
+            pairs={QaData?.matching_items || []}
+            onMappingChange={setMatchingPositions}
+          />
+        );
+
       case "rating":
         return (
           <div className="answer-rating">
@@ -311,6 +322,8 @@ const AnswerQa = () => {
         return <span>Tap an icon to rate</span>;
       case "rankingorder":
         return <span>Hold or Grab then move to reorder</span>;
+      case "matching":
+        return <span>Connect each item to its match</span>;
       default:
         return null;
     }
@@ -333,6 +346,19 @@ const AnswerQa = () => {
       case "rankingorder":
         if (rankingOrderInput.length === 0) return "Please reorder the items before submitting.";
         break;
+      case "matching": {
+        const pairCount = QaData?.matching_items?.length || 0;
+        if (
+          pairCount < 3 ||
+          pairCount > 5 ||
+          matchingPositions.length !== pairCount ||
+          matchingPositions.some((position) => !Number.isInteger(position)) ||
+          new Set(matchingPositions).size !== pairCount
+        ) {
+          return "Please connect every item to a unique match.";
+        }
+        break;
+      }
       case "rating":
         if (!ratingInput) return "Please give a rating.";
         break;
@@ -378,6 +404,9 @@ const AnswerQa = () => {
       case "rankingorder":
         payload.rankingIds = rankingOrderInput;
         payload.rankingTexts = rankingOrderValue;
+        break;
+      case "matching":
+        payload.matchingPositions = matchingPositions;
         break;
     }
 

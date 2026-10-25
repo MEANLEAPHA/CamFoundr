@@ -135,17 +135,20 @@ export default function RankingOrder({ value, onChange }) {
           onClick={addItem}
           disabled={items.length >= maxItems}
           type="button"
-          className="btn-ranking"
+          className="btn-multiple-choice"
         >
           <FontAwesomeIcon icon={faPlus} />
           Add more 
         </button>
-
+        {
+          items.length > 3 && <span  className="btn-multiple-choice">|</span>
+        }
+        
         {items.length > 3 && (
           <button
             onClick={removeAll}
             type="button"
-            className="btn-ranking btn-remove-ranking"
+            className=" btn-remove-ranking btn-multiple-choice"
           >
             Remove all
           </button>

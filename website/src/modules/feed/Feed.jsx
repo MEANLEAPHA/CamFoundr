@@ -37,6 +37,7 @@ import nahIdeaAuth from "../../assets/img/nahIdeaAuth.png";
 // data
 import { iconOptions } from "../../data/post_type_data";
 import Rule from '../../util/rule';
+import MatchingFlow from "../upload/questionType/MatchingFlow";
 
 // api 
 import api from "../../api/axiosInstance";
@@ -481,6 +482,10 @@ export default function Feed() {
                                 </li>
                               )}
                           </ul>
+                      )}
+
+                      {data.question_type === "matching" && data.matching_items?.length > 0 && (
+                        <MatchingFlow pairs={data.matching_items} mode="preview" />
                       )}
 
                       {data.question_type === "rating" && (

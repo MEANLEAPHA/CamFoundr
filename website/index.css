@@ -4,7 +4,7 @@ body{
     overflow-x: hidden;
 }
 :root{
-    --background-color: #F5F5F5;
+    --background-color:#F3F3EC;
     --primary-color:#f1ad20;
     --secondary-color: rgba(107, 107, 107, 0.318);
     --font-color:rgb(0, 0, 0);

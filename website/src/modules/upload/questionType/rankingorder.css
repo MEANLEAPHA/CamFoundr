@@ -1,8 +1,11 @@
 .question-type-wrapper{
-  border: 1px dashed var(--secondary-color);
+  border: 2px dashed var(--secondary-color);
     padding: 20px;
     border-radius: 10px;
     margin-top: 10px;
+}
+.question-type-wrapper:focus-within{
+  border: 3px var(--font-color) dashed;
 }
 .ranking-parent {
   width: 100%;
@@ -117,6 +120,7 @@
   width: 100%;
   display: flex;
   align-items: center;
+  justify-content: end;
   gap: 12px;
   margin-top: 20px;
   flex-wrap: wrap;
@@ -151,10 +155,6 @@
   transform: none;
 }
 
-/* REMOVE */
-.btn-remove-ranking:hover {
-  background: tomato;
-}
 
 /* =========================================
 RESPONSIVE

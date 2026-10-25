@@ -29,6 +29,7 @@ import api from "../../api/axiosInstance";
 import RecentHistory from "../../util/recentHistory";
 import Connection from "../../modules/user/connection";
 import Rule from "../../util/rule";
+import MatchingFlow from "../../modules/upload/questionType/MatchingFlow";
 
 const USER_LIMIT = 5;
 const POST_LIMIT = 5;
@@ -350,6 +351,9 @@ const SearchForm = () => {
                               )}
                           </ul>
                       )}
+              {data.question_type === "matching" && data.matching_items?.length > 0 && (
+                <MatchingFlow pairs={data.matching_items} mode="preview" />
+              )}
               {data.question_type === "openend" && ( null
                       )}
             </div>

@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import {useNavigate} from "react-router-dom";
 import { Dropdown, Space } from 'antd';
 import { useNotifications } from "../context/notificationContext";
-import "../assets/style/Header.css";
+import "../assets/style/header.css";
 import { useAuth } from '../context/authContext';
 import { SearchBar } from "../components/searchBar";
 import { Ad, Bell, Brain,
@@ -29,9 +29,11 @@ const Header = ({onToggleAside, onToggleTheme, currentTheme}) => {
         }} 
         style={{cursor:'pointer'}}
         />
-        <p className='logo-font-main not-mobile-tool'>CDL</p>
-        <p className='not-mobile-tool logo-moto' >Bigger minds, Better ideas</p>
-        <img src="/camfoundr.png" className='mobile-tool logo-mobile' alt="CamFoundr"/>
+        <div className='logo-div'>
+          <span className='logo-font-main'>CDL</span>
+          <span className='logo-moto'>Bigger mind <br/> Create better ideas</span>
+        </div>
+     
       </div>
 
         {/* <SearchBar /> */}

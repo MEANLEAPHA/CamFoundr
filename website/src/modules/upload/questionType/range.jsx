@@ -8,24 +8,51 @@ export default function Range({
   SetMax,
   SetMin,
   SetStep,
+  SetValue,
 }) {
-  // const percentage =
-  //   ((value - (min || 0)) / ((max || 100) - (min || 0))) * 100;
-  const percentage = Math.min(Math.max(((value - (min || 0)) / ((max || 100) - (min || 0))) * 100, 0), 100);
+  const rangeMin = min === "" || !Number.isFinite(Number(min)) ? 0 : Number(min);
+  const rangeMax = max === "" || !Number.isFinite(Number(max)) ? 100 : Number(max);
+  const rangeStep = step === "" || !Number.isFinite(Number(step)) || Number(step) <= 0
+    ? 1
+    : Number(step);
+  const rangeValue = Number.isFinite(value) ? value : rangeMin;
+  const rangeSpan = rangeMax - rangeMin;
+  const getAlignedValue = (candidate, minimum = rangeMin, maximum = rangeMax, increment = rangeStep) => {
+    if (maximum <= minimum || increment <= 0) return minimum;
+    const boundedValue = Math.min(Math.max(candidate, minimum), maximum);
+    const alignedValue = minimum + Math.round((boundedValue - minimum) / increment) * increment;
+    return Math.min(alignedValue, maximum);
+  };
+  const displayValue = getAlignedValue(rangeValue);
+  const percentage = rangeSpan > 0
+    ? ((displayValue - rangeMin) / rangeSpan) * 100
+    : 0;
 
   const handleMin = (e) => {
     const val = e.target.value;
-    SetMin(val === "" ? "" : Number(val));
+    const nextMin = val === "" ? "" : Number(val);
+    SetMin(nextMin);
+    if (nextMin !== "" && nextMin < rangeMax) {
+      SetValue(getAlignedValue(rangeValue, nextMin, rangeMax));
+    }
   };
 
   const handleMax = (e) => {
     const val = e.target.value;
-    SetMax(val === "" ? "" : Number(val));
+    const nextMax = val === "" ? "" : Number(val);
+    SetMax(nextMax);
+    if (nextMax !== "" && nextMax > rangeMin) {
+      SetValue(getAlignedValue(rangeValue, rangeMin, nextMax));
+    }
   };
 
   const handleStep = (e) => {
     const val = e.target.value;
-    SetStep(val === "" ? "" : Number(val));
+    const nextStep = val === "" ? "" : Number(val);
+    SetStep(nextStep);
+    if (nextStep !== "" && nextStep > 0) {
+      SetValue(getAlignedValue(rangeValue, rangeMin, rangeMax, nextStep));
+    }
   };
 
   return (
@@ -34,7 +61,7 @@ export default function Range({
       <div className="custom-range-preview">
 
         <div className="custom-range-minmax">
-          {min || 0}
+          {rangeMin}
         </div>
 
         <div className="custom-range-slider-wrap" style={{ position: "relative" }}>
@@ -46,7 +73,7 @@ export default function Range({
               left: `${percentage}%`,
             }}
           >
-            {value}
+            {displayValue}
           </div>
 
           {/* <input
@@ -55,23 +82,23 @@ export default function Range({
             min={min || 0}
             max={max || 100}
             step={step || 1}
-            value={value}
+            value={rangeValue}
             onChange={onChange}
           /> */}
           <input
               type="range"
               className="custom-range-slider"
-              min={min || 0}
-              max={max || 100}
-              step={step || 1}
-              value={Math.min(Math.max(value, min || 0), max || 100)}
+              min={rangeMin}
+              max={rangeMax}
+              step={rangeStep}
+              value={displayValue}
               onChange={onChange}
             />
 
         </div>
 
         <div className="custom-range-minmax">
-          {max || 100}
+          {rangeMax}
         </div>
 
       </div>

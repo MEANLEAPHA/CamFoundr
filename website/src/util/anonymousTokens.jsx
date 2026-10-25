@@ -1,13 +1,11 @@
+import React, { useState, useEffect, useRef} from 'react';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUserSecret} from "@fortawesome/free-solid-svg-icons";
-
 import nahIdeaAuth from "../assets/img/nahIdeaAuth.png";
 
 const STORAGE_TOKENS = "AnnoymousUsed";
 const STORAGE_RESET = "AnnoymousResetDate";
 
-import React from "react";
-import { useState, useEffect, useRef, useMemo } from 'react';
 // Compute next local midnight
  function getNextLocalMidnight() {
   const now = new Date();
@@ -191,15 +189,7 @@ export function AnonymousToggle({
       />
  
   <div className="anonymous-header">
-    <div className="anonymous-title">
-       Anonymous Mode
-    </div>
-
-    <div className={`status-badge ${enabled ? "on" : "off"}`}>
-      {enabled ? "ON" : "OFF"}
-    </div>
-  </div>
-
+    
   <p className="token-text">
     {tokens > 0 ? (
       <>
@@ -209,6 +199,10 @@ export function AnonymousToggle({
       AnonymousTokensCoolDown({tokens, countdown})
     )}
   </p>
+    <div className={`status-badge ${enabled ? "on" : "off"}`}>
+      {enabled ? "ON" : "OFF"}
+    </div>
+  </div>
 
   {tokens > 0 && (
     <div

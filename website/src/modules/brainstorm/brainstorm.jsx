@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import api from "../../api/axiosInstance";
 import { faCircle } from "@fortawesome/free-regular-svg-icons";
 import { Spin } from "antd";
+import MatchingFlow from "../upload/questionType/MatchingFlow";
 
 const Brainstorm = () => {
   const navigate = useNavigate();
@@ -173,6 +174,13 @@ const Brainstorm = () => {
           </div>
         );
 
+      case "matching":
+        return (
+          <div className="question-preview-card">
+            <MatchingFlow pairs={qData.matching_items || []} mode="preview" />
+          </div>
+        );
+
       case "rating":
 
         return (
@@ -219,6 +227,10 @@ const Brainstorm = () => {
     
     if (post.question_type === "rankingorder") {
       QaData.items = post.data?.items || [];
+    }
+
+    if (post.question_type === "matching") {
+      QaData.matching_items = post.data?.matching_items || [];
     }
     
     if (post.question_type === "rating") {

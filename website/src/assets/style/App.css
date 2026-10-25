@@ -1,6 +1,6 @@
 :root{
     /* Primary */
-    --background-color: #F8F9FA;
+    --background-color:#F3F3EC;
 
 
     --heading-text-color: #0F172A;
@@ -31,4 +31,3 @@
     --font-color:rgb(255, 255, 255);
     --back-con:rgb(40, 40, 40);
 }
-

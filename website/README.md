@@ -18,3 +18,10 @@ Set `GEMINI_API` in the server's environment (or its local `server/.env` file)
 to a Google Gemini API key. Keep this key on the server; it is never required
 in the website's Vite environment. The authenticated question-generation API
 uses Gemini 3.8 Flash and is rate limited per user.
+
+## Matching question database setup
+
+Before starting the updated server, apply
+`server/migrations/20261025_add_matching_questions.sql` to the PostgreSQL
+database. It creates the indexed matching-pair table and adds the JSONB column
+used to store each respondent's index mapping.

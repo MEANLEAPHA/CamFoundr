@@ -1,7 +1,6 @@
 :root{
     /* Primary */
-    --background-color: #F8F9FA;
-
+    --background-color:#F3F3EC;
     --primary-color:#f1ad20;
     --secondary-color: rgba(107, 107, 107, 0.318);
     --font-color:rgb(0, 0, 0);
@@ -11,19 +10,18 @@
 .dark-theme{
     /* Primary */
     --background-color:#0F172A;
-    
     --primary-color:#f1ad20;
     --secondary-color: rgba(220, 220, 220, 0.318);
     --font-color:rgb(255, 255, 255);
     --back-con:rgb(40, 40, 40);
 }
-
 section{
     width: 100%;
     padding: 0;
     margin: 0px auto;
     height: auto;
 }
+
 @media screen and (max-width:1200px){
     section{
         width:90%;
@@ -38,5 +36,4 @@ section{
         height: auto;
     }
 }
-
 

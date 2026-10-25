@@ -301,7 +301,8 @@ export const question_type = [
   {id:4, label:"Multiple Choice", value:"multiplechoice"},
   {id:5, label:"Range", value:"range"},
   {id:6, label:"Rating", value:"rating"},
-  {id:7, label:"Ranking Order", value:"rankingorder"}
+  {id:7, label:"Ranking Order", value:"rankingorder"},
+  {id:8, label:"Matching", value:"matching"}
 ];
 
 export const gif_category = [

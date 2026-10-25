@@ -8,6 +8,7 @@ export default function MultipleChoice({
   includeAllAbove,
   setIncludeAllAbove,
 }) {
+
   const maxChoices = 10;
 
   const handleChange = (index, newValue) => {
@@ -94,8 +95,10 @@ export default function MultipleChoice({
           type="button"
           className="btn-multiple-choice"
         >
-          <FontAwesomeIcon icon={faPlus} /> Add more
+        <FontAwesomeIcon icon={faPlus} /> Add more
         </button>
+
+        <span  className="btn-multiple-choice">|</span>
 
         {!includeAllAbove && (
           <button
@@ -106,7 +109,8 @@ export default function MultipleChoice({
             Add "All Above"
           </button>
         )}
-
+      
+    
         {includeAllAbove === 1 && (
           <button
             onClick={() => setIncludeAllAbove(0)}
@@ -115,7 +119,13 @@ export default function MultipleChoice({
           >
             Remove "All Above"
           </button>
+          
         )}
+        
+        { value.length > 3 && (
+          <span  className="btn-multiple-choice">|</span>
+        )}
+
         
         {value.length > 3 && (
           <button

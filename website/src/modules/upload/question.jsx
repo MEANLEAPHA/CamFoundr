@@ -1,22 +1,17 @@
 // React State
-import React,{ useState, useEffect, useRef, memo } from 'react';
-import { useNavigate, useOutletContext } from "react-router-dom";
-
+import React, {useState} from 'react';
 import Select from "react-select";
 import api from "../../api/axiosInstance";
 
-// import {TagInput }from "../../util/tagInput";
-import { useAnonymousTokens, AnonymousTokensCoolDown, AnonymousName, AnonymousProfile} from "../../util/anonymousTokens";
+import { useAnonymousTokens} from "../../util/anonymousTokens";
 import toast from "react-hot-toast";
-import { question_options,iconOptions, question_type } from "../../data/post_type_data";
-
+import { question_options, question_type } from "../../data/post_type_data";
 
 // util
 import Rule from "../../util/rule";
 import PreviewRadio from "../../util/previewRadio";
-// import NahideaInfo from "../util/upload/NahideaInfo";
+import NahideaInfo from "../../util/cdlinfo.jsx";
 import {MoreFieldsConAndQues} from "../../util/moreFlieds";
-// import{TagsPreview} from "../util/tagInput";
 
 // import question type
 import ClosedEnd from './questionType/closedEnd';
@@ -26,11 +21,10 @@ import SingleChoice from './questionType/singleChoice';
 import MultipleChoice from './questionType/multipleChoice';
 import RankingOrder from './questionType/rankingOrder';
 import Rating from './questionType/rating';
+import MatchingFlow from "./questionType/MatchingFlow";
 
 // ant
-import { LayoutOutlined,
-          LoadingOutlined
-        } from '@ant-design/icons';
+import { LayoutOutlined, LoadingOutlined, StarOutlined } from '@ant-design/icons';
 
 
 
@@ -38,9 +32,7 @@ import { LayoutOutlined,
 import "./tag.css";
 import "./postPreview.css";
 import "./content.css";
-
-const AnonymousPf = memo(AnonymousProfile);
-const AnonymousNm = memo(AnonymousName);
+import { ChevronLeft } from 'lucide-react';
 
 export default function Questiion(){
 
@@ -76,6 +68,11 @@ export default function Questiion(){
   
     // ranking order
     const [rankingChoices, setRankingChoices] = useState(["", "", ""]);
+    const [matchingPairs, setMatchingPairs] = useState([
+      { left: "", right: "" },
+      { left: "", right: "" },
+      { left: "", right: "" },
+    ]);
 
     // rating 
     const [ratingIconId, setRatingIconId] = useState(1);
@@ -92,17 +89,25 @@ export default function Questiion(){
   const resetSingleChoice = () => { setSingleChoices(["", "", ""]); };
   const resetMultipleChoice = () => { setMultipleChoices(["","",""]); setIncludeAllAbove(0); };
   const resetRanking = () => { setRankingChoices(["","",""]); };
+  const resetMatching = () => {
+    setMatchingPairs([
+      { left: "", right: "" },
+      { left: "", right: "" },
+      { left: "", right: "" },
+    ]);
+  };
   const resetRating = () => { setRatingIconId(1); };
   
   // resetMap
   const resetMap = {
-    openend:        [ resetRange, resetSingleChoice, resetMultipleChoice, resetRanking, resetRating],
-    closedend:      [resetRange, resetSingleChoice, resetMultipleChoice, resetRanking, resetRating],
-    range:          [ resetSingleChoice, resetMultipleChoice, resetRanking, resetRating],
-    singlechoice:   [ resetRange, resetMultipleChoice, resetRanking, resetRating],
-    multiplechoice: [ resetRange, resetSingleChoice, resetRanking, resetRating],
-    rankingorder:   [ resetRange, resetSingleChoice, resetMultipleChoice, resetRating],
-    rating:         [ resetRange, resetSingleChoice, resetMultipleChoice, resetRanking],
+    openend:        [ resetRange, resetSingleChoice, resetMultipleChoice, resetRanking, resetRating, resetMatching],
+    closedend:      [resetRange, resetSingleChoice, resetMultipleChoice, resetRanking, resetRating, resetMatching],
+    range:          [ resetSingleChoice, resetMultipleChoice, resetRanking, resetRating, resetMatching],
+    singlechoice:   [ resetRange, resetMultipleChoice, resetRanking, resetRating, resetMatching],
+    multiplechoice: [ resetRange, resetSingleChoice, resetRanking, resetRating, resetMatching],
+    rankingorder:   [ resetRange, resetSingleChoice, resetMultipleChoice, resetRating, resetMatching],
+    rating:         [ resetRange, resetSingleChoice, resetMultipleChoice, resetRanking, resetMatching],
+    matching:       [ resetRange, resetSingleChoice, resetMultipleChoice, resetRanking, resetRating],
   };
 
   const handlePostType = () => {
@@ -117,6 +122,7 @@ export default function Questiion(){
       singlechoice: singleChoices.length,
       multiplechoice: multipleChoices.length,
       rankingorder: rankingChoices.length,
+      matching: matchingPairs.length,
     }[type];
 
     setGeneratingQuestion(true);
@@ -139,10 +145,33 @@ export default function Questiion(){
         throw new Error("The AI returned invalid choices. Please try again.");
       }
 
+      if (type === "range") {
+        const { min: generatedMin, max: generatedMax, step: generatedStep, value } = data.range || {};
+        const rangeValues = [generatedMin, generatedMax, generatedStep, value];
+        if (
+          !rangeValues.every(Number.isSafeInteger) ||
+          generatedMax <= generatedMin ||
+          generatedStep <= 0 ||
+          generatedStep > generatedMax - generatedMin ||
+          (generatedMax - generatedMin) % generatedStep !== 0 ||
+          value < generatedMin ||
+          value > generatedMax ||
+          (value - generatedMin) % generatedStep !== 0
+        ) {
+          throw new Error("The AI returned invalid range settings. Please try again.");
+        }
+
+        setMin(generatedMin);
+        setMax(generatedMax);
+        setStep(generatedStep);
+        setRangeValue(value);
+      }
+
       setTitle(data.question.trim());
       if (type === "singlechoice") setSingleChoices(data.choices);
       if (type === "multiplechoice") setMultipleChoices(data.choices);
       if (type === "rankingorder") setRankingChoices(data.choices);
+      if (type === "matching") setMatchingPairs(data.matchingPairs);
       toast.success("Question generated");
     } catch (error) {
       console.error("Question generation failed:", error);
@@ -203,6 +232,7 @@ export default function Questiion(){
             SetStep={setStep}
             SetMin={setMin}
             SetMax={setMax}
+            SetValue={setRangeValue}
             value={rangeValue}
             onChange={(e) => setRangeValue(Number(e.target.value))}
           />
@@ -220,6 +250,38 @@ export default function Questiion(){
         );
       case "rankingorder":
         return <RankingOrder value={rankingChoices} onChange={setRankingChoices} />;
+      case "matching":
+        return (
+          <div className="matching-editor">
+            <MatchingFlow
+              mode="edit"
+              pairs={matchingPairs}
+              onPairsChange={setMatchingPairs}
+            />
+            <div className="matching-editor-actions">
+              <button
+                type="button"
+                onClick={() => setMatchingPairs((current) => [
+                  ...current,
+                  { left: "", right: "" },
+                ])}
+                disabled={matchingPairs.length >= 5}
+              >
+                Add pair
+              </button>
+              <button
+                type="button"
+                onClick={() => setMatchingPairs((current) => (
+                  current.length > 3 ? current.slice(0, -1) : current
+                ))}
+                disabled={matchingPairs.length <= 3}
+              >
+                Remove last pair
+              </button>
+              <span>{matchingPairs.length}/5 pairs (minimum 3)</span>
+            </div>
+          </div>
+        );
       case "rating":
         return <Rating value={ratingIconId} onChange={setRatingIconId} />;
       default:
@@ -237,14 +299,17 @@ export default function Questiion(){
         toast.error("Please enter question title");
         return;
       }
+      
       if(selectType === null) {
             toast.error("Please select question type");
             return;
       }
-      // if(tags.length === 0 ) {
-      //       toast.error("Please add some #hashtags");
-      //       return;
-      // }
+
+      if(tags.length === 0 ) {
+            toast.error("Please add some #hashtags");
+            return;
+      }
+
       if(questionType === null) {
             toast.error("Please select question type");
             return;
@@ -264,6 +329,21 @@ export default function Questiion(){
       if (questionType?.value === "rankingorder") {
         compactedRankingChoices = validateChoiceList(rankingChoices, "ranking items");
         if (!compactedRankingChoices) return;
+      }
+      let compactedMatchingPairs;
+      if (questionType?.value === "matching") {
+        if (matchingPairs.length < 3 || matchingPairs.length > 5) {
+          toast.error("Matching questions must have between 3 and 5 pairs.");
+          return;
+        }
+        if (matchingPairs.some((pair) => !pair.left.trim() || !pair.right.trim())) {
+          toast.error("Please fill in both sides of every matching pair.");
+          return;
+        }
+        compactedMatchingPairs = matchingPairs.map((pair) => ({
+          left: pair.left.trim(),
+          right: pair.right.trim(),
+        }));
       }
       if (questionType?.value === "range" && Number(min) >= Number(max)) {
         toast("Range minimum must be less than maximum");
@@ -304,6 +384,10 @@ export default function Questiion(){
         case "rankingorder":
           formData.append("question_type", "rankingorder");
           compactedRankingChoices.forEach((c, i) => formData.append(`ranking[${i+1}]`, c));
+          break;
+        case "matching":
+          formData.append("question_type", "matching");
+          formData.append("matchingPairs", JSON.stringify(compactedMatchingPairs));
           break;
         case "rating":
           formData.append("question_type", "rating");
@@ -348,10 +432,27 @@ export default function Questiion(){
 
         <form onSubmit={handleSubmit} id="content-form">
           <div id='form-header-label'>
-            <p id="content-label">Create Question</p> 
-            <button id='preview-toggle' type="button" onClick={() => setOpenPreview(true)} ><LayoutOutlined /> Preview</button>
-          </div>
+            <p id="content-label" style={{display: 'flex', alignItems: 'center', gap: '10px'}}><ChevronLeft style={{width: '25px', border: 'var(--secondary-color) 1px solid', padding: '2px', fontSize: '15px', borderRadius:'20px', cursor: 'pointer'}}/>Create Question</p> 
+            <div style={{display:"flex", gap:"10px", alignItems:"center", }}>
+              {
+                selectType && questionType && <button
+                type="button"
+                className='preview-toggle generate-quiz-btn'
+                onClick={handleGenerateQuestion}
+                disabled={!selectType || !questionType || generatingQuestion}
+                aria-label="Generate a question using the selected topic and question type"
+              >
+                {generatingQuestion
+                  ? <><StarOutlined spin /> Generating</>
+                  : <div style={{display:'flex', alignItems: 'center', gap: '5px'}}><StarOutlined /> Generate</div>}
+              </button>
+              }
+              <button className='preview-toggle' type="button" onClick={() => setOpenPreview(true)} ><LayoutOutlined /> Preview</button>
+            </div>
             
+          </div>
+
+          <p className="title-label" >Topic<sup style={{color:'red'}}>*</sup></p>
           <Select
             options={question_options} 
             value={selectType}
@@ -373,11 +474,9 @@ export default function Questiion(){
             )}
             
           />
-        
 
           <div className="title-wrapper">
-            <p className="title-label" >Question Text</p>
-                
+            <p className="title-label" >Title<sup style={{color:'red'}}>*</sup></p>
             <textarea
               value={title}
               onChange={(e) => setTitle(e.target.value)}
@@ -390,35 +489,14 @@ export default function Questiion(){
             <div className="char-counter">
               {title.length}/300
             </div>
-            <button
-              type="button"
-              className="question-generate-button"
-              onClick={handleGenerateQuestion}
-              disabled={!selectType || !questionType || generatingQuestion}
-              aria-label="Generate a question using the selected topic and question type"
-            >
-              {generatingQuestion
-                ? <><LoadingOutlined spin /> Generating</>
-                : "Generate"}
-            </button>
           </div>
-{/* 
+          <p className="title-label" >Question Type<sup style={{color:'red'}}>*</sup></p>
           <Select
-            options={question_type} 
-            value={questionType}
-            onChange={(value) => {
-              setQuestionType(value);
-              handlePostType(value);   
-            }}
-            classNamePrefix="custom"
-            placeholder='Select Question Type'
-          /> */}
-            <Select
             options={question_type}
             value={questionType}
             onChange={(value) => {
-              handlePostType(questionType?.value); // reset fields belonging to the OLD type
-              setQuestionType(value);              // then set the new type
+              handlePostType(questionType?.value); 
+              setQuestionType(value);              
             }}
             classNamePrefix="custom"
             placeholder='Select Question Type'
@@ -426,6 +504,7 @@ export default function Questiion(){
 
           {QuestionTypeRenderer()}
 
+          
           <MoreFieldsConAndQues
             tags={tags}
             setTags={setTags}
@@ -463,10 +542,11 @@ export default function Questiion(){
               rangeValue={rangeValue}
               ratingIconId={ratingIconId}
               rankingChoices={rankingChoices}
+              matchingPairs={matchingPairs}
             />
       </article>
 
-      {/* <NahideaInfo /> */}
+      <NahideaInfo />
 
     </div>
   );

@@ -7,17 +7,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMask, faBold, faItalic, faStrikethrough, faHeading,
          faQuoteLeft, faLink, faCode, faList, faList12} from "@fortawesome/free-solid-svg-icons";
 import { faImages} from "@fortawesome/free-regular-svg-icons";
-
 import {DeleteOutlined} from '@ant-design/icons';
-
 import {RightOutlined, LeftOutlined} from '@ant-design/icons';
 import { Carousel } from 'antd';
 import { useEditorState } from "@tiptap/react";
-import { Extension } from "@tiptap/core";
-
-
+import {HatGlasses, Hash} from 'lucide-react';
 import { useEditor, EditorContent } from "@tiptap/react";
-
 import StarterKit from "@tiptap/starter-kit";
 import { Markdown } from "@tiptap/markdown";
 import Link from "@tiptap/extension-link";
@@ -462,12 +457,13 @@ export const MarkdownPreview = ({ content }) => {
   
       <div className='radio-button-div-type'>
         {[
-                      {label: 'Tags', icon: <TagsOutlined />, id: 1},
-                      {label: 'Anonymous', icon: <FontAwesomeIcon icon={faMask} />, id: 2},
+            {label: <span>Hashtag<sup style={{color:'red'}}>*</sup></span>, icon: <Hash style={{width: '15px'}}/>, id: 1},
+            {label: <span>Anonymous</span>, icon: <HatGlasses style={{width: '15px'}}/>, id: 2},
                     ].map((opt) => (
           <button key={opt.id} onClick={() => setSelected(opt.id)} type="button" className='radio-button-type' style={{
-              borderBottom: selected === opt.id ? "3px solid #fd7648" : "3px solid transparent",
-              color: selected === opt.id ? "#fd7648" : "grey",
+              borderBottom: selected === opt.id ? "1px solid var(--font-color)" : "3px solid transparent",
+              opacity: selected === opt.id ? 1 : 0.5,
+              display: 'flex', alignItems:'center', gap: '5px'
             }}>
             {opt.icon}{" "}{opt.label}
           </button>
@@ -481,4 +477,5 @@ export const MarkdownPreview = ({ content }) => {
       </>
   );
 });
+
  

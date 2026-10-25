@@ -283,6 +283,16 @@ async function hydratePostsFromDb(ids, basePosts = null) {
         )
       : { rows: [] };
 
+    const matchingItems = qIds.length
+      ? await pool.query(
+          `SELECT question_id, pair_index, left_text, right_text
+           FROM matching_item
+           WHERE question_id = ANY($1::int[])
+           ORDER BY question_id, pair_index`,
+          [qIds]
+        )
+      : { rows: [] };
+
     const contentMap = new Map(contents.rows.map((c) => [c.post_id, c]));
     const confessionMap = new Map(confessions.rows.map((c) => [c.post_id, c]));
     const questionMap = new Map(questions.rows.map((q) => [q.post_id, q]));
@@ -323,6 +333,9 @@ async function hydratePostsFromDb(ids, basePosts = null) {
             break;
           case "rankingorder":
             extra = { items: rankingItems.rows.filter((i) => i.question_id === q.id) };
+            break;
+          case "matching":
+            extra = { matching_items: matchingItems.rows.filter((i) => i.question_id === q.id) };
             break;
           case "rating":
             extra = ratingMap.get(q.id) || {};

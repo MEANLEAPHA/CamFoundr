@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import "./trending.css";
+import MatchingFlow from "../upload/questionType/MatchingFlow";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import nahideaIcon from '../../assets/img/nahideaIcon.png';
 // antd
@@ -279,6 +280,10 @@ const Trending = () => {
                                   +{data.items?.length - 3} more
                                 </li>
                               )}
+
+              {data.question_type === "matching" && data.matching_items?.length > 0 && (
+                <MatchingFlow pairs={data.matching_items} mode="preview" />
+              )}
                           </ul>
                       )}
               {data.question_type === "openend" && ( null

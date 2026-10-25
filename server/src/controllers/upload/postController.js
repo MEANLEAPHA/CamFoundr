@@ -36,6 +36,32 @@ const createPost = async (req, res) => {
         return res.status(404).json({ message: "Missing post type." });
       };
 
+      let matchingPairs = [];
+      if (post_type === "question" && question_type === "matching") {
+        try {
+          matchingPairs = JSON.parse(req.body.matchingPairs || "[]");
+        } catch {
+          return res.status(400).json({ message: "Matching pairs must be valid JSON." });
+        }
+
+        if (
+          !Array.isArray(matchingPairs) ||
+          matchingPairs.length < 3 ||
+          matchingPairs.length > 5 ||
+          matchingPairs.some((pair) => (
+            !pair ||
+            typeof pair.left !== "string" ||
+            !pair.left.trim() ||
+            pair.left.trim().length > 120 ||
+            typeof pair.right !== "string" ||
+            !pair.right.trim() ||
+            pair.right.trim().length > 120
+          ))
+        ) {
+          return res.status(400).json({ message: "Provide between 3 and 5 complete matching pairs." });
+        }
+      }
+
         // Generate only if anonymous
     let anonName = null;
     let anonColor = null;
@@ -228,6 +254,16 @@ const createPost = async (req, res) => {
                       })
                     );
                     break;
+
+                case "matching":
+                  for (const [index, pair] of matchingPairs.entries()) {
+                    await pool.query(
+                      `INSERT INTO matching_item (question_id, pair_index, left_text, right_text)
+                       VALUES ($1, $2, $3, $4)`,
+                      [questionId, index, pair.left.trim(), pair.right.trim()]
+                    );
+                  }
+                  break;
 
                 case "rating":
                   await pool.query(
@@ -933,6 +969,15 @@ async function hydratePostsFromDb(ids, basePosts = null) {
       `, [qIds])).rows
     : [];
 
+  const matchingItems = qIds.length
+    ? (await pool.query(`
+        SELECT question_id, pair_index, left_text, right_text
+        FROM matching_item
+        WHERE question_id = ANY($1)
+        ORDER BY question_id, pair_index
+      `, [qIds])).rows
+    : [];
+
   // ====================================
   // MAPS FOR FAST LOOKUP
   // ====================================
@@ -1018,6 +1063,12 @@ async function hydratePostsFromDb(ids, basePosts = null) {
             items: rankingItems.filter(
               i => i.question_id === q.id
             )
+          };
+          break;
+
+        case "matching":
+          extra = {
+            matching_items: matchingItems.filter((item) => item.question_id === q.id),
           };
           break;
 
