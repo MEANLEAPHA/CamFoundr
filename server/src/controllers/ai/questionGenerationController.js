@@ -38,9 +38,16 @@ async function generateQuestion(req, res) {
   }
 
   const apiKey = process.env.NVIDIA_API?.trim();
-  const model = process.env.NVIDIA_MODEL?.trim();
-  if (!apiKey || !model) {
+  const model = process.env.NVIDIA_MODEL?.trim() || "meta/llama-3.1-8b-instruct";
+  const configuredTimeout = process.env.NVIDIA_TIMEOUT_MS;
+  const timeoutMs = configuredTimeout === undefined ? 180000 : Number(configuredTimeout);
+  if (!apiKey) {
     return res.status(503).json({ message: "AI generation is not configured on the server." });
+  }
+  if (!Number.isSafeInteger(timeoutMs) || timeoutMs < 30000 || timeoutMs > 300000) {
+    return res.status(503).json({
+      message: "AI generation timeout must be between 30000 and 300000 milliseconds.",
+    });
   }
 
   const outputFields = ["question: string"];
@@ -87,7 +94,7 @@ async function generateQuestion(req, res) {
             Authorization: `Bearer ${apiKey}`,
             "Content-Type": "application/json",
           },
-          timeout: 90000,
+          timeout: timeoutMs,
         }
       );
 
@@ -184,11 +191,30 @@ async function generateQuestion(req, res) {
 
     return res.json({ question: generated.question.trim() });
   } catch (error) {
+    const providerError = error.response?.data;
+    const providerMessage = typeof providerError === "string"
+      ? providerError
+      : providerError?.detail
+        || providerError?.message
+        || providerError?.error?.message
+        || error.message;
     console.error("[generateQuestion] NVIDIA request failed.", {
       status: error.response?.status,
       code: error.code,
-      message: error.response?.data?.error?.message || error.message,
+      model,
+      timeoutMs,
+      message: String(providerMessage).slice(0, 500),
     });
+    if (error.code === "ECONNABORTED" || error.code === "ETIMEDOUT") {
+      return res.status(504).json({
+        message: "NVIDIA took too long to respond. Please try again, or configure a faster NVIDIA model.",
+      });
+    }
+    if (error.response?.status === 404) {
+      return res.status(502).json({
+        message: `NVIDIA could not find the configured model "${model}". Check NVIDIA_MODEL against the exact model ID in NVIDIA Build.`,
+      });
+    }
     return res.status(502).json({
       message: "AI generation is temporarily unavailable. Please try again.",
     });
