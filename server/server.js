@@ -12,6 +12,23 @@ const {sameId} = require("./src/util/sameId");
 const app = express();
 app.set("trust proxy", 1);
 
+const allowedOrigins = new Set(
+  [process.env.ORIGIN_URL, ...(process.env.CORS_ORIGINS || "").split(",")]
+    .map((origin) => origin?.trim())
+    .filter(Boolean)
+    .map((origin) => new URL(origin).origin)
+);
+
+const checkCorsOrigin = (origin, callback) => {
+  if (!origin || allowedOrigins.has(origin)) {
+    callback(null, true);
+    return;
+  }
+
+  console.warn(`[CORS] Rejected request origin: ${origin}`);
+  callback(null, false);
+};
+
 const helmet = require("helmet");
 app.use(
   helmet({
@@ -57,7 +74,7 @@ function isRateLimited(socketId, eventName, maxCalls = 10, windowMs = 10000) {
 
 // cor
 app.use(cors({
-  origin: process.env.ORIGIN_URL,
+  origin: checkCorsOrigin,
   methods: ["GET","POST","PUT","DELETE","OPTIONS","PATCH"],
   allowedHeaders: ["Content-Type","Authorization"],
 }));
@@ -69,7 +86,7 @@ const server = http.createServer(app);
 // socket io
 const io = new Server(server, {
   cors: {
-    origin: process.env.ORIGIN_URL,
+    origin: checkCorsOrigin,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   },
 });
