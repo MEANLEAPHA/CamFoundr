@@ -80,19 +80,19 @@ async function runQuestionGeneration(req, res, requestId) {
   const apiKey = process.env.NVIDIA_API?.trim();
   const model = process.env.NVIDIA_MODEL?.trim() || "deepseek-ai/deepseek-v4-flash";
   const configuredTimeout = process.env.NVIDIA_TIMEOUT_MS;
-  const timeoutMs = configuredTimeout === undefined ? 300000 : Number(configuredTimeout);
+  const timeoutMs = configuredTimeout === undefined ? 600000 : Number(configuredTimeout);
   if (!apiKey) {
     return fail(res, requestId, 503, "configuration", "AI generation is not configured on the server.", {
       questionType, apiKeyConfigured: false, model,
     });
   }
-  if (!Number.isSafeInteger(timeoutMs) || timeoutMs < 30000 || timeoutMs > 300000) {
+  if (!Number.isSafeInteger(timeoutMs) || timeoutMs < 30000 || timeoutMs > 900000) {
     return fail(
       res,
       requestId,
       503,
       "configuration",
-      "AI generation timeout must be between 30000 and 300000 milliseconds.",
+      "AI generation timeout must be between 30000 and 900000 milliseconds.",
       { questionType, model }
     );
   }
@@ -389,7 +389,7 @@ async function runQuestionGeneration(req, res, requestId) {
 function cleanupGenerationJobs() {
   const now = Date.now();
   for (const [jobId, job] of generationJobs) {
-    if (job.expiresAt <= now) generationJobs.delete(jobId);
+    if (job.status !== "processing" && job.expiresAt <= now) generationJobs.delete(jobId);
   }
 }
 

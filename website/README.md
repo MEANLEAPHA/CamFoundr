@@ -23,8 +23,8 @@ LLM API catalog. To use another available model, set
 required in the website's Vite environment. The authenticated
 question-generation API uses NVIDIA's OpenAI-compatible chat completions
 endpoint and is rate limited per user.
-The provider request timeout defaults to 300 seconds. Set `NVIDIA_TIMEOUT_MS`
-on the server to override it (allowed range: 30000–300000 milliseconds).
+The provider request timeout defaults to 600 seconds. Set `NVIDIA_TIMEOUT_MS`
+on the server to override it (allowed range: 30000–900000 milliseconds).
 DeepSeek thinking mode is disabled for this structured-output request so the
 generated question is returned as answer content rather than reasoning alone.
 Generation runs as a background job so it does not hold a browser/API request
