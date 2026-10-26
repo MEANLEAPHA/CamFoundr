@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import {useNavigate} from "react-router-dom";
 import { Dropdown, Space } from 'antd';
 import { useNotifications } from "../context/notificationContext";
-import "../assets/style/Header.css";
+import "../assets/style/header.css";
 import { useAuth } from '../context/authContext';
 import { SearchBar } from "../components/searchBar";
 import { Ad, Bell, Brain,
@@ -36,8 +36,8 @@ const Header = ({onToggleAside, onToggleTheme, currentTheme}) => {
      
       </div>
 
-        {/* <SearchBar /> */}
-      <div  className="header-middle header-children">
+        <SearchBar />
+      {/* <div  className="header-middle header-children">
         <nav id='header-nav'>
           <ul id='header-nav-ul'>
              <li className='li-nav-h'>Home</li>
@@ -47,18 +47,18 @@ const Header = ({onToggleAside, onToggleTheme, currentTheme}) => {
              <li className='li-nav-h'>About</li>
           </ul>
         </nav>
-      </div>
+      </div> */}
       <div className="header-right header-children">
         <>
-          {/* <button className='button-bar-icon not-mobile-tool' onClick={onToggleTheme}>
+          <button className='button-bar-icon not-mobile-tool' onClick={onToggleTheme}>
             {currentTheme ? <Moon className="not-mobile-tool bar-icon lucide-icon-hr"/>
             :
             <Sun className="not-mobile-tool bar-icon lucide-icon-hr"/>}
-          </button> */}
-
-          <button className='button-bar-icon'>
-            <Ad className=" lucide-icon-hr" style={{width:'23px',height:'23px', opacity:0.9}}/>
           </button>
+
+          {/* <button className='button-bar-icon'>
+            <Ad className=" lucide-icon-hr" style={{width:'23px',height:'23px', opacity:0.9}}/>
+          </button> */}
 
           <button className='button-bar-icon'>
             <MessageSquare className=" lucide-icon-hr" />

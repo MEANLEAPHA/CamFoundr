@@ -7,38 +7,33 @@ import {
         
 import { Newspaper,
          LandPlot,
-         
+         Home,
          PersonStanding,
          Handshake,
          ScrollText,
          Scale,
          Flag,
          MessageSquareText,
-         Rocket,
-         Brain,
+         Users,
          TimerReset,
          Bookmark,
          ThumbsUp,
          SquareText,
          UserRoundPlus,
-         Sticker,
-         TrendingUp,
          Flame,
-         Building2,
-         Star,
          CircleDotDashed,
          Rss,
-         Boxes,
          User,
          ChevronRight,
          Shapes,
          Sprout,
          Sparkles,
-         Lightbulb
+         Lightbulb,
+         CalendarDays
         } from 'lucide-react';
 
 import { useAuth } from "../context/authContext";
-import "../assets/style/Aside.css";
+import "../assets/style/aside.css";
 import api from "../api/axiosInstance";
 
 const Aside = (props) => {
@@ -125,8 +120,10 @@ const Aside = (props) => {
                         chatUnreadCount = { chatUnreadCount }
                         chatUnreadSpam = { spamUnreadCount }
                     />
+                    <AppendSocial />
+                    <AppendChallenge />
                     <AppendUserTool />
-                    <AppendExplore />
+                    {/* <AppendExplore /> */}
                     <AppendMore />
                     <AppendRule />
                 </ul>
@@ -277,17 +274,64 @@ const Aside = (props) => {
     };
 
     const Mains= [
-        {
-            id:1, a: '/arena', icon: <LandPlot className='icon-aside'/>, label: <label>Arena</label>
-        },
-        { id:2, a: '/feed', icon: <Rss className='icon-aside'/>, label: <label>Forum</label>,  },
+        { id:1, a: '/home', icon: <Home className='icon-aside'/>, label: <label>Home</label> },
         { id:3, a: '/blog',  icon: <Newspaper className='icon-aside'/>, label: <label>Blog</label> },
-        { id:4, a: '/ping', icon: <CircleDotDashed className='icon-aside'/>, label: <label>Ping</label> },
+        { id:4, a: '/ping', icon: <Sparkles className='icon-aside'/>, label: <label>Collabration</label> },
+        
+    ];
+
+    const Social = [
+        { id:2, a: '/feed', icon: <Rss className='icon-aside'/>, label: <label>Forum</label>,  },
+        { id:11, a: '/teams',  icon: <Users className='icon-aside'/>, label: <label>The People</label> },
+        { id:15, a: '/halloffame',  icon: <Flame className='icon-aside'/>, label: <label>Hall of Fame</label>, classNameBtn: "btn-hall-of-fame" },
+        { id:4, a: '/ping', icon: <Sparkles className='icon-aside'/>, label: <label>Spark</label> },
+        
+    ];
+
+    const Challenges = [
+        { id:6, a: '/event', icon: <CalendarDays className='icon-aside'/>, label: <label>Event</label> },
+        { id:1, a: '/arena', icon: <LandPlot className='icon-aside'/>, label: <label>Arena</label> },
         { id:5, a: '/brainstorm',  icon: <Lightbulb className='icon-aside'/>, label: <label>Brainstorm</label> },
     ];
 
+    const AppendChallenge = () => {
+        return ( <>
+            <label className='label-li' style={{cursor: 'pointer'}} onClick={() => navigate('account')}>Interactive <ChevronRight className='label-icon-aside'/></label>
+            {
+                  Challenges.map(item => (
+        
+                <Main
+                key={item.id}
+                {...item}
+              
+
+                />
+            ))
+            }
+        </>
+        )
+    }
+     const AppendSocial = () => {
+        return ( <>
+            <label className='label-li' style={{cursor: 'pointer'}} onClick={() => navigate('account')}>Community <ChevronRight className='label-icon-aside'/></label>
+            {
+                  Social.map(item => (
+        
+                <Main
+                key={item.id}
+                {...item}
+              
+
+                />
+            ))
+            }
+        </>
+        )
+    }
+
     const AppendMain = ({ chatUnreadCount, chatUnreadSpam }) => {
     return Mains.map(item => (
+        
         <Main
         key={item.id}
         {...item}
@@ -351,12 +395,10 @@ const Aside = (props) => {
     };
 
     const Explores = [
-        { id:11, a: '/teams',  icon: <Rocket className='icon-aside'/>, label: <label>Join Team</label> },
+        { id:11, a: '/teams',  icon: <Users className='icon-aside'/>, label: <label>The People</label> },
+        { id:15, a: '/halloffame',  icon: <Flame className='icon-aside'/>, label: <label>Hall of Fame</label>, classNameBtn: "btn-hall-of-fame" },
         { id:12, a: '/startups',  icon: <Sprout className='icon-aside'/>, label: <label>Startups</label> },
         { id:13, a: '/founders',  icon: <Sparkles  className='icon-aside'/>, label: <label>Founders</label> },
-        { id:14, a: '/trending',  icon: <TrendingUp  className='icon-aside'/>, label: <label>Trending <span style={{color:"yellowgreen", }}>NOW</span></label> },
-        { id:15, a: '/halloffame',  icon: <Flame className='icon-aside'/>, label: <label>Hall of Fame</label>, classNameBtn: "btn-hall-of-fame" },
-        { id:16, a:'/gif',  icon:<Sticker bounce  className='icon-aside'/>, label: <label>Gif Reaction</label> },
     ];
 
     const AppendExplore = () =>{
@@ -395,7 +437,7 @@ const Aside = (props) => {
     };
 
     const Rules= [
-        { id:19, a: '/camfoundrrule', icon: <Scale className='icon-aside'/>, label: <label>CamFoundr Rule</label> },
+        { id:19, a: '/camfoundrrule', icon: <Scale className='icon-aside'/>, label: <label>CDL Rule</label> },
         { id:20, a: '/privacypolicy',  icon: <ScrollText className='icon-aside'/>, label: <label>Private Policy</label> },
         { id:21, a: '/agreement',  icon: <Handshake className='icon-aside'/>, label: <label>User Agreement</label> },
         { id:22, a: '/accessibility',  icon: <PersonStanding className='icon-aside'/>, label: <label>Accessibility</label> },

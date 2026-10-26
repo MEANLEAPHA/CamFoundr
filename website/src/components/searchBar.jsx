@@ -129,7 +129,7 @@ export function SearchBar (){
         <input
           ref={inputRef}
           type="text"
-          placeholder="Search CamFoundr..."
+          placeholder="Search CDL..."
           value={query}
           id="search-input"
           onChange={(e) => setQuery(e.target.value)}

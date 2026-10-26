@@ -15,7 +15,6 @@
 .dark-theme{
     /* Primary */
     --background-color:#0F172A;
-    
     --primary-color:#f1ad20;
     --secondary-color: rgba(220, 220, 220, 0.318);
     --font-color:rgb(255, 255, 255);
@@ -107,7 +106,7 @@ header{
 }
 .header-middle, .header-middles{
     width: 30%;
-    /* border: 2px solid var(--secondary-color); */
+    border: 2px solid var(--secondary-color);
     border-radius: 20px;
     height: auto;
     display: flex;
