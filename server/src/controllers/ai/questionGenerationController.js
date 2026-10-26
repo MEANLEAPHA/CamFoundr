@@ -139,6 +139,7 @@ async function runQuestionGeneration(req, res, requestId) {
           model,
           messages: [{ role: "user", content: prompt }],
           response_format: { type: "json_object" },
+          thinking: { type: "disabled" },
           max_tokens: MAX_OUTPUT_TOKENS,
           temperature: 0.8,
         },
