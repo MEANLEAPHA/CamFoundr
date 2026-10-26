@@ -28,7 +28,17 @@ function fail(res, requestId, status, stage, message, details = {}) {
 
 async function generateQuestion(req, res) {
   const requestId = randomUUID();
+  const startedAt = Date.now();
   res.setHeader("X-Request-ID", requestId);
+  res.on("close", () => {
+    if (!res.writableFinished) {
+      console.error("[generateQuestion]", JSON.stringify({
+        requestId,
+        stage: "client_connection_closed",
+        elapsedMs: Date.now() - startedAt,
+      }));
+    }
+  });
   const { topic, questionType, choiceCount } = req.body || {};
   console.info("[generateQuestion]", JSON.stringify({
     requestId,
@@ -111,6 +121,12 @@ async function generateQuestion(req, res) {
   ].join("\n");
 
   try {
+      console.info("[generateQuestion]", JSON.stringify({
+        requestId,
+        stage: "provider_request_started",
+        model,
+        timeoutMs,
+      }));
       const response = await axios.post(
         "https://integrate.api.nvidia.com/v1/chat/completions",
         {
@@ -128,6 +144,14 @@ async function generateQuestion(req, res) {
           timeout: timeoutMs,
         }
       );
+
+      console.info("[generateQuestion]", JSON.stringify({
+        requestId,
+        stage: "provider_response_received",
+        model,
+        providerStatus: response.status,
+        elapsedMs: Date.now() - startedAt,
+      }));
 
       const generatedText = response.data?.choices?.[0]?.message?.content?.trim();
       if (!generatedText) {
@@ -293,6 +317,7 @@ async function generateQuestion(req, res) {
       code: error.code,
       model,
       timeoutMs,
+      elapsedMs: Date.now() - startedAt,
       message: String(providerMessage).slice(0, 500),
     };
     console.error("[generateQuestion]", JSON.stringify(failure));
