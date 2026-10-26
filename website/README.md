@@ -27,6 +27,10 @@ The provider request timeout defaults to 600 seconds. Set `NVIDIA_TIMEOUT_MS`
 on the server to override it (allowed range: 30000–900000 milliseconds).
 DeepSeek thinking mode is disabled for this structured-output request so the
 generated question is returned as answer content rather than reasoning alone.
+If DeepSeek repeatedly hits NVIDIA's upstream five-minute gateway timeout,
+try setting `NVIDIA_MODEL` to NVIDIA's smaller
+`nvidia/nemotron-3.5-lightning-30b-a3b` model in the NVIDIA Build catalog.
+The server's longer client timeout cannot override an upstream gateway limit.
 Generation runs as a background job so it does not hold a browser/API request
 open while NVIDIA responds. The website polls the authenticated job-status
 endpoint; job results are kept in server memory for up to 10 minutes, so run a

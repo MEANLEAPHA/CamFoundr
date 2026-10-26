@@ -355,6 +355,12 @@ async function runQuestionGeneration(req, res, requestId) {
         requestId,
       });
     }
+    if (error.response?.status === 504) {
+      return res.status(504).json({
+        message: `NVIDIA's inference gateway timed out while using "${model}". This job has failed; waiting will not complete it. Configure a faster model in NVIDIA_MODEL and try again.`,
+        requestId,
+      });
+    }
     if (error.response?.status === 404) {
       return res.status(502).json({
         message: `NVIDIA could not find the configured model "${model}". Check NVIDIA_MODEL against the exact model ID in NVIDIA Build.`,
