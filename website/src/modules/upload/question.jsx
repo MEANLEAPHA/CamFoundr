@@ -141,7 +141,7 @@ export default function Questiion(){
 
       const pollStartedAt = Date.now();
       let data;
-      while (Date.now() - pollStartedAt < 6 * 60 * 1000) {
+      while (Date.now() - pollStartedAt < 16 * 60 * 1000) {
         await new Promise((resolve) => setTimeout(resolve, 2000));
         const { data: jobStatus } = await api.get(
           `/api/ai/generate-question/${encodeURIComponent(requestId)}`
@@ -169,12 +169,26 @@ export default function Questiion(){
         throw new Error("The AI did not return a question. Please try again.");
       }
 
-      if (choiceCount && (
+      if (["singlechoice", "multiplechoice", "rankingorder"].includes(type) && (
         !Array.isArray(data.choices) ||
         data.choices.length !== choiceCount ||
         data.choices.some((choice) => typeof choice !== "string" || !choice.trim())
       )) {
         throw new Error("The AI returned invalid choices. Please try again.");
+      }
+
+      if (type === "matching" && (
+        !Array.isArray(data.matchingPairs) ||
+        data.matchingPairs.length !== choiceCount ||
+        data.matchingPairs.some((pair) => (
+          !pair ||
+          typeof pair.left !== "string" ||
+          !pair.left.trim() ||
+          typeof pair.right !== "string" ||
+          !pair.right.trim()
+        ))
+      )) {
+        throw new Error("The AI returned invalid matching pairs. Please try again.");
       }
 
       if (type === "range") {
