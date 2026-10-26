@@ -25,6 +25,10 @@ question-generation API uses NVIDIA's OpenAI-compatible chat completions
 endpoint and is rate limited per user.
 The provider request timeout defaults to 180 seconds. Set `NVIDIA_TIMEOUT_MS`
 on the server to override it (allowed range: 30000–300000 milliseconds).
+Generation runs as a background job so it does not hold a browser/API request
+open while NVIDIA responds. The website polls the authenticated job-status
+endpoint; job results are kept in server memory for up to 10 minutes, so run a
+single server instance and avoid restarting it while generations are running.
 
 ## Matching question database setup
 

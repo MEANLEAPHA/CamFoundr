@@ -15,6 +15,9 @@ const QUESTION_TYPES = {
 const CHOICE_TYPES = new Set(["singlechoice", "multiplechoice", "rankingorder"]);
 const RANGE_TYPE = "range";
 const MATCHING_TYPE = "matching";
+const JOB_TTL_MS = 10 * 60 * 1000;
+const MAX_GENERATION_JOBS = 500;
+const generationJobs = new Map();
 
 function fail(res, requestId, status, stage, message, details = {}) {
   console.error("[generateQuestion]", JSON.stringify({
@@ -26,19 +29,9 @@ function fail(res, requestId, status, stage, message, details = {}) {
   return res.status(status).json({ message, requestId });
 }
 
-async function generateQuestion(req, res) {
-  const requestId = randomUUID();
+async function runQuestionGeneration(req, res, requestId) {
   const startedAt = Date.now();
   res.setHeader("X-Request-ID", requestId);
-  res.on("close", () => {
-    if (!res.writableFinished) {
-      console.error("[generateQuestion]", JSON.stringify({
-        requestId,
-        stage: "client_connection_closed",
-        elapsedMs: Date.now() - startedAt,
-      }));
-    }
-  });
   const { topic, questionType, choiceCount } = req.body || {};
   console.info("[generateQuestion]", JSON.stringify({
     requestId,
@@ -358,4 +351,99 @@ async function generateQuestion(req, res) {
   }
 }
 
-module.exports = { generateQuestion };
+function cleanupGenerationJobs() {
+  const now = Date.now();
+  for (const [jobId, job] of generationJobs) {
+    if (job.expiresAt <= now) generationJobs.delete(jobId);
+  }
+}
+
+async function executeGenerationJob(req, job) {
+  const fakeResponse = {
+    statusCode: 200,
+    headers: {},
+    setHeader(name, value) {
+      this.headers[name] = value;
+    },
+    status(code) {
+      this.statusCode = code;
+      return this;
+    },
+    json(body) {
+      this.body = body;
+      return this;
+    },
+  };
+
+  try {
+    await runQuestionGeneration(req, fakeResponse, job.id);
+    if (fakeResponse.statusCode >= 400) {
+      job.status = "failed";
+      job.error = fakeResponse.body?.message || "Question generation failed.";
+    } else {
+      job.status = "completed";
+      job.result = fakeResponse.body;
+    }
+  } catch (error) {
+    console.error("[generateQuestion]", JSON.stringify({
+      requestId: job.id,
+      stage: "background_job_failed",
+      message: error.message,
+      code: error.code,
+    }));
+    job.status = "failed";
+    job.error = "Question generation failed unexpectedly. Please try again.";
+  } finally {
+    job.expiresAt = Date.now() + JOB_TTL_MS;
+    console.info("[generateQuestion]", JSON.stringify({
+      requestId: job.id,
+      stage: `job_${job.status}`,
+      elapsedMs: Date.now() - job.startedAt,
+    }));
+  }
+}
+
+function generateQuestion(req, res) {
+  cleanupGenerationJobs();
+  if (generationJobs.size >= MAX_GENERATION_JOBS) {
+    return res.status(503).json({ message: "AI generation is busy. Please try again shortly." });
+  }
+
+  const requestId = randomUUID();
+  const userId = String(req.user?.userId || "");
+  const job = {
+    id: requestId,
+    userId,
+    status: "processing",
+    startedAt: Date.now(),
+    expiresAt: Date.now() + JOB_TTL_MS,
+  };
+  generationJobs.set(requestId, job);
+
+  console.info("[generateQuestion]", JSON.stringify({
+    requestId,
+    stage: "job_queued",
+    questionType: typeof req.body?.questionType === "string" ? req.body.questionType : null,
+  }));
+  res.status(202).json({ requestId, jobId: requestId, status: "processing" });
+  setImmediate(() => {
+    executeGenerationJob(req, job);
+  });
+}
+
+function getQuestionGenerationStatus(req, res) {
+  cleanupGenerationJobs();
+  const job = generationJobs.get(req.params.jobId);
+  if (!job || job.userId !== String(req.user?.userId || "")) {
+    return res.status(404).json({ message: "Question generation job was not found or has expired." });
+  }
+
+  return res.json({
+    requestId: job.id,
+    status: job.status,
+    ...(job.status === "completed" ? { result: job.result } : {}),
+    ...(job.status === "failed" ? { message: job.error } : {}),
+  });
+}
+
+module.exports = { generateQuestion, getQuestionGenerationStatus };

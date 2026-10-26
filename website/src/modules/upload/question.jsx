@@ -126,12 +126,44 @@ export default function Questiion(){
     }[type];
 
     setGeneratingQuestion(true);
+    let requestId;
     try {
-      const { data } = await api.post("/api/ai/generate-question", {
+      const { data: queuedJob } = await api.post("/api/ai/generate-question", {
         topic: selectType.label,
         questionType: type,
         ...(choiceCount ? { choiceCount } : {}),
       });
+
+      requestId = queuedJob?.requestId;
+      if (!requestId || queuedJob.status !== "processing") {
+        throw new Error("The server did not start question generation. Please try again.");
+      }
+
+      const pollStartedAt = Date.now();
+      let data;
+      while (Date.now() - pollStartedAt < 6 * 60 * 1000) {
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+        const { data: jobStatus } = await api.get(
+          `/api/ai/generate-question/${encodeURIComponent(requestId)}`
+        );
+
+        if (jobStatus.status === "completed") {
+          data = jobStatus.result;
+          break;
+        }
+        if (jobStatus.status === "failed") {
+          const generationError = new Error(jobStatus.message || "Question generation failed.");
+          generationError.requestId = jobStatus.requestId || requestId;
+          throw generationError;
+        }
+        if (jobStatus.status !== "processing") {
+          throw new Error("The server returned an unknown generation status.");
+        }
+      }
+
+      if (!data) {
+        throw new Error("Question generation is taking longer than expected. Please try again.");
+      }
 
       if (typeof data?.question !== "string" || !data.question.trim()) {
         throw new Error("The AI did not return a question. Please try again.");
@@ -174,7 +206,8 @@ export default function Questiion(){
       if (type === "matching") setMatchingPairs(data.matchingPairs);
       toast.success("Question generated");
     } catch (error) {
-      const requestId = error?.response?.data?.requestId
+      requestId = error?.requestId
+        || error?.response?.data?.requestId
         || error?.response?.headers?.["x-request-id"];
       const errorMessage = error?.response?.data?.message
         || error.message
