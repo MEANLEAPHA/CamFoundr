@@ -17,7 +17,20 @@ const RANGE_TYPE = "range";
 const MATCHING_TYPE = "matching";
 const JOB_TTL_MS = 10 * 60 * 1000;
 const MAX_GENERATION_JOBS = 500;
+const MAX_OUTPUT_TOKENS = 4096;
 const generationJobs = new Map();
+
+function getMessageText(content) {
+  if (typeof content === "string") return content.trim();
+  if (Array.isArray(content)) {
+    return content
+      .filter((part) => part && typeof part.text === "string")
+      .map((part) => part.text)
+      .join("")
+      .trim();
+  }
+  return "";
+}
 
 function fail(res, requestId, status, stage, message, details = {}) {
   console.error("[generateQuestion]", JSON.stringify({
@@ -67,7 +80,7 @@ async function runQuestionGeneration(req, res, requestId) {
   const apiKey = process.env.NVIDIA_API?.trim();
   const model = process.env.NVIDIA_MODEL?.trim() || "deepseek-ai/deepseek-v4-flash";
   const configuredTimeout = process.env.NVIDIA_TIMEOUT_MS;
-  const timeoutMs = configuredTimeout === undefined ? 180000 : Number(configuredTimeout);
+  const timeoutMs = configuredTimeout === undefined ? 300000 : Number(configuredTimeout);
   if (!apiKey) {
     return fail(res, requestId, 503, "configuration", "AI generation is not configured on the server.", {
       questionType, apiKeyConfigured: false, model,
@@ -126,7 +139,7 @@ async function runQuestionGeneration(req, res, requestId) {
           model,
           messages: [{ role: "user", content: prompt }],
           response_format: { type: "json_object" },
-          max_tokens: 1024,
+          max_tokens: MAX_OUTPUT_TOKENS,
           temperature: 0.8,
         },
         {
@@ -146,7 +159,9 @@ async function runQuestionGeneration(req, res, requestId) {
         elapsedMs: Date.now() - startedAt,
       }));
 
-      const generatedText = response.data?.choices?.[0]?.message?.content?.trim();
+      const choice = response.data?.choices?.[0];
+      const message = choice?.message;
+      const generatedText = getMessageText(message?.content);
       if (!generatedText) {
         return fail(
           res,
@@ -154,13 +169,25 @@ async function runQuestionGeneration(req, res, requestId) {
           502,
           "parse_response",
           "The AI did not return a question. Please try again.",
-          { questionType, model, providerStatus: response.status }
+          {
+            questionType,
+            model,
+            providerStatus: response.status,
+            reason: "empty_content",
+            finishReason: choice?.finish_reason || null,
+            messageFields: message ? Object.keys(message) : [],
+            completionTokens: response.data?.usage?.completion_tokens ?? null,
+          }
         );
     }
 
     let generated;
     try {
-      generated = JSON.parse(generatedText);
+      const jsonText = generatedText
+        .replace(/^```(?:json)?\s*/i, "")
+        .replace(/\s*```$/, "")
+        .trim();
+      generated = JSON.parse(jsonText);
     } catch (error) {
       return fail(
         res,
@@ -168,7 +195,14 @@ async function runQuestionGeneration(req, res, requestId) {
         502,
         "parse_response",
         "The AI returned an invalid response. Please try again.",
-        { questionType, model, providerStatus: response.status, error: error.message }
+        {
+          questionType,
+          model,
+          providerStatus: response.status,
+          finishReason: choice?.finish_reason || null,
+          completionTokens: response.data?.usage?.completion_tokens ?? null,
+          error: error.message,
+        }
       );
     }
 
