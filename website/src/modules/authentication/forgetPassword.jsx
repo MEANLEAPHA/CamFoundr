@@ -75,14 +75,15 @@ export const ForgetPassword = () => {
           
         
           <div className="form-center">
-            <div style={{width: '100%', display:'flex', justifyContent: 'start'}}><button type="button" onClick={()=> navigate('/login')}><ArrowLeft /></button></div>
-            
-             <div className="top-title-div">
-              <p className="top-title">CDL</p>
-              <p className="sub-title">
-                Be part of the movement building a better ss
+            <div style={{width: '100%', display:'flex', justifyContent: 'space-between'}}>
+              <button type="button" onClick={()=> navigate('/login')} style={{background:'transparent', border:'none', cursor:'pointer'}}><ArrowLeft /></button>
+              <p className="p-page" style={{fontSize:"large", fontWeight:"bold"}}>
+                Forget Password
               </p>
-          </div>
+              <button type="button" disabled style={{visibility:'hidden'}}>null</button>
+            </div>
+            
+              
           
           <div className='container-input'>
             <label className='label-required'>Email <span style={{color:'red'}}>*</span></label>

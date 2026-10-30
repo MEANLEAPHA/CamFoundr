@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const pool = require('../../config/db'); 
-const { ranking } = require("../../config/redisClient"); 
+const { ranking, cachePost } = require("../../config/redisClient");
 const crypto = require('crypto');
 require('dotenv').config();
 const { sendVerifyCodeEmail, sendResendPinEmail, sendVerifyCodeForgetPasswordEmail} = require('../../service/mail/email');
@@ -13,41 +13,332 @@ const axios = require('axios');
 
 const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
+const getFrontendRedirect = (path, params = {}) => {
+  if (!process.env.API_URL) {
+    throw new Error("API_URL is not configured");
+  }
+
+  const redirectUrl = new URL(path, process.env.API_URL);
+  for (const [key, value] of Object.entries(params)) {
+    if (value !== undefined && value !== null) {
+      redirectUrl.searchParams.set(key, String(value));
+    }
+  }
+  return redirectUrl.toString();
+};
+
+const setOAuthStateCookie = (req, res, provider, state, clientState) => {
+  const secure = req.secure || process.env.NODE_ENV === "production";
+  res.append(
+    "Set-Cookie",
+    `oauth_${provider}_state=${state}.${clientState}; Path=/api/auth/${provider}; HttpOnly; SameSite=Lax; Max-Age=600${secure ? "; Secure" : ""}`
+  );
+};
+
+const consumeOAuthStateCookie = (req, res, provider, state) => {
+  const cookieName = `oauth_${provider}_state`;
+  const cookie = (req.headers.cookie || "")
+    .split(";")
+    .map((part) => part.trim())
+    .find((part) => part.startsWith(`${cookieName}=`));
+  const [cookieState, clientState, ...extra] =
+    (cookie?.slice(cookieName.length + 1) || "").split(".");
+  const secure = req.secure || process.env.NODE_ENV === "production";
+
+  res.append(
+    "Set-Cookie",
+    `${cookieName}=; Path=/api/auth/${provider}; HttpOnly; SameSite=Lax; Max-Age=0${secure ? "; Secure" : ""}`
+  );
+
+  if (
+    typeof state !== "string" ||
+    !/^[a-f0-9]{64}$/i.test(state) ||
+    !cookieState ||
+    !/^[a-f0-9]{64}$/i.test(cookieState) ||
+    !clientState ||
+    !/^[a-f0-9]{64}$/i.test(clientState) ||
+    extra.length > 0
+  ) {
+    return null;
+  }
+
+  if (!crypto.timingSafeEqual(
+    Buffer.from(state, "hex"),
+    Buffer.from(cookieState, "hex")
+  )) {
+    return null;
+  }
+  return clientState;
+};
+
+const issueOAuthHandoff = async (res, user, isNewUser, clientState) => {
+  const token = createToken({ userId: user.id });
+  const handoffCode = crypto.randomBytes(32).toString("hex");
+  const handoff = {
+    token,
+    isNewUser,
+    userId: user.id,
+    email: user.email,
+    username: user.username,
+    clientState,
+  };
+
+  const result = await cachePost.set(
+    `oauth:handoff:${handoffCode}`,
+    JSON.stringify(handoff),
+    { EX: 120, NX: true }
+  );
+  if (result !== "OK") {
+    throw new Error("Could not save OAuth handoff");
+  }
+
+  res.set("Cache-Control", "no-store");
+  res.set("Referrer-Policy", "no-referrer");
+  const callbackUrl = new URL("/oauth-callback", process.env.API_URL);
+  callbackUrl.hash = new URLSearchParams({
+    code: handoffCode,
+    state: clientState,
+  }).toString();
+  return res.redirect(callbackUrl.toString());
+};
+
+const exchangeOAuthHandoff = async (req, res) => {
+  res.set("Cache-Control", "no-store");
+  const { code, state } = req.body || {};
+  if (
+    typeof code !== "string" ||
+    !/^[a-f0-9]{64}$/i.test(code) ||
+    typeof state !== "string" ||
+    !/^[a-f0-9]{64}$/i.test(state)
+  ) {
+    return res.status(400).json({ message: "Invalid or expired sign-in request" });
+  }
+
+  try {
+    const storedHandoff = await cachePost.getDel(`oauth:handoff:${code}`);
+    if (!storedHandoff) {
+      return res.status(410).json({ message: "Sign-in request expired or already used" });
+    }
+    const handoff = JSON.parse(storedHandoff);
+    if (
+      typeof handoff.clientState !== "string" ||
+      !/^[a-f0-9]{64}$/i.test(handoff.clientState) ||
+      !crypto.timingSafeEqual(Buffer.from(state, "hex"), Buffer.from(handoff.clientState, "hex"))
+    ) {
+      return res.status(403).json({ message: "Sign-in request could not be verified" });
+    }
+
+    const session = { ...handoff };
+    delete session.clientState;
+    return res.status(200).json(session);
+  } catch (error) {
+    console.error("OAuth handoff exchange failed:", error.message);
+    return res.status(503).json({ message: "Sign-in is temporarily unavailable" });
+  }
+};
+
+const redirectOAuthError = (res, error) => {
+  try {
+    res.set("Cache-Control", "no-store");
+    return res.redirect(getFrontendRedirect("/login", { error }));
+  } catch (redirectError) {
+    console.error("OAuth error redirect failed:", redirectError.message);
+    return res.status(503).send("Sign-in is temporarily unavailable");
+  }
+};
+
+const microsoftRedirect = (req, res) => {
+  const { client_state: clientState } = req.query;
+  const {
+    MICROSOFT_CLIENT_ID,
+    MICROSOFT_CLIENT_SECRET,
+    MICROSOFT_CALLBACK_URL,
+  } = process.env;
+  if (!MICROSOFT_CLIENT_ID || !MICROSOFT_CLIENT_SECRET || !MICROSOFT_CALLBACK_URL) {
+    return redirectOAuthError(res, "microsoft_unavailable");
+  }
+  if (typeof clientState !== "string" || !/^[a-f0-9]{64}$/i.test(clientState)) {
+    return redirectOAuthError(res, "microsoft_invalid_state");
+  }
+
+  const tenant = process.env.MICROSOFT_TENANT_ID || "common";
+  if (!/^(common|organizations|consumers|[0-9a-f-]{36})$/i.test(tenant)) {
+    return redirectOAuthError(res, "microsoft_unavailable");
+  }
+
+  const state = crypto.randomBytes(32).toString("hex");
+  setOAuthStateCookie(req, res, "microsoft", state, clientState);
+
+  const params = new URLSearchParams({
+    client_id: MICROSOFT_CLIENT_ID,
+    response_type: "code",
+    redirect_uri: MICROSOFT_CALLBACK_URL,
+    response_mode: "query",
+    scope: "openid profile email User.Read",
+    state,
+  });
+
+  return res.redirect(
+    `https://login.microsoftonline.com/${tenant}/oauth2/v2.0/authorize?${params}`
+  );
+};
+
+const microsoftCallback = async (req, res) => {
+  const { code, state, error } = req.query;
+  const clientState = consumeOAuthStateCookie(req, res, "microsoft", state);
+  if (!clientState) {
+    return redirectOAuthError(res, "microsoft_invalid_state");
+  }
+  if (error) {
+    return redirectOAuthError(res, "microsoft_denied");
+  }
+  if (typeof code !== "string" || !code) {
+    return redirectOAuthError(res, "microsoft_no_code");
+  }
+  if (
+    !process.env.MICROSOFT_CLIENT_ID ||
+    !process.env.MICROSOFT_CLIENT_SECRET ||
+    !process.env.MICROSOFT_CALLBACK_URL
+  ) {
+    return redirectOAuthError(res, "microsoft_unavailable");
+  }
+
+  try {
+    const tenant = process.env.MICROSOFT_TENANT_ID || "common";
+    const tokenResponse = await axios.post(
+      `https://login.microsoftonline.com/${tenant}/oauth2/v2.0/token`,
+      new URLSearchParams({
+        client_id: process.env.MICROSOFT_CLIENT_ID,
+        client_secret: process.env.MICROSOFT_CLIENT_SECRET,
+        grant_type: "authorization_code",
+        code,
+        redirect_uri: process.env.MICROSOFT_CALLBACK_URL,
+        scope: "openid profile email User.Read",
+      }),
+      {
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        timeout: 10000,
+      }
+    );
+    const accessToken = tokenResponse.data?.access_token;
+    if (!accessToken) {
+      return redirectOAuthError(res, "microsoft_token_failed");
+    }
+
+    const profileResponse = await axios.get(
+      "https://graph.microsoft.com/v1.0/me?$select=id,displayName,mail,userPrincipalName",
+      {
+        headers: { Authorization: `Bearer ${accessToken}` },
+        timeout: 10000,
+      }
+    );
+    const profile = profileResponse.data;
+    const providerId = profile?.id;
+    const rawEmail =
+      typeof profile?.userPrincipalName === "string"
+        ? profile.userPrincipalName
+        : profile?.mail;
+    const email = typeof rawEmail === "string" ? rawEmail.trim().toLowerCase() : "";
+
+    if (
+      typeof providerId !== "string" ||
+      !providerId ||
+      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) ||
+      email.length > 254
+    ) {
+      return redirectOAuthError(res, "microsoft_profile_incomplete");
+    }
+
+    let user;
+    let isNewUser = false;
+    const providerUser = await pool.query(
+      "SELECT * FROM users WHERE auth_provider = 'microsoft' AND provider_id = $1",
+      [providerId]
+    );
+
+    if (providerUser.rows.length > 0) {
+      user = providerUser.rows[0];
+    } else {
+      const emailUser = await pool.query(
+        "SELECT * FROM users WHERE lower(email) = $1",
+        [email]
+      );
+      if (emailUser.rows.length > 0) {
+        return redirectOAuthError(res, "email_registered_other");
+      }
+
+      let username;
+      for (let attempt = 0; attempt < 5; attempt++) {
+        const candidate = `user_${crypto.randomBytes(8).toString("hex")}`;
+        const usernameExists = await pool.query(
+          "SELECT 1 FROM users WHERE username = $1",
+          [candidate]
+        );
+        if (usernameExists.rows.length === 0) {
+          username = candidate;
+          break;
+        }
+      }
+      if (!username) {
+        throw new Error("Could not generate a unique OAuth username");
+      }
+
+      const insertResult = await pool.query(
+        `INSERT INTO users
+          (username, email, password_hash, is_verified, auth_provider, provider_id, avatar_url)
+         VALUES ($1, $2, NULL, 1, 'microsoft', $3, NULL)
+         RETURNING *`,
+        [username, email, providerId]
+      );
+      user = insertResult.rows[0];
+      isNewUser = true;
+    }
+
+    return await issueOAuthHandoff(res, user, isNewUser, clientState);
+  } catch (callbackError) {
+    console.error("Microsoft OAuth callback failed:", callbackError.message);
+    return redirectOAuthError(res, "server_error");
+  }
+};
+
 // login logical 
 const login = async (req, res) => {
   try {
 
-    const { email, password } = req.body;
+    const { email, password } = req.body || {};
 
-    if (!email || !password) {
+    if (typeof email !== "string" || !email.trim() ||
+        typeof password !== "string" || !password) {
       return res.status(400).json({
         message: "Email and Password are required"
       });
     }
 
     const result = await pool.query(
-      "SELECT * FROM users WHERE email = $1",
-      [email]
+      "SELECT * FROM users WHERE lower(email) = $1",
+      [email.trim().toLowerCase()]
     );
     const users = result.rows;
 
     if (users.length === 0) {
-      return res.status(404).json({
-        message: "No user found with this Email"
+      return res.status(401).json({
+        message: "Invalid email or password"
       });
     }
 
     const user = users[0];
 
-    const passwordValid = await bcrypt.compare(password, user.password_hash);
+    const passwordValid = user.password_hash
+      ? await bcrypt.compare(password, user.password_hash)
+      : false;
 
     if (!passwordValid) {
       return res.status(401).json({
-        message: "Invalid Password"
+        message: "Invalid email or password"
       });
     }
 
-    if (user.is_verified === 0) {
+    if (user.is_verified === 0 || user.is_verified === false) {
       return res.status(403).json({
         message: "Please verify your email before logging in",
         needsVerification: true
@@ -76,31 +367,62 @@ const login = async (req, res) => {
 // Google OAuth login/register
 const googleLogin = async (req, res) => {
   try {
-    const { credential } = req.body; // ID token from Google Identity Services
+    const { credential, accessToken } = req.body || {};
 
-    if (!credential) {
-      return res.status(400).json({ message: "Missing Google credential" });
+    const hasCredential = typeof credential === "string" && credential.length > 0 && credential.length <= 10000;
+    const hasAccessToken = typeof accessToken === "string" && accessToken.length > 0 && accessToken.length <= 10000;
+    if (hasCredential === hasAccessToken) {
+      return res.status(400).json({ message: "Invalid Google credential" });
+    }
+    if (!process.env.GOOGLE_CLIENT_ID) {
+      return res.status(503).json({ message: "Google sign-in is temporarily unavailable" });
     }
 
     let payload;
     try {
-      const ticket = await googleClient.verifyIdToken({
-        idToken: credential,
-        audience: process.env.GOOGLE_CLIENT_ID,
-      });
-      payload = ticket.getPayload();
+      if (hasCredential) {
+        const ticket = await googleClient.verifyIdToken({
+          idToken: credential,
+          audience: process.env.GOOGLE_CLIENT_ID,
+        });
+        payload = ticket.getPayload();
+      } else {
+        const tokenInfo = await googleClient.getTokenInfo(accessToken);
+        if (tokenInfo.aud !== process.env.GOOGLE_CLIENT_ID) {
+          return res.status(401).json({ message: "Invalid Google token" });
+        }
+
+        const profile = await axios.get("https://www.googleapis.com/oauth2/v3/userinfo", {
+          headers: { Authorization: `Bearer ${accessToken}` },
+          timeout: 10000,
+        });
+        if (
+          profile.data.sub !== tokenInfo.sub ||
+          profile.data.email?.toLowerCase() !== tokenInfo.email?.toLowerCase()
+        ) {
+          return res.status(401).json({ message: "Invalid Google token" });
+        }
+        payload = {
+          ...profile.data,
+          email_verified: tokenInfo.email_verified,
+        };
+      }
     } catch (verifyErr) {
-      console.error("Google token verification failed:", verifyErr);
+      console.error("Google token verification failed:", verifyErr.message);
       return res.status(401).json({ message: "Invalid Google token" });
     }
 
-    const { email, name, sub: providerId, picture } = payload;
+    const { email, sub: providerId, picture, email_verified: emailVerified } = payload || {};
 
-    if (!email) {
-      return res.status(400).json({ message: "Google account has no email" });
+    if (typeof email !== "string" || !email.trim() || emailVerified !== true || !providerId) {
+      return res.status(401).json({ message: "Google account has no verified email" });
     }
 
-    const existing = await pool.query("SELECT * FROM users WHERE email = $1", [email]);
+    const normalizedEmail = email.trim().toLowerCase();
+    const existing = await pool.query(
+      "SELECT * FROM users WHERE lower(email) = $1",
+      [normalizedEmail]
+    );
     let user;
     let isNewUser = false;
 
@@ -117,6 +439,9 @@ const googleLogin = async (req, res) => {
         return res.status(409).json({
           message: `This email is already registered via ${user.auth_provider}. Please use that method to log in.`
         });
+      }
+      if (String(user.provider_id) !== String(providerId)) {
+        return res.status(409).json({ message: "This Google account does not match the account on file." });
       }
 
     } else {
@@ -138,7 +463,7 @@ const googleLogin = async (req, res) => {
           (username, email, password_hash, is_verified, auth_provider, provider_id, avatar_url)
         VALUES ($1, $2, NULL, 1, 'google', $3, $4)
         RETURNING *`,
-        [usernameBase, email, providerId, picture || null]
+        [usernameBase, normalizedEmail, providerId, picture || null]
       );
       user = insertResult.rows[0];
     }
@@ -162,10 +487,13 @@ const googleLogin = async (req, res) => {
 // Facebook OAuth login/register
 const facebookLogin = async (req, res) => {
   try {
-    const { accessToken } = req.body;
+    const { accessToken } = req.body || {};
 
-    if (!accessToken) {
+    if (typeof accessToken !== "string" || !accessToken || accessToken.length > 10000) {
       return res.status(400).json({ message: "Missing Facebook access token" });
+    }
+    if (!process.env.FACEBOOK_APP_ID || !process.env.FACEBOOK_APP_SECRET) {
+      return res.status(503).json({ message: "Facebook sign-in is temporarily unavailable" });
     }
 
     let fbUser;
@@ -176,6 +504,7 @@ const facebookLogin = async (req, res) => {
           input_token: accessToken,
           access_token: `${process.env.FACEBOOK_APP_ID}|${process.env.FACEBOOK_APP_SECRET}`,
         },
+        timeout: 10000,
       });
 
       const tokenData = verifyRes.data.data;
@@ -185,9 +514,10 @@ const facebookLogin = async (req, res) => {
 
       const profileRes = await axios.get("https://graph.facebook.com/me", {
         params: {
-          fields: "id,name,email,picture",
+          fields: "id,email,picture",
           access_token: accessToken,
         },
+        timeout: 10000,
       });
       fbUser = profileRes.data;
 
@@ -196,15 +526,20 @@ const facebookLogin = async (req, res) => {
       return res.status(401).json({ message: "Invalid Facebook token" });
     }
 
-    const { email, name, id: providerId, picture } = fbUser;
+    const { email, id: providerId, picture } = fbUser;
 
-    if (!email) {
+    if (typeof email !== "string" || !email.trim() || !providerId) {
       return res.status(400).json({
         message: "Your Facebook account has no email attached. Please register with email instead."
       });
     }
 
-    const existing = await pool.query("SELECT * FROM users WHERE email = $1", [email]);
+    const normalizedEmail = email.trim().toLowerCase();
+    const avatarUrl = picture?.data?.url || null;
+    const existing = await pool.query(
+      "SELECT * FROM users WHERE lower(email) = $1",
+      [normalizedEmail]
+    );
     let user;
     let isNewUser = false;
 
@@ -221,6 +556,9 @@ const facebookLogin = async (req, res) => {
         return res.status(409).json({
           message: `This email is already registered via ${user.auth_provider}. Please use that method to log in.`
         });
+      }
+      if (String(user.provider_id) !== String(providerId)) {
+        return res.status(409).json({ message: "This Facebook account does not match the account on file." });
       }
 
     } else {
@@ -242,7 +580,7 @@ const facebookLogin = async (req, res) => {
           (username, email, password_hash, is_verified, auth_provider, provider_id, avatar_url)
         VALUES ($1, $2, NULL, 1, 'facebook', $3, $4)
         RETURNING *`,
-        [usernameBase, email, providerId, picture || null]
+        [usernameBase, normalizedEmail, providerId, avatarUrl]
       );
       user = insertResult.rows[0];
     }
@@ -266,21 +604,43 @@ const facebookLogin = async (req, res) => {
 
 // GitHub OAuth — step 1: redirect user to GitHub's authorize page
 const githubRedirect = (req, res) => {
+  const { client_state: clientState } = req.query;
+  if (
+    !process.env.GITHUB_CLIENT_ID ||
+    !process.env.GITHUB_CALLBACK_URL ||
+    !process.env.GITHUB_CLIENT_SECRET
+  ) {
+    return redirectOAuthError(res, "github_unavailable");
+  }
+  if (typeof clientState !== "string" || !/^[a-f0-9]{64}$/i.test(clientState)) {
+    return redirectOAuthError(res, "github_invalid_state");
+  }
+
+  const state = crypto.randomBytes(32).toString("hex");
+  setOAuthStateCookie(req, res, "github", state, clientState);
   const params = new URLSearchParams({
     client_id: process.env.GITHUB_CLIENT_ID,
     redirect_uri: process.env.GITHUB_CALLBACK_URL,
     scope: "read:user user:email",
+    state,
   });
-  res.redirect(`https://github.com/login/oauth/authorize?${params.toString()}`);
+  return res.redirect(`https://github.com/login/oauth/authorize?${params.toString()}`);
 };
 
 // GitHub OAuth — step 2: handle the callback GitHub redirects to
 const githubCallback = async (req, res) => {
-  try {
-    const { code } = req.query;
+  const { code, state, error } = req.query;
+  const clientState = consumeOAuthStateCookie(req, res, "github", state);
+  if (!clientState) {
+    return redirectOAuthError(res, "github_invalid_state");
+  }
+  if (error) {
+    return redirectOAuthError(res, "github_denied");
+  }
 
-    if (!code) {
-      return res.redirect(`${process.env.API_URL}/login?error=github_no_code`);
+  try {
+    if (typeof code !== "string" || !code) {
+      return redirectOAuthError(res, "github_no_code");
     }
 
     // Exchange code for access token
@@ -292,13 +652,13 @@ const githubCallback = async (req, res) => {
         code,
         redirect_uri: process.env.GITHUB_CALLBACK_URL,
       },
-      { headers: { Accept: "application/json" } }
+      { headers: { Accept: "application/json" }, timeout: 10000 }
     );
 
     const { access_token } = tokenRes.data;
 
     if (!access_token) {
-      return res.redirect(`${process.env.API_URL}/login?error=github_token_failed`);
+      return redirectOAuthError(res, "github_token_failed");
     }
 
     // Fetch profile
@@ -310,7 +670,7 @@ const githubCallback = async (req, res) => {
     let email = profile.email;
 
     // GitHub often hides email on the profile — fetch it separately if missing
-    if (!email) {
+    if (typeof email !== "string" || !email.trim()) {
       const emailsRes = await axios.get("https://api.github.com/user/emails", {
         headers: { Authorization: `Bearer ${access_token}` },
       });
@@ -318,14 +678,21 @@ const githubCallback = async (req, res) => {
       email = primary?.email || null;
     }
 
-    if (!email) {
-      return res.redirect(`${process.env.API_URL}/login?error=github_no_email`);
+    if (
+      typeof email !== "string" ||
+      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())
+    ) {
+      return redirectOAuthError(res, "github_no_email");
     }
 
     const providerId = profile.id.toString();
     const picture = profile.avatar_url;
 
-    const existing = await pool.query("SELECT * FROM users WHERE email = $1", [email]);
+    const normalizedEmail = email.trim().toLowerCase();
+    const existing = await pool.query(
+      "SELECT * FROM users WHERE lower(email) = $1",
+      [normalizedEmail]
+    );
     let user;
     let isNewUser = false;
 
@@ -333,11 +700,15 @@ const githubCallback = async (req, res) => {
       user = existing.rows[0];
 
       if (user.auth_provider === 'local' || !user.auth_provider) {
-        return res.redirect(`${process.env.API_URL}/login?error=email_registered_local`);
+        return redirectOAuthError(res, "email_registered_local");
       }
 
       if (user.auth_provider !== 'github') {
-        return res.redirect(`${process.env.API_URL}/login?error=email_registered_other&provider=${user.auth_provider}`);
+        return redirectOAuthError(res, "email_registered_other");
+      }
+
+      if (String(user.provider_id) !== providerId) {
+        return redirectOAuthError(res, "provider_account_mismatch");
       }
 
     } else {
@@ -359,27 +730,16 @@ const githubCallback = async (req, res) => {
           (username, email, password_hash, is_verified, auth_provider, provider_id, avatar_url)
          VALUES ($1, $2, NULL, 1, 'github', $3, $4)
          RETURNING *`,
-        [usernameBase, email, providerId, picture || null]
+        [usernameBase, normalizedEmail, providerId, picture || null]
       );
       user = insertResult.rows[0];
     }
 
-    const token = createToken({ userId: user.id });
-
-    // Redirect back to frontend with token in query — frontend picks it up and stores it
-    const redirectParams = new URLSearchParams({
-      token,
-      isNewUser: isNewUser.toString(),
-      userId: user.id.toString(),
-      email: user.email,
-      username: user.username
-    });
-
-    return res.redirect(`${process.env.API_URL}/oauth-callback?${redirectParams.toString()}`);
+    return await issueOAuthHandoff(res, user, isNewUser, clientState);
 
   } catch (error) {
-    console.error("githubCallback error:", error);
-    return res.redirect(`${process.env.API_URL}/login?error=server_error`);
+    console.error("GitHub OAuth callback failed:", error.message);
+    return redirectOAuthError(res, "server_error");
   }
 };
 
@@ -1090,13 +1450,27 @@ const getUserInfoById = async (req, res) => {
 // LinkedIn OAuth — step 1: redirect user to LinkedIn's authorize page
 // ============================================================
 const linkedinRedirect = (req, res) => {
+  const { client_state: clientState } = req.query;
+  if (
+    !process.env.LINKEDIN_CLIENT_ID ||
+    !process.env.LINKEDIN_CLIENT_SECRET ||
+    !process.env.LINKEDIN_CALLBACK_URL
+  ) {
+    return redirectOAuthError(res, "linkedin_unavailable");
+  }
+  if (typeof clientState !== "string" || !/^[a-f0-9]{64}$/i.test(clientState)) {
+    return redirectOAuthError(res, "linkedin_invalid_state");
+  }
+
   // LinkedIn now uses OpenID Connect (OIDC) — scopes: openid, profile, email
+  const state = crypto.randomBytes(32).toString("hex");
+  setOAuthStateCookie(req, res, "linkedin", state, clientState);
   const params = new URLSearchParams({
     response_type: "code",
     client_id: process.env.LINKEDIN_CLIENT_ID,
     redirect_uri: process.env.LINKEDIN_CALLBACK_URL,
     scope: "openid profile email",
-    state: crypto.randomBytes(16).toString("hex"), // CSRF protection
+    state,
   });
 
   res.redirect(
@@ -1108,16 +1482,18 @@ const linkedinRedirect = (req, res) => {
 // LinkedIn OAuth — step 2: handle callback
 // ============================================================
 const linkedinCallback = async (req, res) => {
+  const { code, state, error } = req.query;
+  const clientState = consumeOAuthStateCookie(req, res, "linkedin", state);
+  if (!clientState) {
+    return redirectOAuthError(res, "linkedin_invalid_state");
+  }
+  if (error) {
+    return redirectOAuthError(res, "linkedin_denied");
+  }
+
   try {
-    const { code, error, error_description } = req.query;
-
-    if (error) {
-      console.error("LinkedIn auth error:", error, error_description);
-      return res.redirect(`${process.env.API_URL}/login?error=linkedin_denied`);
-    }
-
-    if (!code) {
-      return res.redirect(`${process.env.API_URL}/login?error=linkedin_no_code`);
+    if (typeof code !== "string" || !code) {
+      return redirectOAuthError(res, "linkedin_no_code");
     }
 
     // --- Exchange code for access token ---
@@ -1134,6 +1510,7 @@ const linkedinCallback = async (req, res) => {
         }),
         {
           headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          timeout: 10000,
         }
       );
       tokenData = tokenRes.data;
@@ -1142,16 +1519,12 @@ const linkedinCallback = async (req, res) => {
         "LinkedIn token exchange failed:",
         tokenErr.response?.data || tokenErr.message
       );
-      return res.redirect(
-        `${process.env.API_URL}/login?error=linkedin_token_failed`
-      );
+      return redirectOAuthError(res, "linkedin_token_failed");
     }
 
     const { access_token } = tokenData;
     if (!access_token) {
-      return res.redirect(
-        `${process.env.API_URL}/login?error=linkedin_token_failed`
-      );
+      return redirectOAuthError(res, "linkedin_token_failed");
     }
 
     // --- Fetch user info via OIDC userinfo endpoint ---
@@ -1167,9 +1540,7 @@ const linkedinCallback = async (req, res) => {
         "LinkedIn profile fetch failed:",
         profileErr.response?.data || profileErr.message
       );
-      return res.redirect(
-        `${process.env.API_URL}/login?error=linkedin_profile_failed`
-      );
+      return redirectOAuthError(res, "linkedin_profile_failed");
     }
 
     // OIDC response shape:
@@ -1182,16 +1553,19 @@ const linkedinCallback = async (req, res) => {
       email_verified,
     } = profile;
 
-    if (!email || email_verified === false) {
-      return res.redirect(
-        `${process.env.API_URL}/login?error=linkedin_no_verified_email`
-      );
+    if (
+      typeof email !== "string" ||
+      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim()) ||
+      email_verified !== true
+    ) {
+      return redirectOAuthError(res, "linkedin_no_verified_email");
     }
 
     // --- Find or create user ---
+    const normalizedEmail = email.trim().toLowerCase();
     const existing = await pool.query(
-      "SELECT * FROM users WHERE email = $1",
-      [email]
+      "SELECT * FROM users WHERE lower(email) = $1",
+      [normalizedEmail]
     );
     let user;
     let isNewUser = false;
@@ -1200,15 +1574,15 @@ const linkedinCallback = async (req, res) => {
       user = existing.rows[0];
 
       if (user.auth_provider === "local" || !user.auth_provider) {
-        return res.redirect(
-          `${process.env.API_URL}/login?error=email_registered_local`
-        );
+        return redirectOAuthError(res, "email_registered_local");
       }
 
       if (user.auth_provider !== "linkedin") {
-        return res.redirect(
-          `${process.env.API_URL}/login?error=email_registered_other&provider=${user.auth_provider}`
-        );
+        return redirectOAuthError(res, "email_registered_other");
+      }
+
+      if (String(user.provider_id) !== String(providerId)) {
+        return redirectOAuthError(res, "provider_account_mismatch");
       }
     } else {
       isNewUser = true;
@@ -1233,27 +1607,15 @@ const linkedinCallback = async (req, res) => {
           (username, email, password_hash, is_verified, auth_provider, provider_id, avatar_url)
          VALUES ($1, $2, NULL, 1, 'linkedin', $3, $4)
          RETURNING *`,
-        [usernameBase, email, providerId, picture || null]
+        [usernameBase, normalizedEmail, providerId, picture || null]
       );
       user = insertResult.rows[0];
     }
 
-    const token = createToken({ userId: user.id });
-
-    const redirectParams = new URLSearchParams({
-      token,
-      isNewUser: isNewUser.toString(),
-      userId: user.id.toString(),
-      email: user.email,
-      username: user.username,
-    });
-
-    return res.redirect(
-      `${process.env.API_URL}/oauth-callback?${redirectParams.toString()}`
-    );
+    return await issueOAuthHandoff(res, user, isNewUser, clientState);
   } catch (error) {
-    console.error("linkedinCallback error:", error);
-    return res.redirect(`${process.env.API_URL}/login?error=server_error`);
+    console.error("LinkedIn OAuth callback failed:", error.message);
+    return redirectOAuthError(res, "server_error");
   }
 };
 
@@ -1368,6 +1730,7 @@ const linkedinLogin = async (req, res) => {
 
 
 module.exports = {
+  
     login,
     register,
     verifyEmail,
@@ -1375,24 +1738,24 @@ module.exports = {
 
     // forget password process
 
-      // step 1
-      forgetPassword,
-      //step 2
-      verifyforgetPasswordPin,
-      // step 2.1 if user miss the first Pin request for new one
-      resendForgetPasswordPin,
-      // last step or step 3
-      setNewPassword,
+    // step 1
+    forgetPassword,
+    //step 2
+    verifyforgetPasswordPin,
+    // step 2.1 if user miss the first Pin request for new one
+    resendForgetPasswordPin,
+    // last step or step 3
+    setNewPassword,
 
     // user want to change current password
       changePassword,
       newPassword,
 
-    updateUser,
+      updateUser,
 
     // get user info
-    getUserInfo,
-    getUserInfoById,
+      getUserInfo,
+      getUserInfoById,
 
     // OAuth
 
@@ -1405,6 +1768,11 @@ module.exports = {
       // GitHub OAuth
       githubRedirect,
       githubCallback,
+
+      // Microsoft OAuth
+      microsoftRedirect,
+      microsoftCallback,
+      exchangeOAuthHandoff,
 
       // linkedin
       linkedinRedirect,   

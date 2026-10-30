@@ -150,7 +150,7 @@ export default function App () {
             <Route path='/setupaccount' element={<SetupAccount/>}></Route>
             <Route path="/oauth-callback" element={<OAuthCallback />} />
 
-            {/* Not Found 404 */}
+            {/* Not Found 404 */} 
             <Route path='*' element={<NotFound/>}></Route>
 
           </Routes>

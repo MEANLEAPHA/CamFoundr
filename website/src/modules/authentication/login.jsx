@@ -7,8 +7,8 @@ import "react-toastify/dist/ReactToastify.css";
 import "./signPage.css";
 
 import { useAuth } from "../../context/authContext";
-import { GoogleLogin } from "@react-oauth/google";
-import { faFacebookF, faGithub, faGoogle, faLinkedinIn, faMicrosoft } from "@fortawesome/free-brands-svg-icons";
+import { useGoogleLogin } from "@react-oauth/google";
+import { loadFacebookSdk } from "./facebookSdk";
 
 const API_URL = import.meta.env.VITE_SERVER_URL;
 
@@ -72,13 +72,13 @@ const Login = () => {
 
     setLoading(false);
   };
-  const handleGoogleSuccess = async (credentialResponse) => {
+  const handleGoogleSuccess = async (tokenResponse) => {
   setLoading(true);
   try {
     const res = await fetch(`${API_URL}/api/auth/google`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ credential: credentialResponse.credential }),
+      body: JSON.stringify({ accessToken: tokenResponse.access_token }),
     });
 
     const data = await res.json();
@@ -101,6 +101,12 @@ const Login = () => {
   }
   setLoading(false);
   };
+
+  const googleLogin = useGoogleLogin({
+    onSuccess: handleGoogleSuccess,
+    onError: () => toast.error("Google login failed"),
+    scope: "openid email profile",
+  });
 
   const handleFacebookLogin = async () => {
     setLoading(true);
@@ -149,6 +155,29 @@ const Login = () => {
     }
   };
 
+  const redirectToProvider = (provider) => {
+    if (loading) return;
+    if (!API_URL) {
+      toast.error("Sign-in is temporarily unavailable. Please try again later.");
+      return;
+    }
+
+    try {
+      const stateBytes = window.crypto.getRandomValues(new Uint8Array(32));
+      const clientState = Array.from(stateBytes, (byte) =>
+        byte.toString(16).padStart(2, "0")
+      ).join("");
+      sessionStorage.setItem("oauthClientState", clientState);
+      const serverUrl = API_URL.replace(/\/+$/, "");
+      window.location.assign(
+        `${serverUrl}/api/auth/${provider}?client_state=${clientState}`
+      );
+    } catch (error) {
+      console.error("Could not start OAuth sign-in:", error);
+      toast.error("Sign-in is temporarily unavailable. Please try again later.");
+    }
+  };
+
   const [searchParams, setSearchParams] = useSearchParams();
 
   useEffect(() => {
@@ -163,12 +192,28 @@ const Login = () => {
         toast.warning("This email is already registered. Please log in with your password instead.");
         break;
       case "email_registered_other":
-        const provider = searchParams.get("provider");
-        toast.warning(`This email is already registered via ${provider}. Please use that method to log in.`);
+        toast.warning("This email is already registered with another sign-in method.");
         break;
       case "github_no_code":
       case "github_token_failed":
+      case "github_denied":
+      case "github_invalid_state":
         toast.error("GitHub login failed, please try again.");
+        break;
+      case "microsoft_invalid_state":
+      case "microsoft_no_code":
+      case "microsoft_token_failed":
+      case "microsoft_profile_incomplete":
+        toast.error("Microsoft sign-in failed, please try again.");
+        break;
+      case "microsoft_denied":
+        toast.warning("Microsoft sign-in was cancelled.");
+        break;
+      case "microsoft_unavailable":
+        toast.error("Microsoft sign-in is not configured. Please try another method.");
+        break;
+      case "provider_account_mismatch":
+        toast.warning("This provider account does not match the account on file.");
         break;
       case "server_error":
         toast.error("Server error, please try again later.");
@@ -178,6 +223,11 @@ const Login = () => {
     }
 
     // clean the URL so refreshing doesn't re-trigger the same toast
+    try {
+      sessionStorage.removeItem("oauthClientState");
+    } catch (storageError) {
+      console.warn("Could not clear OAuth state from session storage:", storageError);
+    }
     setSearchParams({}, { replace: true });
   }, [searchParams, setSearchParams]);
 
@@ -193,7 +243,7 @@ const Login = () => {
             <div className="top-title-div">
               <p className="top-title">CDL</p>
               <p className="sub-title">
-                Be part of the movement building a better ss
+                Big ideas begin with a voice.
               </p>
             </div>
 
@@ -260,37 +310,25 @@ const Login = () => {
             <div className="div-oauth">
             <button
               type="button"
-              onClick={handleFacebookLogin}
+              onClick={() => redirectToProvider("linkedin")}
               disabled={loading}
-              style={{
-                cursor: loading ? "not-allowed" : "pointer",
-              }}
-              title="Sign in with Linkedin"
+              title="Sign in with LinkedIn"
+              aria-label="Sign in with LinkedIn"
               className='oauth-button'
             >
-  
-             <img src='https://cdn-icons-png.flaticon.com/512/2496/2496097.png' className='auth-icon'/>
+              <img src='https://cdn-icons-png.flaticon.com/512/2496/2496097.png' className='auth-icon'/>
             </button> 
      
-             <button
+            <button
               type="button"
-              onClick={handleFacebookLogin}
+              onClick={() => googleLogin()}
               disabled={loading}
-              style={{
-                cursor: loading ? "not-allowed" : "pointer",
-              }}
               title="Sign in with Google"
-              className='oauth-button'
+              aria-label="Sign in with Google"
+              className="oauth-button"
             >
-             <img className='auth-icon' src='https://thumb.wikimedia.org/wikipedia/commons/thumb/3/3c/Google_Favicon_2025.svg/960px-Google_Favicon_2025.svg.png?utm_source=commons.wikimedia.org&utm_campaign=index&utm_content=thumbnail'/>
-            </button> 
-
-            {/* <GoogleLogin
-              onSuccess={handleGoogleSuccess}
-              onError={() => toast.error("Google login failed")}
-                width="280"  
-              className='oauth-button'
-            /> */}
+               <img className='auth-icon' src='https://thumb.wikimedia.org/wikipedia/commons/thumb/3/3c/Google_Favicon_2025.svg/960px-Google_Favicon_2025.svg.png?utm_source=commons.wikimedia.org&utm_campaign=index&utm_content=thumbnail'/>
+            </button>
 
             <button
               type="button"
@@ -300,61 +338,32 @@ const Login = () => {
                 cursor: loading ? "not-allowed" : "pointer",
               }}
               title="Sign in with Facebook"
+              aria-label="Sign in with Facebook"
               className='oauth-button'
             >
              <img className='auth-icon' src='https://cdn-icons-png.flaticon.com/256/124/124010.png'/>
             </button> 
             
-             <button className='oauth-button' 
+            <button
+              className="oauth-button"
               type="button"
+              onClick={() => redirectToProvider("microsoft")}
               disabled={loading}
-              style={{
-                cursor: loading ? "not-allowed" : "pointer",
-              }}
-              title="Login with GitHub"
+              title="Sign in with Microsoft"
+              aria-label="Sign in with Microsoft"
             >
-              <a href={`${API_URL}/api/auth/github`}
-                style={{
-                  display: "block",
-                  color: "white",
-                  textDecoration: "none",
-                }}
-                title="Sign in with Microdoft"
-                
-              >
-                <img  className='auth-icon' src='https://thumb.wikimedia.org/wikipedia/commons/thumb/2/25/Microsoft_icon.svg/1280px-Microsoft_icon.svg.png?utm_source=commons.wikimedia.org&utm_campaign=index&utm_content=thumbnail&_=20220610071042'/>
-              </a>
+              <img  className='auth-icon' src='https://thumb.wikimedia.org/wikipedia/commons/thumb/2/25/Microsoft_icon.svg/1280px-Microsoft_icon.svg.png?utm_source=commons.wikimedia.org&utm_campaign=index&utm_content=thumbnail&_=20220610071042'/>
             </button>
-            {/* <button className='oauth-button' 
-              type="button"
-              disabled={loading}
-              style={{
-                background: "#24292e",
-                cursor: loading ? "not-allowed" : "pointer",
-              }}
-              title="Login with GitHub"
-            >
-              <a href={`${API_URL}/api/auth/github`}
-                style={{
-                  display: "block",
-                  color: "white",
-                  textDecoration: "none",
-                }}
-                title="Login with GitHub"
-                
-              >
-                <FontAwesomeIcon icon={faGithub} className='auth-icon'/> 
-              </a>
-            </button> */}
-
+              
               <p className="warm-welcome-p" style={{marginTop: '15px'}}>
-            Don't have an account?{" "}
+                Don't have an account?{" "}
             <span onClick={() => navigate("/register")} style={{ color: "green", cursor: "pointer" }} title="Click to create an account">
               Create one
             </span>
           </p>
 
           </div>
+          
           </div>
           <div className='footer-form-detail'>
             <p>About</p>

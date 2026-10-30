@@ -45,11 +45,11 @@ export const NewPassword = () => {
     const [isLength, setIsLength] = useState("grey");
 
     
-    // useEffect(() => {
-    //   if (!email) navigate("/verifyemailforgetpassword", { replace: true });
-    // }, [email, navigate]); 
+    useEffect(() => {
+      if (!email) navigate("/verifyemailforgetpassword", { replace: true });
+    }, [email, navigate]); 
 
-    // if (!email) return null;
+    if (!email) return null;
 
     const calculateStrength = (value) => {
     let score = 0;
@@ -97,10 +97,9 @@ export const NewPassword = () => {
   };
 
   const isValid =
-    password &&
-    confirmPassword &&
-    password === confirmPassword &&
-    strength >= 4;
+    password.length > 0 &&
+    confirmPassword.length > 0 &&
+    password === confirmPassword;
 
   const handleSubmit = async () => {
     if (!isValid) return;
@@ -159,15 +158,7 @@ export const NewPassword = () => {
             <div className='toast-feedback'>
               <ToastContainer position="top-right" autoClose={2000} />
             </div>
-              <div className="p-page-div">
-          <p className="p-page">nahidea</p>
-          <p className="p2-page">
-           Share content, questions and connect with others 
-          </p>
-          <p className="p2-page">
-            on Nahidea's community
-          </p>
-      </div>
+       
       <form
         onSubmit={(e) => {
           e.preventDefault();
@@ -175,7 +166,7 @@ export const NewPassword = () => {
         }}
       >
         <div className="form-center">
-          <p className="p-page" style={{fontSize:"x-large", fontWeight:"bold"}}>
+          <p className="p-page" style={{fontSize:"large", fontWeight:"bold"}}>
                Set New Password
               </p>
              <div className='container-input'>
@@ -214,15 +205,12 @@ export const NewPassword = () => {
           />
         </div>
 
-       {
+    {
             showInstruction !== "none" && 
             <>
             
           <div className = 'password-instruction' style={{display:showInstruction}}>
-            <p tyle={{margin: '0px'}}>
-            <b style={{marginBottom:'15px'}}>Password must contain: </b>
-
-            </p>
+       
             <p style={{margin: '0px'}}>
             <span style={{color:isUpperCase}}>Uppercase</span>
             <span>, </span>
@@ -232,7 +220,7 @@ export const NewPassword = () => {
             <span>, </span>
             <span style={{color:isSymbol}}>Symbol</span>
             <span>, </span>
-            <span style={{color:isLength}}>Min 6 and Max 8 </span>
+            <span style={{color:isLength}}>Minimum 6 and Maximum 8 </span>
             </p>
           </div>
             <div style={{ display: "flex", gap: "5px", marginBottom: "20px", marginTop: "8px", width:"200px"}}>
@@ -251,7 +239,7 @@ export const NewPassword = () => {
             
           </div>
           </>
-          } 
+          }  
          <div className="div-input">
           <input
           type="password"
@@ -270,7 +258,7 @@ export const NewPassword = () => {
          </div>
      
         <div className="div-input div-submit reset-input">
-             <button disabled={!isValid || loading} type="submit" title="Save new password" style={{cursor:"pointer"}}>
+             <button disabled={!isValid || loading} type="submit" title="Save new password" style={{cursor: !isValid || loading ? "not-allowed" : "pointer"}}>
           {loading ? "Saving..." : "Reset Password"}
         </button>
         </div>

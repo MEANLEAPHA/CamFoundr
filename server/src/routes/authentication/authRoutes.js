@@ -12,11 +12,14 @@ const { register, login,
         updateUser,
         getUserInfo,
         getUserInfoById,
+        
         googleLogin,
         facebookLogin,
-
         githubRedirect,
         githubCallback,
+        microsoftRedirect,
+        microsoftCallback,
+        exchangeOAuthHandoff,
         linkedinRedirect,
         linkedinCallback
         
@@ -40,8 +43,11 @@ router.post("/resend-verify-email-pin", resendLimiter, resendverifyEmailPin);
 router.post("/login", loginIpLimiter, loginAccountLimiter, login);
 router.post("/auth/google", loginIpLimiter, googleLogin);
 router.post("/auth/facebook", loginIpLimiter, facebookLogin);
-router.get("/auth/github", loginIpLimiter, githubRedirect);
-router.get("/auth/github/callback", githubCallback);
+// router.get("/auth/github", loginIpLimiter, githubRedirect);
+// router.get("/auth/github/callback", githubCallback);
+router.get("/auth/microsoft", loginIpLimiter, microsoftRedirect);
+router.get("/auth/microsoft/callback", microsoftCallback);
+router.post("/auth/oauth/exchange", loginIpLimiter, exchangeOAuthHandoff);
 router.get("/auth/linkedin", linkedinRedirect);
 router.get("/auth/linkedin/callback", linkedinCallback);
 

@@ -295,8 +295,8 @@ export const iconOptions = [
 ];
 
 export const question_type = [
-  {id:1, label:"Open End", value:"openend"},
-  {id:2, label:"Closed End", value:"closedend"},
+  {id:1, label:"Open-Ended", value:"openend"},
+  {id:2, label:"Close-Ended", value:"closedend"},
   {id:3, label:"Single Choice", value:"singlechoice"},
   {id:4, label:"Multiple Choice", value:"multiplechoice"},
   {id:5, label:"Range", value:"range"},

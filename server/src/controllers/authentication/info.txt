@@ -1,0 +1,37 @@
+# NahideaBackend
+
+## CORS configuration
+
+Set `ORIGIN_URL` to the primary website origin. To allow additional website
+origins, set `CORS_ORIGINS` to a comma-separated list of full origins, for
+example:
+
+```env
+ORIGIN_URL=https://skyblue-fox-816626.hostingersite.com
+CORS_ORIGINS=https://www.example.com,https://example.com
+```
+
+Use the website origin (the domain in the browser address bar), not the API
+server's domain. These settings apply to both REST and Socket.IO requests.
+
+## Microsoft sign-in
+
+Register a Microsoft identity platform application with a **Web** redirect URI
+that exactly matches the server callback, for example
+`https://api.example.com/api/auth/microsoft/callback`. Configure these server
+environment variables:
+
+```env
+MICROSOFT_CLIENT_ID=your-application-client-id
+MICROSOFT_CLIENT_SECRET=your-application-client-secret
+MICROSOFT_CALLBACK_URL=https://api.example.com/api/auth/microsoft/callback
+MICROSOFT_TENANT_ID=common
+API_URL=https://www.example.com
+```
+
+`MICROSOFT_TENANT_ID` is optional and defaults to `common`; use a tenant ID,
+`organizations`, or `consumers` to restrict the account types accepted by the
+application. `API_URL` is the website origin used for browser redirects. Keep
+the client secret on the server only; do not add it to the Vite website
+environment. OAuth handoffs use the configured Redis cache and expire after
+two minutes.

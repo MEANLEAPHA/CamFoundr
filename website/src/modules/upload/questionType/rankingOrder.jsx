@@ -1,6 +1,6 @@
 import React from "react";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
-
+import {handleChange, deleteChoice, addChoice, removeAll, maxChoices} from "./util/choiceType";
 import "./rankingorder.css";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -16,8 +16,6 @@ import {
 export default function RankingOrder({ value, onChange }) {
   const items = value.length ? value : ["", "", ""];
 
-  const maxItems = 10;
-
   const handleDragEnd = (result) => {
     if (!result.destination) return;
 
@@ -30,31 +28,7 @@ export default function RankingOrder({ value, onChange }) {
     onChange(reordered);
   };
 
-  const handleChange = (index, newValue) => {
-    const updated = [...items];
 
-    updated[index] = newValue;
-
-    onChange(updated);
-  };
-
-  const addItem = () => {
-    if (items.length < maxItems) {
-      onChange([...items, ""]);
-    }
-  };
-
-  const deleteItem = (index) => {
-    if (items.length > 3) {
-      onChange(items.filter((_, i) => i !== index));
-    }
-  };
-
-  const removeAll = () => {
-    if (items.length > 3) {
-      onChange(items.slice(0, 3));
-    }
-  };
 
   return (
      <div className="question-type-wrapper">
@@ -105,14 +79,14 @@ export default function RankingOrder({ value, onChange }) {
                         placeholder={`Rank ${index + 1}`}
                         value={item}
                         onChange={(e) =>
-                          handleChange(index, e.target.value)
+                          handleChange(index, e.target.value, items, onChange)
                         }
                       />
 
                       {items.length > 3 && (
                         <button
                           className="btn-delete-ranking"
-                          onClick={() => deleteItem(index)}
+                          onClick={() => deleteChoice(index, items, onChange)}
                           type="button"
                         >
                           <FontAwesomeIcon icon={faTrashCan} />
@@ -132,8 +106,8 @@ export default function RankingOrder({ value, onChange }) {
 
       <div className="ranking-actions">
         <button
-          onClick={addItem}
-          disabled={items.length >= maxItems}
+          onClick={() => addChoice(onChange, items)}
+          disabled={items.length >= maxChoices}
           type="button"
           className="btn-multiple-choice"
         >
@@ -146,7 +120,7 @@ export default function RankingOrder({ value, onChange }) {
         
         {items.length > 3 && (
           <button
-            onClick={removeAll}
+            onClick={() => removeAll(items, onChange)}
             type="button"
             className=" btn-remove-ranking btn-multiple-choice"
           >

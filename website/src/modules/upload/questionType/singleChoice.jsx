@@ -2,34 +2,9 @@ import "./singlechoice.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircle, faTrashCan} from "@fortawesome/free-regular-svg-icons";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
+import {handleChange, deleteChoice, addChoice, removeAll, maxChoices} from "./util/choiceType";
+
 export default function SingleChoice ({ value, onChange}) {
-
-  const maxChoices = 10;
-
-  const handleChange = (index, newValue) => {
-    const updated = [...value];
-    updated[index] = newValue;
-    onChange(updated);
-  };
-
-  const addChoice = () => {
-    if (value.length < maxChoices) {
-      onChange([...value, ""]);
-    }
-  };
-
-  const deleteChoice = (index) => {
-    if (value.length > 3) {
-      const updated = value.filter((_, i) => i !== index);
-      onChange(updated);
-    }
-  };
-
-  const removeAll = () => {
-    if (value.length > 3) {
-      onChange(value.slice(0, 3));
-    }
-  };
 
   return (
      <div className="question-type-wrapper">
@@ -47,14 +22,14 @@ export default function SingleChoice ({ value, onChange}) {
                 className="single-choice-input"
                 placeholder={`Choice ${index + 1}`}
                 value={choice}
-                onChange={(e) => handleChange(index, e.target.value)}
+                onChange={(e) => handleChange(index, e.target.value, onChange, value)}
               />
 
               {value.length > 3 && (
                 <button
                   type="button"
                   className="btn-delete-single-choice"
-                  onClick={() => deleteChoice(index)}
+                  onClick={() => deleteChoice(index, onChange, value)}
                 >
                   <FontAwesomeIcon icon={faTrashCan} />
                 </button>
@@ -64,7 +39,7 @@ export default function SingleChoice ({ value, onChange}) {
         </div>
         <div className="single-choice-actions">
           <button
-            onClick={addChoice}
+            onClick={() => addChoice(onChange, value)}
             disabled={value.length >= maxChoices}
             type="button"
             className="btn-multiple-choice"
@@ -77,7 +52,7 @@ export default function SingleChoice ({ value, onChange}) {
 
           {value.length > 3 && (
             <button
-              onClick={removeAll}
+              onClick={() => removeAll(onChange, value)}
               type="button"
               className="btn-multiple-choice btn-remove-all"
             >

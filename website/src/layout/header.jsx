@@ -5,11 +5,11 @@ import { useNotifications } from "../context/notificationContext";
 import "../assets/style/Header.css";
 import { useAuth } from '../context/authContext';
 import { SearchBar } from "../components/searchBar";
-import { Ad, Bell, Brain,
+import { Bell,
          Lightbulb,
          LogOut, Menu,
          MessageSquare,
-         MessageSquareText, MessagesSquare, 
+         MessageSquareText,
          Moon, Plus, Rocket, Rss, Settings,
          SquarePlus, Sun, User
        } from "lucide-react";
@@ -31,23 +31,13 @@ const Header = ({onToggleAside, onToggleTheme, currentTheme}) => {
         />
         <div className='logo-div'>
           <span className='logo-font-main'>CDL</span>
-          <span className='logo-moto'>Bigger mind <br/> Create better ideas</span>
+          {/* <span className='logo-moto'>Bigger mind <br/> Create better ideas</span> */}
         </div>
      
       </div>
 
         <SearchBar />
-      {/* <div  className="header-middle header-children">
-        <nav id='header-nav'>
-          <ul id='header-nav-ul'>
-             <li className='li-nav-h'>Home</li>
-             <li className='li-nav-h'>Event</li>
-             <li className='li-nav-h'>Directory</li>
-             <li className='li-nav-h'>Contact</li>
-             <li className='li-nav-h'>About</li>
-          </ul>
-        </nav>
-      </div> */}
+   
       <div className="header-right header-children">
         <>
           <button className='button-bar-icon not-mobile-tool' onClick={onToggleTheme}>
@@ -60,9 +50,9 @@ const Header = ({onToggleAside, onToggleTheme, currentTheme}) => {
             <Ad className=" lucide-icon-hr" style={{width:'23px',height:'23px', opacity:0.9}}/>
           </button> */}
 
-          <button className='button-bar-icon'>
+          {/* <button className='button-bar-icon'>
             <MessageSquare className=" lucide-icon-hr" />
-          </button>
+          </button> */}
           
           <button className='button-bar-icon' type="button" onClick={()=>{navigate('/notifications')}}>
             <Bell className='lucide-icon-hr'/>
@@ -73,7 +63,7 @@ const Header = ({onToggleAside, onToggleTheme, currentTheme}) => {
               )}
           </button>
 
-          {/* <CreateDropDown /> */}
+          <CreateDropDown />
           {/* mobile view */}
           <CreateDropDownMin />
 
