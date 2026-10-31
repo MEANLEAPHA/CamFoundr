@@ -1,47 +1,71 @@
 const appId = import.meta.env.VITE_FACEBOOK_APP_ID;
 let sdkPromise;
+let initializedAppId;
+
+const initializeFacebookSdk = () => {
+  if (!window.FB) {
+    throw new Error("Facebook SDK did not initialize");
+  }
+
+  if (initializedAppId !== appId) {
+    window.FB.init({
+      appId,
+      cookie: true,
+      xfbml: false,
+      version: "v24.0",
+    });
+    initializedAppId = appId;
+  }
+
+  return window.FB;
+};
 
 export const loadFacebookSdk = () => {
   if (!appId) {
     return Promise.reject(new Error("Facebook sign-in is not configured"));
-  }
-  if (window.FB) {
-    return Promise.resolve(window.FB);
   }
   if (sdkPromise) {
     return sdkPromise;
   }
 
   sdkPromise = new Promise((resolve, reject) => {
-    const script = document.createElement("script");
-    script.src = "https://connect.facebook.net/en_US/sdk.js";
-    script.async = true;
-    script.defer = true;
-
-    script.onload = () => {
+    const initialize = () => {
       try {
-        if (!window.FB) {
-          throw new Error("Facebook SDK did not initialize");
-        }
-        window.FB.init({
-          appId,
-          cookie: true,
-          xfbml: false,
-          version: "v24.0",
-        });
-        resolve(window.FB);
+        resolve(initializeFacebookSdk());
       } catch (error) {
-        sdkPromise = null;
         reject(error);
       }
     };
 
-    script.onerror = () => {
-      sdkPromise = null;
-      reject(new Error("Could not load Facebook SDK"));
-    };
+    if (window.FB) {
+      initialize();
+      return;
+    }
 
-    document.head.appendChild(script);
+    let script = document.querySelector(
+      'script[data-camfoundr-facebook-sdk="true"]'
+    );
+    if (!script) {
+      script = document.createElement("script");
+      script.src = "https://connect.facebook.net/en_US/sdk.js";
+      script.async = true;
+      script.defer = true;
+      script.dataset.camfoundrFacebookSdk = "true";
+    }
+
+    script.addEventListener("load", initialize, { once: true });
+    script.addEventListener(
+      "error",
+      () => reject(new Error("Could not load Facebook SDK")),
+      { once: true }
+    );
+
+    if (!script.isConnected) {
+      document.head.appendChild(script);
+    }
+  }).catch((error) => {
+    sdkPromise = null;
+    throw error;
   });
 
   return sdkPromise;

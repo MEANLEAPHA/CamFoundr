@@ -217,37 +217,39 @@ const Register = () => {
       const FB = await loadFacebookSdk();
 
       FB.login(
-        async (response) => {
-          if (response.authResponse) {
-            try {
-              const res = await fetch(`${API_URL}/api/auth/facebook`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ accessToken: response.authResponse.accessToken }),
-              });
+        (response) => {
+          void (async () => {
+            if (response.authResponse) {
+              try {
+                const res = await fetch(`${API_URL}/api/auth/facebook`, {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({ accessToken: response.authResponse.accessToken }),
+                });
 
-              const data = await res.json();
+                const data = await res.json();
 
-              if (res.ok) {
-                const expiry = Date.now() + 7 * 24 * 60 * 60 * 1000;
-                login(data.token, expiry);
+                if (res.ok) {
+                  const expiry = Date.now() + 7 * 24 * 60 * 60 * 1000;
+                  login(data.token, expiry);
 
-                if (data.isNewUser) {
-                  navigate("/setupaccount", { state: { Email: data.email, UserId: data.userId, Username: data.username } });
+                  if (data.isNewUser) {
+                    navigate("/setupaccount", { state: { Email: data.email, UserId: data.userId, Username: data.username } });
+                  } else {
+                    navigate("/home");
+                  }
                 } else {
-                  navigate("/home");
+                  toast.warning(data.message || "Login failed");
                 }
-              } else {
-                toast.warning(data.message || "Login failed");
+              } catch (err) {
+                console.error(err);
+                toast.error("Server error, please try again later.");
               }
-            } catch (err) {
-              console.error(err);
-              toast.error("Server error, please try again later.");
+            } else {
+              toast.warning("Facebook login was cancelled");
             }
-          } else {
-            toast.warning("Facebook login was cancelled");
-          }
-          setLoading(false);
+            setLoading(false);
+          })();
         },
         { scope: "public_profile,email" }
       );
