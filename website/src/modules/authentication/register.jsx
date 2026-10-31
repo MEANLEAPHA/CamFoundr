@@ -11,7 +11,7 @@ import "react-toastify/dist/ReactToastify.css";
 const API_URL = import.meta.env.VITE_SERVER_URL; 
 
 import { useAuth } from "../../context/authContext";
-import { useGoogleLogin } from "@react-oauth/google";
+import { GoogleLogin } from "@react-oauth/google";
 import { loadFacebookSdk } from "./facebookSdk";
 import "./signPage.css";
 
@@ -175,13 +175,19 @@ const Register = () => {
 
     setLoading(false);
   };
-   const handleGoogleSuccess = async (tokenResponse) => {
+   const handleGoogleSuccess = async (credentialResponse) => {
+  const credential = credentialResponse.credential;
+  if (!credential) {
+    toast.error("Google did not return a sign-in credential. Please try again.");
+    setLoading(false);
+    return;
+  }
   setLoading(true);
   try {
     const res = await fetch(`${API_URL}/api/auth/google`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ accessToken: tokenResponse.access_token }),
+      body: JSON.stringify({ credential }),
     });
 
     const data = await res.json();
@@ -205,11 +211,10 @@ const Register = () => {
   setLoading(false);
   };
 
-  const googleLogin = useGoogleLogin({
-    onSuccess: handleGoogleSuccess,
-    onError: () => toast.error("Google login failed"),
-    scope: "openid email profile",
-  });
+  const handleGoogleError = () => {
+    toast.error("Google login failed. Please try again.");
+    setLoading(false);
+  };
 
   const handleFacebookLogin = async () => {
     setLoading(true);
@@ -511,16 +516,24 @@ const Register = () => {
               <img src='https://cdn-icons-png.flaticon.com/512/2496/2496097.png' className='auth-icon'/>
             </button> 
      
-            <button
-              type="button"
-              onClick={() => googleLogin()}
-              disabled={loading}
+            <div
+              className="google-oauth-button"
               title="Sign in with Google"
               aria-label="Sign in with Google"
-              className="oauth-button"
+              style={{
+                pointerEvents: loading ? "none" : "auto",
+                opacity: loading ? 0.5 : 1,
+              }}
             >
-               <img className='auth-icon' src='https://thumb.wikimedia.org/wikipedia/commons/thumb/3/3c/Google_Favicon_2025.svg/960px-Google_Favicon_2025.svg.png?utm_source=commons.wikimedia.org&utm_campaign=index&utm_content=thumbnail'/>
-            </button>
+              <GoogleLogin
+                type="icon"
+                theme="outline"
+                size="large"
+                shape="square"
+                onSuccess={handleGoogleSuccess}
+                onError={handleGoogleError}
+              />
+            </div>
 
             <button
               type="button"

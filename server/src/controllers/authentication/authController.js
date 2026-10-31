@@ -14,11 +14,11 @@ const axios = require('axios');
 const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 const getFrontendRedirect = (path, params = {}) => {
-  if (!process.env.API_URL) {
-    throw new Error("API_URL is not configured");
+  if (!process.env.ORIGIN_URL) {
+    throw new Error("ORIGIN_URL is not configured");
   }
 
-  const redirectUrl = new URL(path, process.env.API_URL);
+  const redirectUrl = new URL(path, process.env.ORIGIN_URL);
   for (const [key, value] of Object.entries(params)) {
     if (value !== undefined && value !== null) {
       redirectUrl.searchParams.set(key, String(value));
@@ -94,7 +94,7 @@ const issueOAuthHandoff = async (res, user, isNewUser, clientState) => {
 
   res.set("Cache-Control", "no-store");
   res.set("Referrer-Policy", "no-referrer");
-  const callbackUrl = new URL("/oauth-callback", process.env.API_URL);
+  const callbackUrl = new URL(getFrontendRedirect("/oauth-callback"));
   callbackUrl.hash = new URLSearchParams({
     code: handoffCode,
     state: clientState,
@@ -366,6 +366,7 @@ const login = async (req, res) => {
 
 // Google OAuth login/register
 const googleLogin = async (req, res) => {
+  const startedAt = Date.now();
   try {
     const { credential, accessToken } = req.body || {};
 
@@ -404,7 +405,11 @@ const googleLogin = async (req, res) => {
         }
         payload = {
           ...profile.data,
-          email_verified: tokenInfo.email_verified,
+          email_verified:
+            profile.data.email_verified ??
+            profile.data.verified_email ??
+            tokenInfo.email_verified ??
+            tokenInfo.verified_email,
         };
       }
     } catch (verifyErr) {
@@ -412,9 +417,26 @@ const googleLogin = async (req, res) => {
       return res.status(401).json({ message: "Invalid Google token" });
     }
 
-    const { email, sub: providerId, picture, email_verified: emailVerified } = payload || {};
+    const {
+      email,
+      sub: providerId,
+      picture,
+      email_verified: emailVerified,
+      verified_email: verifiedEmail,
+    } = payload || {};
+    const verifiedClaim = emailVerified ?? verifiedEmail;
+    const isEmailVerified =
+      verifiedClaim === true ||
+      (typeof verifiedClaim === "string" && verifiedClaim.toLowerCase() === "true");
 
-    if (typeof email !== "string" || !email.trim() || emailVerified !== true || !providerId) {
+    if (typeof email !== "string" || !email.trim() || !isEmailVerified || !providerId) {
+      console.warn("[OAuth:google] verified identity claim rejected", {
+        hasEmail: typeof email === "string" && !!email.trim(),
+        hasProviderId: !!providerId,
+        verifiedClaimType: typeof verifiedClaim,
+        verifiedClaim,
+        elapsedMs: Date.now() - startedAt,
+      });
       return res.status(401).json({ message: "Google account has no verified email" });
     }
 
@@ -479,7 +501,10 @@ const googleLogin = async (req, res) => {
     });
 
   } catch (error) {
-    console.error("googleLogin error:", error);
+    console.error("[OAuth:google] sign-in failed:", error.message);
+    console.info("[OAuth:google] request timing", {
+      elapsedMs: Date.now() - startedAt,
+    });
     return res.status(500).json({ message: "Server Error, Please try again later" });
   }
 };
@@ -1482,22 +1507,30 @@ const linkedinRedirect = (req, res) => {
 // LinkedIn OAuth — step 2: handle callback
 // ============================================================
 const linkedinCallback = async (req, res) => {
+  const callbackStartedAt = Date.now();
+  console.info("[OAuth:linkedin] callback received");
   const { code, state, error } = req.query;
   const clientState = consumeOAuthStateCookie(req, res, "linkedin", state);
   if (!clientState) {
+    console.warn("[OAuth:linkedin] callback rejected: invalid state");
     return redirectOAuthError(res, "linkedin_invalid_state");
   }
   if (error) {
+    console.info("[OAuth:linkedin] authorization denied", {
+      elapsedMs: Date.now() - callbackStartedAt,
+    });
     return redirectOAuthError(res, "linkedin_denied");
   }
 
   try {
     if (typeof code !== "string" || !code) {
+      console.warn("[OAuth:linkedin] callback rejected: missing code");
       return redirectOAuthError(res, "linkedin_no_code");
     }
 
     // --- Exchange code for access token ---
     let tokenData;
+    const tokenRequestStartedAt = Date.now();
     try {
       const tokenRes = await axios.post(
         "https://www.linkedin.com/oauth/v2/accessToken",
@@ -1514,11 +1547,17 @@ const linkedinCallback = async (req, res) => {
         }
       );
       tokenData = tokenRes.data;
+      console.info("[OAuth:linkedin] token exchange completed", {
+        elapsedMs: Date.now() - tokenRequestStartedAt,
+      });
     } catch (tokenErr) {
       console.error(
         "LinkedIn token exchange failed:",
         tokenErr.response?.data || tokenErr.message
       );
+      console.info("[OAuth:linkedin] token exchange failed", {
+        elapsedMs: Date.now() - tokenRequestStartedAt,
+      });
       return redirectOAuthError(res, "linkedin_token_failed");
     }
 
@@ -1529,17 +1568,24 @@ const linkedinCallback = async (req, res) => {
 
     // --- Fetch user info via OIDC userinfo endpoint ---
     let profile;
+    const profileRequestStartedAt = Date.now();
     try {
       const profileRes = await axios.get(
         "https://api.linkedin.com/v2/userinfo",
         { headers: { Authorization: `Bearer ${access_token}` } }
       );
       profile = profileRes.data;
+      console.info("[OAuth:linkedin] profile request completed", {
+        elapsedMs: Date.now() - profileRequestStartedAt,
+      });
     } catch (profileErr) {
       console.error(
         "LinkedIn profile fetch failed:",
         profileErr.response?.data || profileErr.message
       );
+      console.info("[OAuth:linkedin] profile request failed", {
+        elapsedMs: Date.now() - profileRequestStartedAt,
+      });
       return redirectOAuthError(res, "linkedin_profile_failed");
     }
 
@@ -1612,9 +1658,16 @@ const linkedinCallback = async (req, res) => {
       user = insertResult.rows[0];
     }
 
-    return await issueOAuthHandoff(res, user, isNewUser, clientState);
+    const handoffResponse = await issueOAuthHandoff(res, user, isNewUser, clientState);
+    console.info("[OAuth:linkedin] callback completed", {
+      elapsedMs: Date.now() - callbackStartedAt,
+    });
+    return handoffResponse;
   } catch (error) {
     console.error("LinkedIn OAuth callback failed:", error.message);
+    console.info("[OAuth:linkedin] callback failed", {
+      elapsedMs: Date.now() - callbackStartedAt,
+    });
     return redirectOAuthError(res, "server_error");
   }
 };

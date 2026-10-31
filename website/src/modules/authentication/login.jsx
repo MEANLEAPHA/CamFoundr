@@ -7,7 +7,7 @@ import "react-toastify/dist/ReactToastify.css";
 import "./signPage.css";
 
 import { useAuth } from "../../context/authContext";
-import { useGoogleLogin } from "@react-oauth/google";
+import { GoogleLogin } from "@react-oauth/google";
 import { loadFacebookSdk } from "./facebookSdk";
 
 const API_URL = import.meta.env.VITE_SERVER_URL;
@@ -87,9 +87,16 @@ const Login = () => {
 
     setLoading(false);
   };
-  const handleGoogleSuccess = async (tokenResponse) => {
+  const handleGoogleSuccess = async (credentialResponse) => {
     const startedAt = oauthStartedAt.current.google ?? performance.now();
     logOAuthTiming("google", "provider callback received", startedAt);
+    const credential = credentialResponse.credential;
+    if (!credential) {
+      logOAuthTiming("google", "provider returned no ID token", startedAt);
+      toast.error("Google did not return a sign-in credential. Please try again.");
+      setLoading(false);
+      return;
+    }
     setLoading(true);
     let stage = "api_request";
 
@@ -97,7 +104,7 @@ const Login = () => {
       const res = await fetch(`${API_URL}/api/auth/google`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ accessToken: tokenResponse.access_token }),
+        body: JSON.stringify({ credential }),
       });
       logOAuthTiming("google", "api response received", startedAt, {
         status: res.status,
@@ -131,18 +138,12 @@ const Login = () => {
     }
   };
 
-  const googleLogin = useGoogleLogin({
-    onSuccess: handleGoogleSuccess,
-    onError: (error) => {
+  const handleGoogleError = () => {
       const startedAt = oauthStartedAt.current.google ?? performance.now();
-      logOAuthTiming("google", "provider sign-in failed", startedAt, {
-        error: error?.error || "unknown",
-      });
+      logOAuthTiming("google", "provider sign-in failed", startedAt);
       toast.error("Google login failed. Check the browser console for details.");
       setLoading(false);
-    },
-    scope: "openid email profile",
-  });
+  };
 
   const handleFacebookResponse = async (response, startedAt) => {
     logOAuthTiming("facebook", "provider callback received", startedAt, {
@@ -397,21 +398,27 @@ const Login = () => {
               <img src='https://cdn-icons-png.flaticon.com/512/2496/2496097.png' className='auth-icon'/>
             </button> 
      
-            <button
-              type="button"
-              onClick={() => {
-                if (loading) return;
-                startOAuthTiming("google");
-                setLoading(true);
-                googleLogin();
-              }}
-              disabled={loading}
+            <div
+              className="google-oauth-button"
               title="Sign in with Google"
               aria-label="Sign in with Google"
-              className="oauth-button"
+              style={{
+                pointerEvents: loading ? "none" : "auto",
+                opacity: loading ? 0.5 : 1,
+              }}
             >
-               <img className='auth-icon' src='https://thumb.wikimedia.org/wikipedia/commons/thumb/3/3c/Google_Favicon_2025.svg/960px-Google_Favicon_2025.svg.png?utm_source=commons.wikimedia.org&utm_campaign=index&utm_content=thumbnail'/>
-            </button>
+              <GoogleLogin
+                type="icon"
+                theme="outline"
+                size="large"
+                shape="square"
+                click_listener={() => {
+                  if (!loading) startOAuthTiming("google");
+                }}
+                onSuccess={handleGoogleSuccess}
+                onError={handleGoogleError}
+              />
+            </div>
 
             <button
               type="button"
