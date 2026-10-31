@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate, useSearchParams } from "react-router-dom";
@@ -21,6 +21,21 @@ const Login = () => {
   const [viewPassword, setViewPassword] = useState("password");
   const [eye, setEye] = useState(faEyeSlash);
   const [loading, setLoading] = useState(false);
+  const oauthStartedAt = useRef({});
+
+  const startOAuthTiming = (provider) => {
+    const startedAt = performance.now();
+    oauthStartedAt.current[provider] = startedAt;
+    console.info(`[OAuth:${provider}] sign-in started`);
+    return startedAt;
+  };
+
+  const logOAuthTiming = (provider, step, startedAt, details = {}) => {
+    console.info(`[OAuth:${provider}] ${step}`, {
+      elapsedMs: Math.round(performance.now() - startedAt),
+      ...details,
+    });
+  };
 
   const handleValue = (e) => {
     const { name, value } = e.target;
@@ -73,61 +88,94 @@ const Login = () => {
     setLoading(false);
   };
   const handleGoogleSuccess = async (tokenResponse) => {
-  setLoading(true);
-  try {
-    const res = await fetch(`${API_URL}/api/auth/google`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ accessToken: tokenResponse.access_token }),
-    });
+    const startedAt = oauthStartedAt.current.google ?? performance.now();
+    logOAuthTiming("google", "provider callback received", startedAt);
+    setLoading(true);
+    let stage = "api_request";
 
-    const data = await res.json();
+    try {
+      const res = await fetch(`${API_URL}/api/auth/google`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ accessToken: tokenResponse.access_token }),
+      });
+      logOAuthTiming("google", "api response received", startedAt, {
+        status: res.status,
+      });
 
-    if (res.ok) {
-      const expiry = Date.now() + 7 * 24 * 60 * 60 * 1000;
-      login(data.token, expiry);
+      stage = "read_response";
+      const data = await res.json();
 
-      if (data.isNewUser) {
-        navigate("/setupaccount", { state: { Email: data.email, UserId: data.userId } });
+      if (res.ok) {
+        const expiry = Date.now() + 7 * 24 * 60 * 60 * 1000;
+        login(data.token, expiry);
+        logOAuthTiming("google", "sign-in completed", startedAt);
+
+        if (data.isNewUser) {
+          navigate("/setupaccount", { state: { Email: data.email, UserId: data.userId } });
+        } else {
+          navigate("/home");
+        }
       } else {
-        navigate("/home");
+        logOAuthTiming("google", "sign-in rejected", startedAt, {
+          status: res.status,
+        });
+        toast.warning(data.message || "Login failed");
       }
-    } else {
-      toast.warning(data.message || "Login failed");
+    } catch (error) {
+      console.error(`[OAuth:google] ${stage} failed:`, error.message);
+      logOAuthTiming("google", "sign-in failed", startedAt, { stage });
+      toast.error("Server error, please try again later.");
+    } finally {
+      setLoading(false);
     }
-  } catch (error) {
-    console.error(error);
-    toast.error("Server error, please try again later.");
-  }
-  setLoading(false);
   };
 
   const googleLogin = useGoogleLogin({
     onSuccess: handleGoogleSuccess,
-    onError: () => toast.error("Google login failed"),
+    onError: (error) => {
+      const startedAt = oauthStartedAt.current.google ?? performance.now();
+      logOAuthTiming("google", "provider sign-in failed", startedAt, {
+        error: error?.error || "unknown",
+      });
+      toast.error("Google login failed. Check the browser console for details.");
+      setLoading(false);
+    },
     scope: "openid email profile",
   });
 
   const handleFacebookLogin = async () => {
+    const startedAt = startOAuthTiming("facebook");
     setLoading(true);
     try {
+      const sdkStartedAt = performance.now();
       const FB = await loadFacebookSdk();
+      logOAuthTiming("facebook", "SDK loaded", sdkStartedAt);
 
       FB.login(
         async (response) => {
+          logOAuthTiming("facebook", "provider callback received", startedAt, {
+            outcome: response.authResponse ? "authorized" : "cancelled_or_denied",
+          });
           if (response.authResponse) {
+            let stage = "api_request";
             try {
               const res = await fetch(`${API_URL}/api/auth/facebook`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ accessToken: response.authResponse.accessToken }),
               });
+              logOAuthTiming("facebook", "api response received", startedAt, {
+                status: res.status,
+              });
 
+              stage = "read_response";
               const data = await res.json();
 
               if (res.ok) {
                 const expiry = Date.now() + 7 * 24 * 60 * 60 * 1000;
                 login(data.token, expiry);
+                logOAuthTiming("facebook", "sign-in completed", startedAt);
 
                 if (data.isNewUser) {
                   navigate("/setupaccount", { state: { Email: data.email, UserId: data.userId } });
@@ -135,13 +183,18 @@ const Login = () => {
                   navigate("/home");
                 }
               } else {
+                logOAuthTiming("facebook", "sign-in rejected", startedAt, {
+                  status: res.status,
+                });
                 toast.warning(data.message || "Login failed");
               }
             } catch (err) {
-              console.error(err);
+              console.error(`[OAuth:facebook] ${stage} failed:`, err.message);
+              logOAuthTiming("facebook", "sign-in failed", startedAt, { stage });
               toast.error("Server error, please try again later.");
             }
           } else {
+            logOAuthTiming("facebook", "sign-in cancelled", startedAt);
             toast.warning("Facebook login was cancelled");
           }
           setLoading(false);
@@ -149,7 +202,10 @@ const Login = () => {
         { scope: "public_profile,email" }
       );
     } catch (err) {
-      console.error(err);
+      console.error("[OAuth:facebook] SDK or popup failed:", err.message);
+      logOAuthTiming("facebook", "sign-in failed", startedAt, {
+        stage: "sdk_or_popup",
+      });
       toast.error("Failed to load Facebook login");
       setLoading(false);
     }
@@ -163,6 +219,8 @@ const Login = () => {
     }
 
     try {
+      startOAuthTiming(provider);
+      setLoading(true);
       const stateBytes = window.crypto.getRandomValues(new Uint8Array(32));
       const clientState = Array.from(stateBytes, (byte) =>
         byte.toString(16).padStart(2, "0")
@@ -174,6 +232,7 @@ const Login = () => {
       );
     } catch (error) {
       console.error("Could not start OAuth sign-in:", error);
+      setLoading(false);
       toast.error("Sign-in is temporarily unavailable. Please try again later.");
     }
   };
@@ -211,6 +270,17 @@ const Login = () => {
         break;
       case "microsoft_unavailable":
         toast.error("Microsoft sign-in is not configured. Please try another method.");
+        break;
+      case "linkedin_invalid_state":
+      case "linkedin_no_code":
+      case "linkedin_token_failed":
+      case "linkedin_profile_failed":
+      case "linkedin_no_verified_email":
+      case "linkedin_unavailable":
+        toast.error("LinkedIn sign-in failed. Please check the LinkedIn app configuration and try again.");
+        break;
+      case "linkedin_denied":
+        toast.warning("LinkedIn sign-in was cancelled.");
         break;
       case "provider_account_mismatch":
         toast.warning("This provider account does not match the account on file.");
@@ -321,7 +391,12 @@ const Login = () => {
      
             <button
               type="button"
-              onClick={() => googleLogin()}
+              onClick={() => {
+                if (loading) return;
+                startOAuthTiming("google");
+                setLoading(true);
+                googleLogin();
+              }}
               disabled={loading}
               title="Sign in with Google"
               aria-label="Sign in with Google"

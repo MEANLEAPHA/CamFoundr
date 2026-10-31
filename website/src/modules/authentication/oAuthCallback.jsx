@@ -36,11 +36,17 @@ const OAuthCallback = () => {
     navigate("/oauth-callback", { replace: true });
 
     const exchangeCode = async () => {
+      const startedAt = performance.now();
+      console.info("[OAuth:handoff] exchange started");
       try {
         const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/auth/oauth/exchange`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ code, state }),
+        });
+        console.info("[OAuth:handoff] exchange response", {
+          elapsedMs: Math.round(performance.now() - startedAt),
+          status: response.status,
         });
         const data = await response.json();
 
@@ -51,6 +57,9 @@ const OAuthCallback = () => {
 
         const expiry = Date.now() + 7 * 24 * 60 * 60 * 1000;
         login(data.token, expiry);
+        console.info("[OAuth:handoff] sign-in completed", {
+          elapsedMs: Math.round(performance.now() - startedAt),
+        });
 
         if (data.isNewUser) {
           navigate("/setupaccount", {
@@ -61,7 +70,10 @@ const OAuthCallback = () => {
           navigate("/home", { replace: true });
         }
       } catch (error) {
-        console.error("OAuth sign-in handoff failed:", error);
+        console.error("[OAuth:handoff] sign-in failed:", error.message);
+        console.info("[OAuth:handoff] sign-in failure timing", {
+          elapsedMs: Math.round(performance.now() - startedAt),
+        });
         try {
           sessionStorage.removeItem("oauthClientState");
         } catch (storageError) {
