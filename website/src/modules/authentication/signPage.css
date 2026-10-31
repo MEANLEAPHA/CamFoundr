@@ -1,5 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@400..800&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Yeseva+One&display=swap');
-:root{
+/* :root{
     --background-color:#F3F3EC;
     --primary-color:#fd7648;
     --secondary-color: rgba(107, 107, 107, 0.318);
@@ -13,7 +13,7 @@
     --secondary-color: rgba(220, 220, 220, 0.318);
     --font-color:rgb(255, 255, 255);
     --back-con:rgb(40, 40, 40);
-}
+} */
 .container-form{
     width: 100%;
     height: 100vh;
@@ -68,6 +68,7 @@ p{
     border-radius: 10px;
     background: rgba(255, 255, 255, 0.55); 
     backdrop-filter: blur(10px);
+      padding-bottom: 0px;
     -webkit-backdrop-filter: blur(18px); 
 }
 
@@ -219,10 +220,12 @@ color: rgb(0, 0, 0);
     font-size: 13px;
     font-family: sans-serif;
     cursor: pointer;
-    text-decoration:underline;
+  
 }
+
 .div-submit span:hover{
     opacity: 1;
+    text-decoration: underline;
 }
 
 
@@ -242,6 +245,8 @@ color: rgb(0, 0, 0);
     width: 100%;
     border: none;
 }
+
+
 .or-line{
     width:calc(100%/3);
     height: 1px;
@@ -268,7 +273,7 @@ color: rgb(0, 0, 0);
     flex-wrap: wrap;
     justify-content: space-around;
     margin: 0px 0px;
-    padding: 20px 0px 0px 0px;
+    padding: 20px 0px 15px 0px;
     border-bottom-left-radius: 10px;
     border-bottom-right-radius: 10px;
 }
@@ -301,6 +306,8 @@ color: rgb(0, 0, 0);
     align-items: center;
     justify-content: center;
     gap: 5px;
+    padding: 0px 10px;
+    flex-wrap: wrap;
 }
 .footer-form-detail p{
     font-size: small;
@@ -331,6 +338,7 @@ color: rgb(0, 0, 0);
         background:none !important; /* light glass */
         backdrop-filter: blur(0px);
         -webkit-backdrop-filter: blur(0px); /* Safari/WebKit */
+        
     }
    
     

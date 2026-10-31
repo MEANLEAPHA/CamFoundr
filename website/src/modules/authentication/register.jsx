@@ -550,9 +550,7 @@ const Register = () => {
                 <span onClick={() => navigate("/login")} style={{color:"green", cursor:"pointer"}} title='Click to login page'>Sign in</span>
             </p>
 
-          </div>
-          </div>
-          
+ 
           <div className='footer-form-detail'>
             <p>About</p>
             <p>.</p>
@@ -564,6 +562,9 @@ const Register = () => {
             <p>.</p>
             <p>Term & condition</p>
           </div>
+          </div>
+          </div>
+         
         </div>
       </form>
     

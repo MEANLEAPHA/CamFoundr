@@ -361,10 +361,6 @@ const Login = () => {
               Create one
             </span>
           </p>
-
-          </div>
-          
-          </div>
           <div className='footer-form-detail'>
             <p>About</p>
             <p>.</p>
@@ -376,6 +372,11 @@ const Login = () => {
             <p>.</p>
             <p>Term & condition</p>
           </div>
+
+          </div>
+          
+          </div>
+          
         
         </div>
 
