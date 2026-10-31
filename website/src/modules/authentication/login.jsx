@@ -144,6 +144,57 @@ const Login = () => {
     scope: "openid email profile",
   });
 
+  const handleFacebookResponse = async (response, startedAt) => {
+    logOAuthTiming("facebook", "provider callback received", startedAt, {
+      outcome: response.authResponse ? "authorized" : "cancelled_or_denied",
+    });
+
+    if (!response.authResponse) {
+      logOAuthTiming("facebook", "sign-in cancelled", startedAt);
+      toast.warning("Facebook login was cancelled");
+      setLoading(false);
+      return;
+    }
+
+    let stage = "api_request";
+    try {
+      const res = await fetch(`${API_URL}/api/auth/facebook`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ accessToken: response.authResponse.accessToken }),
+      });
+      logOAuthTiming("facebook", "api response received", startedAt, {
+        status: res.status,
+      });
+
+      stage = "read_response";
+      const data = await res.json();
+
+      if (res.ok) {
+        const expiry = Date.now() + 7 * 24 * 60 * 60 * 1000;
+        login(data.token, expiry);
+        logOAuthTiming("facebook", "sign-in completed", startedAt);
+
+        if (data.isNewUser) {
+          navigate("/setupaccount", { state: { Email: data.email, UserId: data.userId } });
+        } else {
+          navigate("/home");
+        }
+      } else {
+        logOAuthTiming("facebook", "sign-in rejected", startedAt, {
+          status: res.status,
+        });
+        toast.warning(data.message || "Login failed");
+      }
+    } catch (error) {
+      console.error(`[OAuth:facebook] ${stage} failed:`, error.message);
+      logOAuthTiming("facebook", "sign-in failed", startedAt, { stage });
+      toast.error("Server error, please try again later.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleFacebookLogin = async () => {
     const startedAt = startOAuthTiming("facebook");
     setLoading(true);
@@ -153,51 +204,8 @@ const Login = () => {
       logOAuthTiming("facebook", "SDK loaded", sdkStartedAt);
 
       FB.login(
-        async (response) => {
-          logOAuthTiming("facebook", "provider callback received", startedAt, {
-            outcome: response.authResponse ? "authorized" : "cancelled_or_denied",
-          });
-          if (response.authResponse) {
-            let stage = "api_request";
-            try {
-              const res = await fetch(`${API_URL}/api/auth/facebook`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ accessToken: response.authResponse.accessToken }),
-              });
-              logOAuthTiming("facebook", "api response received", startedAt, {
-                status: res.status,
-              });
-
-              stage = "read_response";
-              const data = await res.json();
-
-              if (res.ok) {
-                const expiry = Date.now() + 7 * 24 * 60 * 60 * 1000;
-                login(data.token, expiry);
-                logOAuthTiming("facebook", "sign-in completed", startedAt);
-
-                if (data.isNewUser) {
-                  navigate("/setupaccount", { state: { Email: data.email, UserId: data.userId } });
-                } else {
-                  navigate("/home");
-                }
-              } else {
-                logOAuthTiming("facebook", "sign-in rejected", startedAt, {
-                  status: res.status,
-                });
-                toast.warning(data.message || "Login failed");
-              }
-            } catch (err) {
-              console.error(`[OAuth:facebook] ${stage} failed:`, err.message);
-              logOAuthTiming("facebook", "sign-in failed", startedAt, { stage });
-              toast.error("Server error, please try again later.");
-            }
-          } else {
-            logOAuthTiming("facebook", "sign-in cancelled", startedAt);
-            toast.warning("Facebook login was cancelled");
-          }
-          setLoading(false);
+        (response) => {
+          void handleFacebookResponse(response, startedAt);
         },
         { scope: "public_profile,email" }
       );
