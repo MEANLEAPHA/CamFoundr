@@ -912,12 +912,14 @@ const verifyEmail = async (req, res) => {
     );
 
     await sendWelcomeEmailSafely(user);
+    const token = createToken({ userId: user.id });
 
     return res.status(200).json(
       { message: "Email verified Successfully",
         userId: user.id,
         email: user.email,
-        username: user.username
+        username: user.username,
+        token
        }
     );
 
@@ -1186,8 +1188,10 @@ const setNewPassword = async (req, res) => {
       [email.trim()]
     );
     const user = result.rows[0];
+    const resetVerified =
+      user && ["1", "true", "t"].includes(String(user.reset_verified).toLowerCase());
 
-    if (!user || user.reset_verified !== 1) {
+    if (!resetVerified) {
       return res.status(403).json({ message: "Unauthorized request" });
     }
 

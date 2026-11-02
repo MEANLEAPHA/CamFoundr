@@ -153,8 +153,7 @@ const handleSubmit = async (e) => {
 
    if (res.status === 200) {
       toast.success('Setup complete!');
-      const hasToken = localStorage.getItem("token"); 
-      navigate(hasToken ? "/home" : "/login");
+      navigate("/home");
     }
 
   } catch (err) {

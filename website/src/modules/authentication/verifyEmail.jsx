@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
 const API_URL = import.meta.env.VITE_SERVER_URL; 
 import "./signPage.css";
+import { useAuth } from "../../context/authContext";
 
 export const VerifyEmail = () => {
   const [pin, setPin] = useState(Array(6).fill(""));
@@ -11,6 +12,7 @@ export const VerifyEmail = () => {
   const [loading, setLoading] = useState(false);
   const [cooldown, setCooldown] = useState(0);
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const email = localStorage.getItem("verifyEmail");
 
@@ -80,11 +82,14 @@ export const VerifyEmail = () => {
       const data = await res.json();
 
       if (res.ok) {
+        const expiry = Date.now() + 7 * 24 * 60 * 60 * 1000;
+        login(data.token, expiry);
         toast.success("Email verified!");
 
-   
-          navigate("/setupaccount", {state :{ Email: data.email, UserId: data.userId, Username: data.username }});
-          localStorage.removeItem("verifyEmail");
+        navigate("/setupaccount", {
+          state: { Email: data.email, UserId: data.userId, Username: data.username },
+        });
+        localStorage.removeItem("verifyEmail");
      
       } else {
         switch (res.status) {
