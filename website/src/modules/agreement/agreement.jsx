@@ -1,7 +1,18 @@
 import React, { useEffect, useRef, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  ArrowUp,
+  BookOpen,
+  CalendarDays,
+  Check,
+  ChevronRight,
+  FileText,
+  HeartHandshake,
+  MessageCircle,
+  ShieldCheck,
+  Sparkles,
+} from "lucide-react";
 import "./agreement.css";
-import { faCalendarDays } from "@fortawesome/free-regular-svg-icons";
 
 const sections = [
   {
@@ -82,6 +93,29 @@ export default function Agreement() {
   const sectionRefs = useRef({});
   const navRefs = useRef({});
   const [activeId, setActiveId] = useState(sections[0].id);
+  const [readingProgress, setReadingProgress] = useState(0);
+  const [showBackToTop, setShowBackToTop] = useState(false);
+
+  useEffect(() => {
+    const updateReadingProgress = () => {
+      const scrollableHeight =
+        document.documentElement.scrollHeight - window.innerHeight;
+      const progress =
+        scrollableHeight > 0
+          ? Math.min(100, Math.max(0, (window.scrollY / scrollableHeight) * 100))
+          : 0;
+      setReadingProgress(progress);
+      setShowBackToTop(window.scrollY > 500);
+    };
+
+    updateReadingProgress();
+    window.addEventListener("scroll", updateReadingProgress, { passive: true });
+    window.addEventListener("resize", updateReadingProgress);
+    return () => {
+      window.removeEventListener("scroll", updateReadingProgress);
+      window.removeEventListener("resize", updateReadingProgress);
+    };
+  }, []);
 
   // Scroll-spy: highlight nav item as user scrolls
   useEffect(() => {
@@ -113,15 +147,40 @@ export default function Agreement() {
 
   return (
     <div className="ua-page">
+      <div
+        className="ua-reading-track"
+        role="progressbar"
+        aria-label="Agreement reading progress"
+        aria-valuemin={0}
+        aria-valuemax={100}
+        aria-valuenow={Math.round(readingProgress)}
+      >
+        <span
+          className="ua-reading-fill"
+          style={{ transform: `scaleX(${readingProgress / 100})` }}
+        />
+      </div>
       <div className="ua-shell">
-        {/* SIDEBAR */}
-        <div className="ua-sidebar">
-          <div className="ua-brand">
-            <span className="ua-kicker">Agreement</span>
-            <h2 className="ua-brand-title">Nahidea</h2>
+        <aside className="ua-sidebar">
+          <a className="ua-brand" href="/" aria-label="Nahidea home">
+            <span className="ua-brand-mark" aria-hidden="true">
+              <HeartHandshake size={21} strokeWidth={2.2} />
+            </span>
+            <span className="ua-brand-copy">
+              <span className="ua-kicker">Your community, clearly</span>
+              <span className="ua-brand-title">Nahidea</span>
+            </span>
+            <span className="ua-brand-spark" aria-hidden="true">
+              <Sparkles size={18} />
+            </span>
+          </a>
+
+          <div className="ua-sidebar-caption">
+            <span className="ua-sidebar-caption-line" />
+            <span>IN THIS AGREEMENT</span>
           </div>
 
-          <nav className="ua-nav" aria-label="Agreement sections">
+          <div className="ua-nav" role="navigation" aria-label="Agreement sections">
             {sections.map((sec, i) => (
               <button
                 key={sec.id}
@@ -129,59 +188,147 @@ export default function Agreement() {
                 className={`ua-chip ${activeId === sec.id ? "is-active" : ""}`}
                 onClick={() => scrollTo(sec.id)}
                 type="button"
+                aria-current={activeId === sec.id ? "location" : undefined}
               >
-                <span className="ua-chip-num">{String(i + 1).padStart(2, "0")}</span>
+                <span className="ua-chip-num">
+                  {activeId === sec.id ? (
+                    <Check size={14} strokeWidth={2.8} />
+                  ) : (
+                    String(i + 1).padStart(2, "0")
+                  )}
+                </span>
                 <span className="ua-chip-label">{sec.label}</span>
+                <ChevronRight className="ua-chip-arrow" size={15} aria-hidden="true" />
               </button>
             ))}
-          </nav>
+          </div>
 
-      
-        </div>
+          <div className="ua-sidebar-note">
+            <ShieldCheck size={19} aria-hidden="true" />
+            <span>Built on respect, safety, and open conversation.</span>
+          </div>
+        </aside>
 
-        {/* CONTENT */}
         <div className="ua-main">
-          <header className="ua-header">
-            <h1 className="ua-title"> User Agreement</h1>
-            <p className="ua-effective"> <FontAwesomeIcon icon={faCalendarDays} /> Effective: Jan 06, 2026</p>
-          </header>
+          <div className="ua-topline">
+            <span className="ua-topline-label">
+              <BookOpen size={15} aria-hidden="true" />
+              COMMUNITY GUIDELINES
+            </span>
+            <span className="ua-topline-count">
+              {String(sections.findIndex((section) => section.id === activeId) + 1).padStart(2, "0")}
+              <span> / {String(sections.length).padStart(2, "0")}</span>
+            </span>
+          </div>
 
-          <div className="ua-sections">
+          <div className="ua-hero">
+            <div className="ua-hero-copy">
+              <span className="ua-hero-eyebrow">
+                <Sparkles size={15} aria-hidden="true" />
+                A good place to start
+              </span>
+              <h1 className="ua-title">
+                Good conversations
+                <br />
+                <span>start with clarity.</span>
+              </h1>
+              <p className="ua-hero-description">
+                A few shared expectations help keep Nahidea thoughtful, welcoming,
+                and safe for everyone.
+              </p>
+              <div className="ua-effective">
+                <CalendarDays size={16} aria-hidden="true" />
+                <span>Effective January 06, 2026</span>
+              </div>
+            </div>
+            <div className="ua-hero-art" aria-hidden="true">
+              <div className="ua-art-orbit ua-art-orbit-one" />
+              <div className="ua-art-orbit ua-art-orbit-two" />
+              <div className="ua-art-card ua-art-card-back">
+                <MessageCircle size={23} />
+              </div>
+              <div className="ua-art-card ua-art-card-front">
+                <HeartHandshake size={36} strokeWidth={1.7} />
+              </div>
+              <span className="ua-art-dot ua-art-dot-one" />
+              <span className="ua-art-dot ua-art-dot-two" />
+              <Sparkles className="ua-art-spark" size={23} />
+            </div>
+            <div className="ua-hero-bottom">
+              <div className="ua-hero-stat">
+                <span className="ua-hero-stat-icon">
+                  <FileText size={17} />
+                </span>
+                <span>
+                  <strong>{sections.length} simple sections</strong>
+                  <small>Everything you need to know</small>
+                </span>
+              </div>
+              <div className="ua-progress-summary">
+                <span>YOUR READING PROGRESS</span>
+                <strong>{Math.round(readingProgress)}%</strong>
+                <span className="ua-mini-progress">
+                  <span style={{ transform: `scaleX(${readingProgress / 100})` }} />
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div className="ua-sections" aria-label="User agreement">
             {sections.map((sec, i) => {
               const isActive = activeId === sec.id;
-              const isLast = i === sections.length - 1;
               return (
-                <section
+                <div
                   key={sec.id}
                   id={sec.id}
                   ref={(el) => (sectionRefs.current[sec.id] = el)}
-                  className={`ua-section ${isActive ? "is-active" : ""} ${
-                    isLast ? "is-dark" : ""
-                  }`}
+                  className={`ua-section ${isActive ? "is-active" : ""}`}
+                  role="article"
+                  aria-labelledby={`${sec.id}-title`}
                 >
-                  {isActive && !isLast && <span className="ua-accent-bar" aria-hidden="true" />}
                   <div className="ua-section-card">
-                    <span className="ua-section-tag">
-                      {String(i + 1).padStart(2, "0")} — {sec.tag}
+                    <div className="ua-section-index" aria-hidden="true">
+                      {String(i + 1).padStart(2, "0")}
+                    </div>
+                    <div className="ua-section-content">
+                      <span className="ua-section-tag">{sec.tag}</span>
+                      <h2 className="ua-section-title" id={`${sec.id}-title`}>
+                        {sec.title}
+                      </h2>
+                      <p className="ua-section-text">{sec.content}</p>
+                    </div>
+                    <span className="ua-section-check" aria-hidden="true">
+                      <Check size={16} />
                     </span>
-                    <h3 className="ua-section-title">{sec.title}</h3>
-                    <p className="ua-section-text">{sec.content}</p>
-                    {isLast && (
-                      <a className="ua-cta" href="https://nahidea.com/Feedback">
-                        Feedback
-                      </a>
-                    )}
                   </div>
-                </section>
+                </div>
               );
             })}
           </div>
 
           <div className="ua-floating-footer">
-            <span>Nahidea Internal Document • Confidential • 2026</span>
+            <span className="ua-footer-mark">
+              <HeartHandshake size={18} aria-hidden="true" />
+            </span>
+            <span>
+              <strong>Thanks for being part of Nahidea.</strong>
+              <small>Let’s keep the conversation thoughtful.</small>
+            </span>
+            <a className="ua-footer-link" href="https://nahidea.com/Feedback">
+              Send feedback <ChevronRight size={15} aria-hidden="true" />
+            </a>
           </div>
         </div>
       </div>
+      <button
+        className={`ua-back-top ${showBackToTop ? "is-visible" : ""}`}
+        type="button"
+        onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+        aria-label="Back to top"
+        tabIndex={showBackToTop ? 0 : -1}
+      >
+        <ArrowUp size={18} />
+      </button>
     </div>
   );
 }

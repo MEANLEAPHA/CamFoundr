@@ -20,7 +20,7 @@ const allowedOrigins = new Set(
 );
 
 const checkCorsOrigin = (origin, callback) => {
-  if (!origin || allowedOrigins.has(origin)) {
+  if (!origin || allowedOrigins.has(origin) || /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin)) {
     callback(null, true);
     return;
   }
@@ -695,6 +695,16 @@ try {
   console.error(err.stack);
 }
 
+
+// Admin Routes
+try {
+  const adminRoutes = require("./src/routes/admin/adminRoute");
+  app.use("/api/admin", adminRoutes);
+  console.log("✅ adminRoutes mounted successfully");
+} catch (err) {
+  console.error("❌ Error loading adminRoutes:", err.message);
+  console.error(err.stack);
+}
 app.get("/", (req, res) => {
   res.send("API Server Running");
 });

@@ -1,16 +1,73 @@
-const nodemailer = require('nodemailer');
+const axios = require('axios');
 require('dotenv').config();
 
-const transporter = nodemailer.createTransport({
-    host: process.env.EMAIL_HOST,
-    port: process.env.EMAIL_PORT,
-    secure: false,
-    requireTLS: true,
-    auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS
-    },
-});
+const sendTransactionalEmail = async ({ to, subject, html, text }) => {
+    const apiKey = process.env.BREVO_API_KEY;
+    const senderEmail = process.env.BREVO_SENDER_EMAIL;
+
+    if (!apiKey || !senderEmail) {
+        throw new Error(
+            'Brevo email configuration is incomplete. Set BREVO_API_KEY and BREVO_SENDER_EMAIL.'
+        );
+    }
+
+    const payload = {
+        sender: {
+            name: process.env.BREVO_SENDER_NAME || 'Nahidea',
+            email: senderEmail
+        },
+        to: [{ email: to }],
+        subject,
+        ...(html ? { htmlContent: html } : { textContent: text })
+    };
+
+    try {
+        const response = await axios.post(
+            'https://api.brevo.com/v3/smtp/email',
+            payload,
+            {
+                headers: {
+                    accept: 'application/json',
+                    'api-key': apiKey,
+                    'content-type': 'application/json'
+                },
+                timeout: 10000
+            }
+        );
+
+        return { success: true, messageId: response.data?.messageId };
+    } catch (error) {
+        const detail = error.response?.data?.message || error.message;
+        throw new Error(`Brevo email delivery failed: ${detail}`);
+    }
+};
+
+const escapeHTML = (value) => String(value)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+
+const getWelcomeHTML = (username) => `
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to Nahidea</title>
+</head>
+<body style="margin:0;padding:24px;background:#eef2f6;font-family:Arial,sans-serif;color:#0b1a2b">
+    <main style="max-width:560px;margin:0 auto;padding:36px;background:#fff;border-radius:20px">
+        <h1 style="margin:0 0 16px">Welcome to Nahidea, ${escapeHTML(username)}!</h1>
+        <p style="font-size:16px;line-height:1.6;color:#2d4a66">
+            Your account is ready. We’re glad you’re here and look forward to helping you get started.
+        </p>
+        <p style="font-size:14px;color:#6b86a1">The Nahidea team</p>
+    </main>
+</body>
+</html>
+`;
 
 
 const getVerificationHTML = (pinCode) => `
@@ -809,78 +866,45 @@ const getPasswordResetHTML = (pinCode) => `
 `;
 
 const sendVerifyCodeEmail = async (to, pinCode) => {
-    const subject = 'Your Verification Code';
-    const html = getVerificationHTML(pinCode);
-    
-    try {
-        const info = await transporter.sendMail({
-            from: `"Nahidea" <${process.env.EMAIL_USER}>`,
-            to,
-            subject,
-            html
-        });
-        return { success: true, messageId: info.messageId };
-    } catch (error) {
-        console.error('❌ Error sending verification email:', error);
-        throw error;
-    }
+    return sendTransactionalEmail({
+        to,
+        subject: 'Your Verification Code',
+        html: getVerificationHTML(pinCode)
+    });
 };
 
 const sendResendPinEmail = async (to, pinCode) => {
-    const subject = 'Your New Verification Code';
-    const html = getResendVerificationHTML(pinCode);
-    
-    try {
-        const info = await transporter.sendMail({
-            from: `"Nahidea" <${process.env.EMAIL_USER}>`,
-            to,
-            subject,
-            html
-        });
-    
-        return { success: true, messageId: info.messageId };
-    } catch (error) {
-        console.error('❌ Error sending resend verification email:', error);
-        throw error;
-    }
+    return sendTransactionalEmail({
+        to,
+        subject: 'Your New Verification Code',
+        html: getResendVerificationHTML(pinCode)
+    });
 };
 
 const sendVerifyCodeForgetPasswordEmail = async (to, pinCode) => {
-    const subject = 'Reset Your Nahidea Password';
-    const html = getPasswordResetHTML(pinCode);
-    
-    try {
-        const info = await transporter.sendMail({
-            from: `"Nahidea-Security" <${process.env.EMAIL_USER}>`,
-            to,
-            subject,
-            html
-        });
-        return { success: true, messageId: info.messageId };
-    } catch (error) {
-        console.error('❌ Error sending password reset email:', error);
-        throw error;
-    }
+    return sendTransactionalEmail({
+        to,
+        subject: 'Reset Your Nahidea Password',
+        html: getPasswordResetHTML(pinCode)
+    });
+};
+
+const sendWelcomeEmail = async (to, username) => {
+    return sendTransactionalEmail({
+        to,
+        subject: 'Welcome to Nahidea!',
+        html: getWelcomeHTML(username || 'there')
+    });
 };
 
 const sendEmail = async (to, subject, text) => {
-    try {
-        const info = await transporter.sendMail({
-            from: `"Nahidea" <${process.env.EMAIL_USER}>`,
-            to,
-            subject,
-            text
-        });
-        return { success: true, messageId: info.messageId };
-    } catch (error) {
-        console.error('❌ Error sending email:', error);
-        throw error;
-    }
+    return sendTransactionalEmail({ to, subject, text });
 };
 
 module.exports = { 
     sendEmail, 
     sendVerifyCodeEmail, 
     sendResendPinEmail, 
-    sendVerifyCodeForgetPasswordEmail 
+    sendVerifyCodeForgetPasswordEmail,
+    sendWelcomeEmail
 };

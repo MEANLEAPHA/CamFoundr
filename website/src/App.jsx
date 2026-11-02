@@ -117,11 +117,7 @@ export default function App () {
               <Route path='/reporthistory' element={<ReportHistory/>}></Route> 
               <Route path='/feedback' element={<FeedbackForm/>}></Route> 
 
-              {/* Law firm */}
-              <Route path='/agreement' element = {<Agreement/>} />
-              <Route path='/accessibility' element={<Accessibility/>}></Route>
-              <Route path='/camfoundrrule' element={<Rule/>} />
-              <Route path='/privacypolicy' element={<PrivacyPolicy/>}></Route>
+              
 
               {/* Upload*/}
               <Route path='/create/question' element={<Question/>}></Route>
@@ -152,6 +148,12 @@ export default function App () {
 
             {/* Not Found 404 */} 
             <Route path='*' element={<NotFound/>}></Route>
+
+            {/* Law firm */}
+            <Route path='/accessibility' element={<Accessibility/>}></Route>
+            <Route path='/camfoundrrule' element={<Rule/>} />
+            <Route path='/privacypolicy' element={<PrivacyPolicy/>}></Route>
+            <Route path='/agreement' element = {<Agreement/>} />
 
           </Routes>
         </BrowserRouter>

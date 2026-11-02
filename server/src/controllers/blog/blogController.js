@@ -101,7 +101,7 @@ const createBlog = async (req, res) => {
       `INSERT INTO blogs (author_id, slug, title, description, body, image_url, tags, read_time, status)
        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
        RETURNING id, slug, title, description, body, image_url, tags, read_time, status, created_at, updated_at, author_id`,
-      [authorId, `${baseSlug}-${Date.now().toString(36)}`, title.trim(), description.trim(), body.trim(), image_url || null, tags, read_time || null, status === "published" ? "published" : "draft"]
+      [authorId, `${baseSlug}-${Date.now().toString(36)}`, title.trim(), description.trim(), body.trim(), image_url || null, tags, read_time || null, req.user?.role === "admin" ? (status === "published" ? "published" : "draft") : (status === "published" ? "pending" : "draft")]
     );
 
     return res.status(201).json({ data: result.rows[0] });
@@ -122,7 +122,7 @@ const updateBlog = async (req, res) => {
 
     Object.entries(allowedFields).forEach(([key, column]) => {
       if (body[key] !== undefined) {
-        values.push(key === "status" ? (body[key] === "published" ? "published" : "draft") : body[key]);
+        values.push(key === "status" ? (req.user?.role === "admin" ? (body[key] === "published" ? "published" : "draft") : (body[key] === "published" ? "pending" : body[key])) : body[key]);
         fields.push(`${column} = $${values.length}`);
       }
     });

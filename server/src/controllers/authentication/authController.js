@@ -4,7 +4,12 @@ const pool = require('../../config/db');
 const { ranking, cachePost } = require("../../config/redisClient");
 const crypto = require('crypto');
 require('dotenv').config();
-const { sendVerifyCodeEmail, sendResendPinEmail, sendVerifyCodeForgetPasswordEmail} = require('../../service/mail/email');
+const {
+  sendVerifyCodeEmail,
+  sendResendPinEmail,
+  sendVerifyCodeForgetPasswordEmail,
+  sendWelcomeEmail,
+} = require('../../service/mail/email');
 const { createToken } = require('../../service/token/jwtHelp');
 const { convertAndUpload } = require("../../service/hostinger/ftp");
 
@@ -12,6 +17,14 @@ const { OAuth2Client } = require('google-auth-library');
 const axios = require('axios');
 
 const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+
+const sendWelcomeEmailSafely = async (user) => {
+  try {
+    await sendWelcomeEmail(user.email, user.username);
+  } catch (error) {
+    console.error("Welcome email send failed for newly created account:", error.message);
+  }
+};
 
 const getFrontendRedirect = (path, params = {}) => {
   if (!process.env.ORIGIN_URL) {
@@ -72,6 +85,10 @@ const consumeOAuthStateCookie = (req, res, provider, state) => {
 };
 
 const issueOAuthHandoff = async (res, user, isNewUser, clientState) => {
+  if (isNewUser) {
+    await sendWelcomeEmailSafely(user);
+  }
+
   const token = createToken({ userId: user.id });
   const handoffCode = crypto.randomBytes(32).toString("hex");
   const handoff = {
@@ -490,6 +507,10 @@ const googleLogin = async (req, res) => {
       user = insertResult.rows[0];
     }
 
+    if (isNewUser) {
+      await sendWelcomeEmailSafely(user);
+    }
+
     const token = createToken({ userId: user.id });
 
     return res.status(200).json({
@@ -608,6 +629,10 @@ const facebookLogin = async (req, res) => {
         [usernameBase, normalizedEmail, providerId, avatarUrl]
       );
       user = insertResult.rows[0];
+    }
+
+    if (isNewUser) {
+      await sendWelcomeEmailSafely(user);
     }
 
     const token = createToken({ userId: user.id });
@@ -885,6 +910,8 @@ const verifyEmail = async (req, res) => {
       "UPDATE users SET is_verified = 1, pin_code = NULL, pin_attempts = 0, pin_created_at = NULL WHERE email = $1",
       [email]
     );
+
+    await sendWelcomeEmailSafely(user);
 
     return res.status(200).json(
       { message: "Email verified Successfully",
@@ -1763,6 +1790,10 @@ const linkedinLogin = async (req, res) => {
         [usernameBase, email, providerId, picture || null]
       );
       user = insertResult.rows[0];
+    }
+
+    if (isNewUser) {
+      await sendWelcomeEmailSafely(user);
     }
 
     const token = createToken({ userId: user.id });
